@@ -23,13 +23,16 @@ def get_volcano_idx_from_name(volcano_name):
     ###"Please double-check spelling (including commas, e.g. "Ruiz, Nevado del"
     ###and/or check name on www.volcano.si.edu"
     
-    try:
-        volcano_index = \
-            volcano_names.loc[volcano_names[0] == volcano_name].index[0]
-    except IndexError:
+    matched_volcanoes = volcano_names.loc[volcano_names[0] == volcano_name]
+    
+    if len(matched_volcanoes) == 0:
         msg = f"Volcano name {volcano_name} does not exist!" 
         raise PyvolcansError(msg)
-        
+    elif len(matched_volcanoes) > 1:
+        msg = f"Volcano name {volcano_name} is not unique!" 
+        raise PyvolcansError(msg)
+
+    volcano_index = matched_volcanoes.index[0]        
         
     return volcano_index
 
