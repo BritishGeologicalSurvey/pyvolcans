@@ -14,7 +14,7 @@ import pandas as pd
 volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
                             "volc_names.csv", header = None)
 
-def get_volcano_idx(volcano_name):
+def get_volcano_idx_from_name(volcano_name):
     """
     Input is volcano name as text, output is the index 
     of the row/column with the volcano in the matrix.
@@ -28,7 +28,7 @@ def get_volcano_idx(volcano_name):
     
     return volcano_index
 
-def get_volcano_name(volcano_idx):
+def get_volcano_name_from_idx(volcano_idx):
     """
     Input is volcano index as a number, output is the name 
     of the volcano of interest.
@@ -43,3 +43,23 @@ def get_volcano_name(volcano_idx):
         volcano_names.iloc[volcano_idx,0]
     
     return volcano_name
+
+def get_volcano_number_from_name(volcano_name):
+    """
+    Input is volcano name as text, output is the volcano 
+    number as indicated in the GVP database.
+    """
+    pass
+
+def get_volcano_name_from_volcano_number(volcano_number):
+    """
+    Input is volcano number as indicated by the GVP,
+    output is the volcano name.
+    """
+    pass
+
+class PyvolcansError(Exception):
+    pass
+
+    
+    
