@@ -79,7 +79,24 @@ def get_volcano_name_from_volcano_number(volcano_number):
     Input is volcano number as indicated by the GVP,
     output is the volcano name.
     """
-    pass
+    ##we need to create a message error here: "Volcano number does not exist.
+    ##Please provide a non-zero, positive, six digits number. To check for
+    ##existing volcano numbers (VNUM), please visit www.volcano.si.edu"
+    
+    matched_volcanoes = volcano_names.loc[volcano_names[2] == volcano_number]
+    
+    if len(matched_volcanoes) == 0:
+        msg = f"Volcano number {volcano_number} does not exist!" 
+        raise PyvolcansError(msg)
+    #NB. This error below should never occur because VNUM should be unique
+    elif len(matched_volcanoes) > 1:
+        msg = f"Volcano number {volcano_number} is not unique!" 
+        raise PyvolcansError(msg)
+    
+    volcano_name = \
+        matched_volcanoes.iloc[0,0]
+    
+    return volcano_name
 
 class PyvolcansError(Exception):
     pass
