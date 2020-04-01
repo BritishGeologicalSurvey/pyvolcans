@@ -9,8 +9,10 @@ Created on Tue Mar  3 09:49:16 2020
 
 #we need to read a csv file here
 import pandas as pd
+import numpy as np
 
-from pyvolcans import tectonic_analogy, geochemistry_analogy, morphology_analogy, eruption_size_analogy, eruption_style_analogy
+from pyvolcans import tectonic_analogy, geochemistry_analogy, \
+morphology_analogy, eruption_size_analogy, eruption_style_analogy
 
 #remember we have no header in the file below
 volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
@@ -105,7 +107,7 @@ def get_volcano_name_from_volcano_number(volcano_number):
     
     return volcano_name
 
-def calculated_weighted_analogy_matrix(weights = WEIGHTS):
+def calculate_weighted_analogy_matrix(weights = WEIGHTS):
     
     """
     Input is dictionary of weights
@@ -115,13 +117,34 @@ def calculated_weighted_analogy_matrix(weights = WEIGHTS):
     #COMPLETE!!
     #ERROR HANDLING!! (AND TEST!!!)
     
-    weighted_tectonic_analogy = weights['tectonic_setting'] * tectonic_analogy
-    #weighted_geochemistry_analogy = weights['geochemistry'] * geochemistry_analogy
+    weighted_tectonic_analogy = \
+        weights['tectonic_setting'] * tectonic_analogy
     
-    #print(weights['tectonic_setting'])
-    print(weighted_tectonic_analogy[0])
+    weighted_geochemistry_analogy = \
+        weights['geochemistry'] * geochemistry_analogy
+        
+    weighted_morphology_analogy = \
+        weights['morphology'] * morphology_analogy
+        
+    weighted_eruption_size_analogy = \
+        weights['eruption_size'] * eruption_size_analogy
     
-    pass
+    weighted_eruption_style_analogy = \
+        weights['eruption_style'] * eruption_style_analogy
+    
+    weighted_total_analogy_matrix = weighted_tectonic_analogy + \
+        weighted_geochemistry_analogy + weighted_morphology_analogy + \
+        weighted_eruption_size_analogy + weighted_eruption_style_analogy
+    
+    #print(weighted_tectonic_analogy[100,100])
+    #print(weighted_geochemistry_analogy[110,110])
+    #print(weighted_morphology_analogy[2,2])
+    #print(weighted_eruption_size_analogy[9,9])
+    #print(weighted_eruption_style_analogy[20,20])
+    
+    print(weighted_total_analogy_matrix[100,100])
+    
+    return weighted_total_analogy_matrix
 
 class PyvolcansError(Exception):
     pass
