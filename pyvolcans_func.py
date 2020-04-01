@@ -10,7 +10,7 @@ Created on Tue Mar  3 09:49:16 2020
 #we need to read a csv file here
 import pandas as pd
 
-from pyvolcans import tectonic_analogy, 
+from pyvolcans import tectonic_analogy, geochemistry_analogy, morphology_analogy, eruption_size_analogy, eruption_style_analogy
 
 #remember we have no header in the file below
 volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
@@ -105,11 +105,7 @@ def get_volcano_name_from_volcano_number(volcano_number):
     
     return volcano_name
 
-def calculated_weighted_analogy_matrix(weights = {'tectonic_setting': tectonic_setting, 
-                                                  'geochemistry': geochemistry,
-                                                  'morphology': morphology, 
-                                                  'eruption_size': eruption_size, 
-                                                  'eruption_style': eruption_style}):
+def calculated_weighted_analogy_matrix(weights = WEIGHTS):
     
     """
     Input is dictionary of weights
@@ -120,6 +116,8 @@ def calculated_weighted_analogy_matrix(weights = {'tectonic_setting': tectonic_s
     #ERROR HANDLING!! (AND TEST!!!)
     
     weighted_tectonic_analogy = weights['tectonic_setting'] * tectonic_analogy
+    #weighted_geochemistry_analogy = weights['geochemistry'] * geochemistry_analogy
+    
     #print(weights['tectonic_setting'])
     print(weighted_tectonic_analogy[0])
     
