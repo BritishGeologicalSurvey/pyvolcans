@@ -11,9 +11,6 @@ Created on Tue Mar  3 09:49:16 2020
 import pandas as pd
 import numpy as np
 
-from pyvolcans import tectonic_analogy, geochemistry_analogy, \
-morphology_analogy, eruption_size_analogy, eruption_style_analogy
-
 #remember we have no header in the file below
 volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
                             "volc_names.csv", header = None)
@@ -108,7 +105,6 @@ def get_volcano_name_from_volcano_number(volcano_number):
     return volcano_name
 
 def calculate_weighted_analogy_matrix(weights = WEIGHTS):
-    
     """
     Input is dictionary of weights
     e.g. {‘tectonic_setting’: 0.5, ‘geochemistry’: 0.5}
@@ -116,6 +112,10 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS):
     """
     #COMPLETE!!
     #ERROR HANDLING!! (AND TEST!!!)
+    
+    if sum(weights.values()) != 1:
+        msg = f"Sum of weights is different from 1!" 
+        raise PyvolcansError(msg)        
     
     weighted_tectonic_analogy = \
         weights['tectonic_setting'] * tectonic_analogy
@@ -146,10 +146,30 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS):
     
     return weighted_total_analogy_matrix
 
-def get_analogies(my_volcano, weighted_analogy_matrix, count=5):
-    [returns the names best <count> analogies (and their scores?).  Default = 5.
-
-
+def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
+    """
+    Returns, on screen, the names of the top <count> analogues to
+    the target volcano (i.e. my_volcano) and their multi-criteria
+    analogy values, as a variable: total_analogy.
+    Default <count> = 10.
+    """
+    
+    #get the index for my_volcano
+    #volcano_idx = get_volcano_idx_from_name(my_volcano)
+    
+    #calculate the <count> highest values of multi-criteria analogy
+    #top_idx =
+    # obtain the volcano names and the analogy values
+    #top_names =
+    #top_analogies =
+    
+    #print the names of the top <count> analogues
+    
+    #here: return the analogy values
+    pass
+    
+        
+    
 
 class PyvolcansError(Exception):
     pass

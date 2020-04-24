@@ -8,10 +8,15 @@ Created on Mon Feb 17 12:13:20 2020
 #import scipy.io as sio
 #matfile = sio.loadmat("VOLCANS_mat_files/analogy_mats/ATfinal_allvolcs.mat")
 
-from pymatreader import read_mat
-from pathlib import Path
+#Pytonic order
+#standard library
 import argparse
-
+from pathlib import Path
+#external packages
+from pymatreader import read_mat
+#personal packages
+from pyvolcans_func import get_analogies
+#import pyvolcans_func
 
 ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
 
@@ -34,8 +39,29 @@ eruption_style_analogy = read_mat(ANALOGY_DIR /
 #weights = {var1,...,var5}
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tectonic_setting", help="Set tectonic setting, default value=0.2")
+    parser.add_argument("volcano_name",
+                        help="Set target volcano",
+                        type=str)
+    parser.add_argument("--tectonic_setting",
+                        help="Set tectonic setting weight",
+                        default=0.2, type=float)
+    parser.add_argument("--rock_geochemistry",
+                        help="Set rock geochemistry weight",
+                        default=0.2, type=float)
+    parser.add_argument("--morphology",
+                        help="Set volcano morphology weight",
+                        default=0.2, type=float)
+    parser.add_argument("--eruption_size",
+                        help="Set eruption size weight",
+                        default=0.2, type=float)
+    parser.add_argument("--eruption_style",
+                        help="Set eruption style weight",
+                        default=0.2, type=float)
+     
+    
        
     args = parser.parse_args()
     tectonic_setting = args.tectonic_setting 
+    print(args)
 #    calculated_weighted_analogy_matrix(tectonic_setting)
+    #get_analogies(args.volcano_name)
