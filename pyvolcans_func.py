@@ -146,6 +146,11 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS):
     
     return weighted_total_analogy_matrix
 
+def get_analogies(my_volcano, weighted_analogy_matrix, count=5):
+    [returns the names best <count> analogies (and their scores?).  Default = 5.
+
+
+
 class PyvolcansError(Exception):
     pass
 

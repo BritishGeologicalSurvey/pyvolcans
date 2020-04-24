@@ -38,4 +38,4 @@ if __name__ == '__main__':
        
     args = parser.parse_args()
     tectonic_setting = args.tectonic_setting 
-    calculated_weighted_analogy_matrix(tectonic_setting)
+#    calculated_weighted_analogy_matrix(tectonic_setting)
