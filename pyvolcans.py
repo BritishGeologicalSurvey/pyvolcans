@@ -57,11 +57,17 @@ if __name__ == '__main__':
     parser.add_argument("--eruption_style",
                         help="Set eruption style weight",
                         default=0.2, type=float)
-     
-    
+    parser.add_argument("--count",
+                        help="Set the number of top analogue volcanoes",
+                        default=10, type=int)
        
     args = parser.parse_args()
-    tectonic_setting = args.tectonic_setting 
+    volcano_name = args.volcano_name
+    tectonic_setting_weight = args.tectonic_setting
     print(args)
+    print(volcano_name)
+    print(tectonic_setting_weight)
+    print(args.rock_geochemistry)
+    
 #    calculated_weighted_analogy_matrix(tectonic_setting)
     #get_analogies(args.volcano_name)
