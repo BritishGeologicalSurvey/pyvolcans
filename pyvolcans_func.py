@@ -146,7 +146,7 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS):
     
     return weighted_total_analogy_matrix
 
-def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
+def get_analogies(my_volcano, weighted_analogy_matrix, count):
     """
     Returns, on screen, the names of the top <count> analogues to
     the target volcano (i.e. my_volcano) and their multi-criteria
@@ -155,15 +155,30 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     """
     
     #get the index for my_volcano
-    #volcano_idx = get_volcano_idx_from_name(my_volcano)
+    volcano_idx = get_volcano_idx_from_name(my_volcano)
     
     #calculate the <count> highest values of multi-criteria analogy
-    #top_idx =
+    #getting the row corresponding to the target volcano ('my_volcano') 
+    my_volcano_analogies = weighted_analogy_matrix[volcano_idx,]
+    #adding 1 to 'count' to consider 'my_volcano' itself in the search
+    count = count+1
+    #getting the indices corresponding to the highest values of analogy
+    #in descending order (highest analogy first)
+    top_idx = my_volcano_analogies.argsort()[-count:][::-1]
+    ##removing 'my_volcano' from the list
+    ##top_idx = set(volcano_idx).symmetric_difference(top_idx)
+    ##np.argpartition(my_volcano_analogies, \
+    ##len(my_volcano_analogies) - count)[-count:]
+    
     # obtain the volcano names and the analogy values
-    #top_names =
-    #top_analogies =
+    top_names = get_volcano_name_from_idx(top_idx)
+    top_analogies = my_volcano_analogies[top_idx]
     
     #print the names of the top <count> analogues
+    ##print(volcano_names.iloc[top_idx,2],volcano_names.iloc[top_idx,0:1],
+      ##     top_analogies)
+      
+    print(volcano_names.iloc[top_idx,0:3])
     
     #here: return the analogy values
     pass
