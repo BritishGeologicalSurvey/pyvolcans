@@ -203,9 +203,9 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count):
     
     for ii in range(len(top_idx)):
         #print('%d\t%s\t%s\t%.3f\n' %
-        print(f'{volcano_names.iloc[top_idx[ii],2]:d} \
-                 {volcano_names.iloc[top_idx[ii],0]:s} \
-                 {volcano_names.iloc[top_idx[ii],1]:s} \
+        print(f'{volcano_names.iloc[top_idx[ii],2]:d}\t\
+                 {volcano_names.iloc[top_idx[ii],0]:s}\t\
+                 {volcano_names.iloc[top_idx[ii],1]:s}\t\
                  {top_analogies[ii]:.3f}')
     
     #here: return the analogy values
