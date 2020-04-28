@@ -134,7 +134,6 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS):
                                   "AStfinal_allvolcs_SINA.mat")['ASt_allcross']
     
     #ERROR HANDLING!! (AND TEST!!!)
-    
     if sum(weights.values()) != 1:
         msg = f"Sum of weights is different from 1!" 
         raise PyvolcansError(msg)        

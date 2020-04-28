@@ -12,6 +12,7 @@ Created on Mon Feb 17 12:13:20 2020
 #standard library
 import argparse
 from pathlib import Path
+from fractions import Fraction
 #external packages
 from pymatreader import read_mat
 #personal packages
@@ -46,30 +47,61 @@ if __name__ == '__main__':
                         type=str)
     parser.add_argument("--tectonic_setting",
                         help="Set tectonic setting weight",
-                        default=0.2, type=float)
+                        default='0.2', type=str)
     parser.add_argument("--rock_geochemistry",
                         help="Set rock geochemistry weight",
-                        default=0.2, type=float)
+                        default='0.2', type=str)
     parser.add_argument("--morphology",
                         help="Set volcano morphology weight",
-                        default=0.2, type=float)
+                        default='0.2', type=str)
     parser.add_argument("--eruption_size",
                         help="Set eruption size weight",
-                        default=0.2, type=float)
+                        default='0.2', type=str)
     parser.add_argument("--eruption_style",
                         help="Set eruption style weight",
-                        default=0.2, type=float)
+                        default='0.2', type=str)
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
-                        default=10, type=int)
-       
+                        default='10', type=str)
+    
+    #'parsing the arguments'
     args = parser.parse_args()
+    
+    #here we convert all required inputs from str to float/int
+    #NB. We need to check whether the weight input by the user is
+    #    a fraction or not. We'll use str.find() to check for this
+    if args.tectonic_setting.find('/') != -1:
+        tectonic_setting_weight = float(Fraction(args.tectonic_setting))
+    else:
+        tectonic_setting_weight = float(args.tectonic_setting)
+        
+    if args.rock_geochemistry.find('/') != -1:
+        rock_geochemistry_weight = float(Fraction(args.rock_geochemistry))
+    else:
+        rock_geochemistry_weight = float(args.rock_geochemistry)
+        
+    if args.morphology.find('/') != -1:
+        morphology_weight = float(Fraction(args.morphology))
+    else:
+        morphology_weight = float(args.morphology)
+        
+    if args.eruption_size.find('/') != -1:
+        eruption_size_weight = float(Fraction(args.eruption_size))
+    else:
+        eruption_size_weight = float(args.eruption_size)
+    
+    if args.eruption_style.find('/') != -1:
+        eruption_style_weight = float(Fraction(args.eruption_style))
+    else:
+        eruption_style_weight = float(args.eruption_style)    
+    
+    #defining some intermediate variables
     volcano_name = args.volcano_name
-    ARGWEIGHTS = {'tectonic_setting': args.tectonic_setting,
-               'geochemistry': args.rock_geochemistry,
-               'morphology': args.morphology,
-               'eruption_size': args.eruption_size,
-               'eruption_style': args.eruption_style}
+    ARGWEIGHTS = {'tectonic_setting': tectonic_setting_weight,
+               'geochemistry': rock_geochemistry_weight,
+               'morphology': morphology_weight,
+               'eruption_size': eruption_size_weight,
+               'eruption_style': eruption_style_weight}
         
     print(args)
     print(volcano_name)
