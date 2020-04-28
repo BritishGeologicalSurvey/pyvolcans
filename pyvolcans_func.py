@@ -10,6 +10,9 @@ Created on Tue Mar  3 09:49:16 2020
 #we need to read a csv file here
 import pandas as pd
 import numpy as np
+#from pyvolcans import tectonic_analogy
+#geochemistry_analogy,
+#morphology_analogy, eruption_size_analogy, eruption_style_analogy)
 
 #remember we have no header in the file below
 volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +

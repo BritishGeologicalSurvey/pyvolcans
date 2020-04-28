@@ -15,7 +15,7 @@ from pathlib import Path
 #external packages
 from pymatreader import read_mat
 #personal packages
-from pyvolcans_func import get_analogies
+from pyvolcans_func import get_analogies, calculate_weighted_analogy_matrix
 #import pyvolcans_func
 
 ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
@@ -63,11 +63,20 @@ if __name__ == '__main__':
        
     args = parser.parse_args()
     volcano_name = args.volcano_name
-    tectonic_setting_weight = args.tectonic_setting
+    ARGWEIGHTS = {'tectonic_setting': args.tectonic_setting,
+               'geochemistry': args.rock_geochemistry,
+               'morphology': args.morphology,
+               'eruption_size': args.eruption_size,
+               'eruption_style': args.eruption_style}
+        
     print(args)
     print(volcano_name)
-    print(tectonic_setting_weight)
+    print(ARGWEIGHTS)
     print(args.rock_geochemistry)
     
-#    calculated_weighted_analogy_matrix(tectonic_setting)
-    #get_analogies(args.volcano_name)
+    #calculated_weighted_analogy_matrix
+    my_weighted_matrix = \
+    calculate_weighted_analogy_matrix(weights = ARGWEIGHTS)
+    
+    #calling the get_analogies function to derive the final data
+    get_analogies(args.volcano_name,my_weighted_matrix,args.count)
