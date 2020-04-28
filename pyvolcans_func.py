@@ -8,6 +8,10 @@ Created on Tue Mar  3 09:49:16 2020
 #set of functions related to the implementation of PyVOLCANS
 
 #we need to read a csv file here
+#standard packages
+from pathlib import Path
+#external packages
+from pymatreader import read_mat
 import pandas as pd
 import numpy as np
 #from pyvolcans import tectonic_analogy
@@ -111,9 +115,24 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS):
     """
     Input is dictionary of weights
     e.g. {‘tectonic_setting’: 0.5, ‘geochemistry’: 0.5}
-    returns numpy array of weighted matrix
+    returns numpy array of weighted matrix.
+    NB. We load all the matrices here inside the function
     """
-    #COMPLETE!!
+    
+    #loading all the data
+    ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
+
+    tectonic_analogy = read_mat(ANALOGY_DIR / 
+                            "ATfinal_allvolcs.mat")['AT_allcross']
+    geochemistry_analogy = read_mat(ANALOGY_DIR / 
+                                "AGfinal_allvolcs_ALU.mat")['AG_allcross']
+    morphology_analogy = read_mat(ANALOGY_DIR / 
+                              "AMfinal_allvolcs.mat")['AM_allcross']
+    eruption_size_analogy = read_mat(ANALOGY_DIR / 
+                                 "ASzfinal_allvolcs_SINA.mat")['ASz_allcross']
+    eruption_style_analogy = read_mat(ANALOGY_DIR / 
+                                  "AStfinal_allvolcs_SINA.mat")['ASt_allcross']
+    
     #ERROR HANDLING!! (AND TEST!!!)
     
     if sum(weights.values()) != 1:
