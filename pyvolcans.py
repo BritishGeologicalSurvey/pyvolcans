@@ -97,6 +97,7 @@ if __name__ == '__main__':
     
     #defining some intermediate variables
     volcano_name = args.volcano_name
+    count = int(args.count)
     ARGWEIGHTS = {'tectonic_setting': tectonic_setting_weight,
                'geochemistry': rock_geochemistry_weight,
                'morphology': morphology_weight,
@@ -113,4 +114,4 @@ if __name__ == '__main__':
     calculate_weighted_analogy_matrix(weights = ARGWEIGHTS)
     
     #calling the get_analogies function to derive the final data
-    get_analogies(args.volcano_name,my_weighted_matrix,args.count)
+    get_analogies(args.volcano_name,my_weighted_matrix,count)
