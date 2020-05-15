@@ -13,7 +13,7 @@ from pathlib import Path
 #external packages
 from pymatreader import read_mat
 import pandas as pd
-import numpy as np
+
 #from pyvolcans import tectonic_analogy
 #geochemistry_analogy,
 #morphology_analogy, eruption_size_analogy, eruption_style_analogy)
@@ -25,6 +25,9 @@ volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
 #dictionary of weights for the criteria
 WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
            'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
+
+#loading all the data
+ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
 
 
 def get_volcano_idx_from_name(volcano_name):
@@ -111,7 +114,8 @@ def get_volcano_name_from_volcano_number(volcano_number):
     
     return volcano_name
 
-def calculate_weighted_analogy_matrix(weights = WEIGHTS):
+def calculate_weighted_analogy_matrix(weights = WEIGHTS,
+                                      analogy_dir = ANALOGY_DIR):
     """
     Input is dictionary of weights
     e.g. {‘tectonic_setting’: 0.5, ‘geochemistry’: 0.5}
@@ -119,18 +123,16 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS):
     NB. We load all the matrices here inside the function
     """
     
-    #loading all the data
-    ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
-
-    tectonic_analogy = read_mat(ANALOGY_DIR / 
+  
+    tectonic_analogy = read_mat(analogy_dir / 
                             "ATfinal_allvolcs.mat")['AT_allcross']
-    geochemistry_analogy = read_mat(ANALOGY_DIR / 
+    geochemistry_analogy = read_mat(analogy_dir / 
                                 "AGfinal_allvolcs_ALU.mat")['AG_allcross']
-    morphology_analogy = read_mat(ANALOGY_DIR / 
+    morphology_analogy = read_mat(analogy_dir / 
                               "AMfinal_allvolcs.mat")['AM_allcross']
-    eruption_size_analogy = read_mat(ANALOGY_DIR / 
+    eruption_size_analogy = read_mat(analogy_dir / 
                                  "ASzfinal_allvolcs_SINA.mat")['ASz_allcross']
-    eruption_style_analogy = read_mat(ANALOGY_DIR / 
+    eruption_style_analogy = read_mat(analogy_dir / 
                                   "AStfinal_allvolcs_SINA.mat")['ASt_allcross']
     
     #ERROR HANDLING!! (AND TEST!!!)
@@ -192,7 +194,6 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count):
     ##len(my_volcano_analogies) - count)[-count:]
     
     # obtain the volcano names and the analogy values
-    top_names = get_volcano_name_from_idx(top_idx)
     top_analogies = my_volcano_analogies[top_idx]
     
     #print the names of the top <count> analogues

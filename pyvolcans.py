@@ -62,7 +62,7 @@ if __name__ == '__main__':
                         default='0.2', type=str)
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
-                        default='10', type=str)
+                        default='10', type=int)
     
     #'parsing the arguments'
     args = parser.parse_args()
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     
     #defining some intermediate variables
     volcano_name = args.volcano_name
-    count = int(args.count)
+    count = args.count
     ARGWEIGHTS = {'tectonic_setting': tectonic_setting_weight,
                'geochemistry': rock_geochemistry_weight,
                'morphology': morphology_weight,
