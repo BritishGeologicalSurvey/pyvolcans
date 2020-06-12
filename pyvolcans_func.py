@@ -212,8 +212,60 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count):
     #here: return the analogy values
     pass
     
-        
+def get_analogy_percentile(my_volcano, apriori_volcano,
+                           weighted_analogy_matrix):
+    """
+    This function takes the target volcano (my_volcano), one 'a priori'
+    analogue volcano (apriori_volcano), and the weighted analogy matrix
+    calculated for the target volcano (weighted_analogy_matrix), and
+    returns one percentile.
+    This percentile corresponds to those of the analogy value between the
+    target volcano and the a priori analogue within the distribution of
+    analogy values between the target volcano and any Holocene volcano
+    in the GVP database.
+    :param my_volcano: str
+    :param apriori_volcano: str
+    :param weighted_analogy_matrix: numpy array     
+    :return percentile: float
+    """
     
+    
+    #Possible steps:
+    return 1     
+
+def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
+                                 weighted_analogy_matrix):
+    """
+    This function takes the target volcano (my_volcano), a collection
+    of one or more 'a priori' analogue volcanoes in a list
+    (apriori_volcanoes_list), and the weighted analogy matrix calculated
+    for the target volcano (weighted_analogy_matrix), and returns a
+    collection of percentiles (as many as a priori analogues).
+    These percentiles correspond to those of the analogy value between
+    the target volcano and the a priori analogue within the distribution
+    of analogy values between the target volcano and any Holocene volcano
+    in the GVP database.
+    :param my_volcano: str
+    :param apriori_volcano: list of str
+    :param weighted_analogy_matrix: numpy array     
+    :return percentile: dict of apriori volcano name and percentile    
+    """
+    
+    #check a priori volcanoes is a list
+    if not isinstance(apriori_volcanoes_list, list):
+        raise PyvolcansError("A priori volcanoes should be a list!")
+    
+    percentile_dictionary = {}
+    
+    #loop over get_analogy_percentile
+    for volcano in apriori_volcanoes_list:
+        percentile = get_analogy_percentile(my_volcano, volcano,
+                                            weighted_analogy_matrix)
+        percentile_dictionary[volcano] = percentile
+    
+    return percentile_dictionary
+
+
 
 class PyvolcansError(Exception):
     pass
