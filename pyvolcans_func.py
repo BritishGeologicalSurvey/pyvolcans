@@ -13,7 +13,7 @@ from pathlib import Path
 #external packages
 from pymatreader import read_mat
 import pandas as pd
-
+from fuzzywuzzy import process
 #from pyvolcans import tectonic_analogy
 #geochemistry_analogy,
 #morphology_analogy, eruption_size_analogy, eruption_style_analogy)
@@ -25,9 +25,21 @@ volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
 #dictionary of weights for the criteria
 WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
            'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
-
 #loading all the data
 ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
+
+
+def fuzzy_matching(volcano_name):
+    matches = process.extract(volcano_name, volcano_names[0], limit=2)
+    if len(matches) != 1:
+        multiple_matches = [item[0] for item in matches]
+        print("Using {multiple_matches[0]} option from multiple options \
+                {multiple_matches}")
+        return multiple_matches[0]
+
+    else:
+        print("Using {matches[0][0]}")
+        return matches[0][0] 
 
 
 def get_volcano_idx_from_name(volcano_name):
