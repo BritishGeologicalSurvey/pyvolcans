@@ -13,6 +13,7 @@ from pathlib import Path
 #external packages
 from pymatreader import read_mat
 import pandas as pd
+from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 #from pyvolcans import tectonic_analogy
 #geochemistry_analogy,
@@ -30,15 +31,19 @@ ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
 
 
 def fuzzy_matching(volcano_name):
-    matches = process.extract(volcano_name, volcano_names[0], limit=2)
-    if len(matches) != 1:
+    """Accepts a volcano name and compares against all the volcano
+    names. If there are more than one best matches return a list
+    with the matches and use the first. If there is a single best
+    match use the best match"""
+    matches = process.extract(volcano_name, volcano_names[0], limit=2, scorer=fuzz.UWRatio)
+    distances = [item[1] for item in matches]
+    if len(distances) != len(set(distances)):
         multiple_matches = [item[0] for item in matches]
-        print("Using {multiple_matches[0]} option from multiple options \
+        print(f"Using '{multiple_matches[0]}' option from multiple options \
                 {multiple_matches}")
         return multiple_matches[0]
-
     else:
-        print("Using {matches[0][0]}")
+        print(f"Using {matches[0][0]}")
         return matches[0][0] 
 
 
