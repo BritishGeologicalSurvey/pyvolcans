@@ -13,6 +13,8 @@ from pathlib import Path
 #external packages
 from pymatreader import read_mat
 import pandas as pd
+import numpy as np
+from scipy import stats
 
 #from pyvolcans import tectonic_analogy
 #geochemistry_analogy,
@@ -122,7 +124,6 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS,
     returns numpy array of weighted matrix.
     NB. We load all the matrices here inside the function
     """
-    
   
     tectonic_analogy = read_mat(analogy_dir / 
                             "ATfinal_allvolcs.mat")['AT_allcross']
@@ -219,7 +220,7 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     analogue volcano (apriori_volcano), and the weighted analogy matrix
     calculated for the target volcano (weighted_analogy_matrix), and
     returns one percentile.
-    This percentile corresponds to those of the analogy value between the
+    This percentile corresponds to the analogy value between the
     target volcano and the a priori analogue within the distribution of
     analogy values between the target volcano and any Holocene volcano
     in the GVP database.
@@ -228,10 +229,23 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     :param weighted_analogy_matrix: numpy array     
     :return percentile: float
     """
+    #convert volcano names into inds to access the weighted_analogy_matrix
+    my_volcano_idx=get_volcano_idx_from_name(my_volcano)
+    apriori_volcano_idx=get_volcano_idx_from_name(apriori_volcano)
     
+    #derive a vector with the analogy values for the target volcano
+    my_analogy_values=weighted_analogy_matrix[my_volcano_idx,]
+    
+    #calculate percentiles from 0 to 100 (like in VOLCANS for now)
+    analogy_percentiles=np.percentile(my_analogy_values,np.linspace(0,100,101))
+    
+    #find the closest value to the analogy of the a priori volcano
+    #NOTE that this value already represents the percentile (0-100)
+    my_percentile = (np.abs(analogy_percentiles - \
+                            my_analogy_values[apriori_volcano_idx])).argmin()
     
     #Possible steps:
-    return 1     
+    return my_percentile
 
 def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
                                  weighted_analogy_matrix):
@@ -248,7 +262,8 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     :param my_volcano: str
     :param apriori_volcano: list of str
     :param weighted_analogy_matrix: numpy array     
-    :return percentile: dict of apriori volcano name and percentile    
+    :return percentile: dict of apriori volcano name and percentile
+    :return better_analogues: dict of 'better analogues' name and percentage    
     """
     
     #check a priori volcanoes is a list
@@ -256,15 +271,16 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         raise PyvolcansError("A priori volcanoes should be a list!")
     
     percentile_dictionary = {}
+    better_analogues_dictionary = {} #100-percentile
     
     #loop over get_analogy_percentile
     for volcano in apriori_volcanoes_list:
         percentile = get_analogy_percentile(my_volcano, volcano,
                                             weighted_analogy_matrix)
         percentile_dictionary[volcano] = percentile
+        better_analogues_dictionary[volcano] = 100 - percentile
     
-    return percentile_dictionary
-
+    return percentile_dictionary, better_analogues_dictionary
 
 
 class PyvolcansError(Exception):
