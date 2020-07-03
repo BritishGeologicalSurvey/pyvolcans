@@ -55,18 +55,9 @@ def get_volcano_idx_from_name(volcano_name):
     ##we need to create a message error here: "Name provided doesn't exist.
     ###"Please double-check spelling (including commas, e.g. "Ruiz, Nevado del"
     ###and/or check name on www.volcano.si.edu"
-    
-    matched_volcanoes = volcano_names.loc[volcano_names[0] == volcano_name]
-    
-    if len(matched_volcanoes) == 0:
-        msg = f"Volcano name {volcano_name} does not exist!" 
-        raise PyvolcansError(msg)
-    elif len(matched_volcanoes) > 1:
-        msg = f"Volcano name {volcano_name} is not unique!" 
-        raise PyvolcansError(msg)
-
-    volcano_index = matched_volcanoes.index[0]        
-        
+    result_from_fuzzy = fuzzy_matching(volcano_name)
+    matched_volcanoes = volcano_names.loc[volcano_names[0] == result_from_fuzzy]
+    volcano_index = matched_volcanoes.index[0]
     return volcano_index
 
 def get_volcano_name_from_idx(volcano_idx):
