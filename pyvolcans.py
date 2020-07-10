@@ -16,7 +16,8 @@ from fractions import Fraction
 #external packages
 from pymatreader import read_mat
 #personal packages
-from pyvolcans_func import get_analogies, calculate_weighted_analogy_matrix
+from pyvolcans_func import (get_analogies, calculate_weighted_analogy_matrix,
+get_many_analogy_percentiles)
 #import pyvolcans_func
 
 #loading the files required to calculate analogies and analogue volcanoes
@@ -45,6 +46,9 @@ if __name__ == '__main__':
     parser.add_argument("volcano_name",
                         help="Set target volcano",
                         type=str)
+    parser.add_argument("--apriori", nargs='*',
+                        help="Provide one or more a priori analogue volcanoes",
+                        default=None)
     parser.add_argument("--tectonic_setting",
                         help="Set tectonic setting weight",
                         default='0.2', type=str)
@@ -103,6 +107,7 @@ if __name__ == '__main__':
                'morphology': morphology_weight,
                'eruption_size': eruption_size_weight,
                'eruption_style': eruption_style_weight}
+    my_apriori_volcanoes = args.apriori
         
     print(args)
     print(volcano_name)
@@ -115,3 +120,8 @@ if __name__ == '__main__':
     
     #calling the get_analogies function to derive the final data
     get_analogies(args.volcano_name,my_weighted_matrix,count)
+    
+    #calling the get_many_analogy_percentiles function
+    #to print 'better analogues'
+    get_many_analogy_percentiles(args.volcano_name, my_apriori_volcanoes,
+                                 my_weighted_matrix)
