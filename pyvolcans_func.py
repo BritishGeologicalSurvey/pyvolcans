@@ -280,6 +280,13 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         percentile_dictionary[volcano] = percentile
         better_analogues_dictionary[volcano] = 100 - percentile
     
+    #adding a 'printing functionality' to the function
+    print(f'According to PyVOLCANS, the following percentages of volcanoes\n\
+          in the GVP database are better analogues to {my_volcano:s}\n\
+          than the a priori analogues reported below:\n')
+    for volcano, percentage in better_analogues_dictionary.items():
+        print(f'{volcano:s}: {percentage:d}%\n')
+    
     return percentile_dictionary, better_analogues_dictionary
 
 
