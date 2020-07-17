@@ -208,10 +208,15 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count):
     
 def match_name(volcano_name):
     matched_volcanoes = volcano_names.loc[volcano_names[0] == volcano_name]
+    #throw errors whether if volcano does not exist
+    #or there are 2+ identical names
     if len(matched_volcanoes) == 0:
         name_suggestions = fuzzy_matching(volcano_name)
         suggestions_string = "\n".join(name_suggestions)
         msg = (f'"{volcano_name}" not found! Did you mean:\n{suggestions_string}')
+        raise PyvolcansError(msg)        
+    elif len(matched_volcanoes) > 1:
+        msg = f"Volcano name {volcano_name} is not unique!" 
         raise PyvolcansError(msg)
     
     return matched_volcanoes
