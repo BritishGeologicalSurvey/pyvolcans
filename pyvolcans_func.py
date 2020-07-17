@@ -13,7 +13,8 @@ from pathlib import Path
 #external packages
 from pymatreader import read_mat
 import pandas as pd
-
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 #from pyvolcans import tectonic_analogy
 #geochemistry_analogy,
 #morphology_analogy, eruption_size_analogy, eruption_style_analogy)
@@ -25,10 +26,21 @@ volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
 #dictionary of weights for the criteria
 WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
            'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
-
 #loading all the data
 ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
 
+
+def fuzzy_matching(volcano_name, limit = 10):
+    """Accepts a volcano name and compares against all the volcano
+    names. If there are more than one best matches return a list
+    with the matches and use the first. If there is a single best
+    match use the best match"""
+    matches = process.extract(volcano_name, volcano_names[0], limit=limit,
+                              scorer=fuzz.UQRatio)
+    
+    names = [item[0] for item in matches]
+    
+    return names 
 
 def get_volcano_idx_from_name(volcano_name):
     """
@@ -39,17 +51,8 @@ def get_volcano_idx_from_name(volcano_name):
     ###"Please double-check spelling (including commas, e.g. "Ruiz, Nevado del"
     ###and/or check name on www.volcano.si.edu"
     
-    matched_volcanoes = volcano_names.loc[volcano_names[0] == volcano_name]
-    
-    if len(matched_volcanoes) == 0:
-        msg = f"Volcano name {volcano_name} does not exist!" 
-        raise PyvolcansError(msg)
-    elif len(matched_volcanoes) > 1:
-        msg = f"Volcano name {volcano_name} is not unique!" 
-        raise PyvolcansError(msg)
-
-    volcano_index = matched_volcanoes.index[0]        
-        
+    matched_volcanoes = match_name(volcano_name)    
+    volcano_index = matched_volcanoes.index[0]
     return volcano_index
 
 def get_volcano_name_from_idx(volcano_idx):
@@ -76,18 +79,9 @@ def get_volcano_number_from_name(volcano_name):
     ##we need to create a message error here: "Name provided doesn't exist.
     ###"Please double-check spelling (including commas, e.g. "Ruiz, Nevado del"
     ###and/or check name on www.volcano.si.edu"
-    
-    matched_volcanoes = volcano_names.loc[volcano_names[0] == volcano_name]
-    
-    if len(matched_volcanoes) == 0:
-        msg = f"Volcano name {volcano_name} does not exist!" 
-        raise PyvolcansError(msg)
-    elif len(matched_volcanoes) > 1:
-        msg = f"Volcano name {volcano_name} is not unique!" 
-        raise PyvolcansError(msg)
 
-    volcano_vnum = matched_volcanoes.iloc[0,2]      
-        
+    matched_volcanoes = match_name(volcano_name)        
+    volcano_vnum = matched_volcanoes.iloc[0,2]
     return volcano_vnum
 
 def get_volcano_name_from_volcano_number(volcano_number):
@@ -212,6 +206,23 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count):
     #here: return the analogy values
     pass
     
+
+def match_name(volcano_name):
+    matched_volcanoes = volcano_names.loc[volcano_names[0] == volcano_name]
+    #throw errors whether if volcano does not exist
+    #or there are 2+ identical names
+    if len(matched_volcanoes) == 0:
+        name_suggestions = fuzzy_matching(volcano_name)
+        suggestions_string = "\n".join(name_suggestions)
+        msg = (f'"{volcano_name}" not found! Did you mean:\n{suggestions_string}')
+        raise PyvolcansError(msg)        
+    elif len(matched_volcanoes) > 1:
+        msg = f"Volcano name {volcano_name} is not unique!" 
+        raise PyvolcansError(msg)
+    
+    return matched_volcanoes
+
+
 def get_analogy_percentile(my_volcano, apriori_volcano,
                            weighted_analogy_matrix):
     """
@@ -264,6 +275,7 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         percentile_dictionary[volcano] = percentile
     
     return percentile_dictionary
+
 
 
 
