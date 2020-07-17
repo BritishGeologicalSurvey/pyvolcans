@@ -30,22 +30,17 @@ WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
 ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
 
 
-def fuzzy_matching(volcano_name):
+def fuzzy_matching(volcano_name, limit = 10):
     """Accepts a volcano name and compares against all the volcano
     names. If there are more than one best matches return a list
     with the matches and use the first. If there is a single best
     match use the best match"""
-    matches = process.extract(volcano_name, volcano_names[0], limit=2, scorer=fuzz.UWRatio)
-    distances = [item[1] for item in matches]
-    if len(distances) != len(set(distances)):
-        multiple_matches = [item[0] for item in matches]
-        print(f"Using '{multiple_matches[0]}' option from multiple options \
-                {multiple_matches}")
-        return multiple_matches[0]
-    else:
-        print(f"Using {matches[0][0]}")
-        return matches[0][0] 
-
+    matches = process.extract(volcano_name, volcano_names[0], limit=limit,
+                              scorer=fuzz.UQRatio)
+    
+    names = [item[0] for item in matches]
+    
+    return names 
 
 def get_volcano_idx_from_name(volcano_name):
     """
@@ -55,8 +50,8 @@ def get_volcano_idx_from_name(volcano_name):
     ##we need to create a message error here: "Name provided doesn't exist.
     ###"Please double-check spelling (including commas, e.g. "Ruiz, Nevado del"
     ###and/or check name on www.volcano.si.edu"
-    result_from_fuzzy = fuzzy_matching(volcano_name)
-    matched_volcanoes = volcano_names.loc[volcano_names[0] == result_from_fuzzy]
+    
+    matched_volcanoes = match_name(volcano_name)    
     volcano_index = matched_volcanoes.index[0]
     return volcano_index
 
@@ -85,8 +80,7 @@ def get_volcano_number_from_name(volcano_name):
     ###"Please double-check spelling (including commas, e.g. "Ruiz, Nevado del"
     ###and/or check name on www.volcano.si.edu"
 
-    result_from_fuzzy = fuzzy_matching(volcano_name)
-    matched_volcanoes = volcano_names.loc[volcano_names[0] == result_from_fuzzy]
+    matched_volcanoes = match_name(volcano_name)        
     volcano_vnum = matched_volcanoes.iloc[0,2]
     return volcano_vnum
 
@@ -212,8 +206,15 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count):
     #here: return the analogy values
     pass
     
-        
+def match_name(volcano_name):
+    matched_volcanoes = volcano_names.loc[volcano_names[0] == volcano_name]
+    if len(matched_volcanoes) == 0:
+        name_suggestions = fuzzy_matching(volcano_name)
+        suggestions_string = "\n".join(name_suggestions)
+        msg = (f'"{volcano_name}" not found! Did you mean:\n{suggestions_string}')
+        raise PyvolcansError(msg)
     
+    return matched_volcanoes
 
 class PyvolcansError(Exception):
     pass
