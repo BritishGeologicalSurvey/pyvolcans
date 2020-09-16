@@ -21,7 +21,7 @@ from scipy import stats
 #morphology_analogy, eruption_size_analogy, eruption_style_analogy)
 
 #remember we have no header in the file below
-VOLCANO_NAMES = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
+volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
                             "volc_names.csv", header = None)
 
 #dictionary of weights for the criteria
