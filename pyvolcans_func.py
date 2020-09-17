@@ -10,6 +10,7 @@ Created on Tue Mar  3 09:49:16 2020
 #we need to read a csv file here
 #standard packages
 from pathlib import Path
+from fractions import Fraction
 #external packages
 from pymatreader import read_mat
 import pandas as pd
@@ -31,6 +32,10 @@ WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
 #loading all the data
 ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
 
+def _frac_to_float(value):
+    """Take a string of decimal or fractional number (e.g. '0.5' or '1/2')
+       and return the float representation."""
+    return float(Fraction(value))
 
 def get_volcano_idx_from_name(volcano_name):
     """
