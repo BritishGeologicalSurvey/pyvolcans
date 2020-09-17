@@ -16,6 +16,7 @@ from pymatreader import read_mat
 import pandas as pd
 import numpy as np
 from scipy import stats
+import webbrowser
 
 #from pyvolcans import tectonic_analogy
 #geochemistry_analogy,
@@ -214,6 +215,12 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count):
                  {volcano_names.iloc[top_idx[ii],0]:s}\t\
                  {volcano_names.iloc[top_idx[ii],1]:s}\t\
                  {top_analogies[ii]:.3f}')
+    
+    #open the GVP website of the top 1 analogue
+    top_analogue_vnum = volcano_names.iloc[top_idx[1],2] #[0]=target volcano!!
+    my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
+                '&vtab=GeneralInfo' #Getting to open the General Info tab
+    webbrowser.open(my_web)
     
     #here: return the analogy values
     pass
