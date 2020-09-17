@@ -50,19 +50,24 @@ if __name__ == '__main__':
                         help="Provide one or more a priori analogue volcanoes",
                         default=None)
     parser.add_argument("--tectonic_setting",
-                        help="Set tectonic setting weight",
+                        help=
+                        "Set tectonic setting weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--rock_geochemistry",
-                        help="Set rock geochemistry weight",
+                        help=
+                        "Set rock geochemistry weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--morphology",
-                        help="Set volcano morphology weight",
+                        help=
+                        "Set volcano morphology weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--eruption_size",
-                        help="Set eruption size weight",
+                        help=
+                        "Set eruption size weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--eruption_style",
-                        help="Set eruption style weight",
+                        help=
+                        "Set eruption style weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
