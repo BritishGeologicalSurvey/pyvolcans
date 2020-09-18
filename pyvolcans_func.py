@@ -176,7 +176,7 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS,
     
     return weighted_total_analogy_matrix
 
-def get_analogies(my_volcano, weighted_analogy_matrix, count):
+def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     """
     Returns, on screen, the names of the top <count> analogues to
     the target volcano (i.e. my_volcano) and their multi-criteria
