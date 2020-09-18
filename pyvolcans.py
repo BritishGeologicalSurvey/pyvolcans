@@ -101,5 +101,6 @@ if __name__ == '__main__':
     
     #calling the get_many_analogy_percentiles function
     #to print 'better analogues'
-    get_many_analogy_percentiles(args.volcano_name, my_apriori_volcanoes,
-                                 my_weighted_matrix)
+    if my_apriori_volcanoes is not None:
+        get_many_analogy_percentiles(args.volcano_name, my_apriori_volcanoes,
+                                     my_weighted_matrix)
