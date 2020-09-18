@@ -16,7 +16,8 @@ from fractions import Fraction
 #external packages
 from pymatreader import read_mat
 #personal packages
-from pyvolcans_func import get_analogies, calculate_weighted_analogy_matrix
+from pyvolcans_func import (_frac_to_float, get_analogies,
+calculate_weighted_analogy_matrix, get_many_analogy_percentiles)
 #import pyvolcans_func
 
 #loading the files required to calculate analogies and analogue volcanoes
@@ -45,20 +46,28 @@ if __name__ == '__main__':
     parser.add_argument("volcano_name",
                         help="Set target volcano",
                         type=str)
+    parser.add_argument("--apriori", nargs='*',
+                        help="Provide one or more a priori analogue volcanoes",
+                        default=None)
     parser.add_argument("--tectonic_setting",
-                        help="Set tectonic setting weight",
+                        help=
+                        "Set tectonic setting weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--rock_geochemistry",
-                        help="Set rock geochemistry weight",
+                        help=
+                        "Set rock geochemistry weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--morphology",
-                        help="Set volcano morphology weight",
+                        help=
+                        "Set volcano morphology weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--eruption_size",
-                        help="Set eruption size weight",
+                        help=
+                        "Set eruption size weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--eruption_style",
-                        help="Set eruption style weight",
+                        help=
+                        "Set eruption style weight (e.g. '0.2' or '1/5')",
                         default='0.2', type=str)
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
@@ -66,52 +75,32 @@ if __name__ == '__main__':
     
     #'parsing the arguments'
     args = parser.parse_args()
-    
-    #here we convert all required inputs from str to float/int
-    #NB. We need to check whether the weight input by the user is
-    #    a fraction or not. We'll use str.find() to check for this
-    if args.tectonic_setting.find('/') != -1:
-        tectonic_setting_weight = float(Fraction(args.tectonic_setting))
-    else:
-        tectonic_setting_weight = float(args.tectonic_setting)
-        
-    if args.rock_geochemistry.find('/') != -1:
-        rock_geochemistry_weight = float(Fraction(args.rock_geochemistry))
-    else:
-        rock_geochemistry_weight = float(args.rock_geochemistry)
-        
-    if args.morphology.find('/') != -1:
-        morphology_weight = float(Fraction(args.morphology))
-    else:
-        morphology_weight = float(args.morphology)
-        
-    if args.eruption_size.find('/') != -1:
-        eruption_size_weight = float(Fraction(args.eruption_size))
-    else:
-        eruption_size_weight = float(args.eruption_size)
-    
-    if args.eruption_style.find('/') != -1:
-        eruption_style_weight = float(Fraction(args.eruption_style))
-    else:
-        eruption_style_weight = float(args.eruption_style)    
-    
+      
     #defining some intermediate variables
     volcano_name = args.volcano_name
     count = args.count
-    ARGWEIGHTS = {'tectonic_setting': tectonic_setting_weight,
-               'geochemistry': rock_geochemistry_weight,
-               'morphology': morphology_weight,
-               'eruption_size': eruption_size_weight,
-               'eruption_style': eruption_style_weight}
+    arg_weights = {'tectonic_setting': _frac_to_float(args.tectonic_setting),
+               'geochemistry': _frac_to_float(args.rock_geochemistry),
+               'morphology': _frac_to_float(args.morphology),
+               'eruption_size': _frac_to_float(args.eruption_size),
+               'eruption_style': _frac_to_float(args.eruption_style)}
+
+    my_apriori_volcanoes = args.apriori
         
     print(args)
     print(volcano_name)
-    print(ARGWEIGHTS)
+    print(arg_weights)
     print(args.rock_geochemistry)
     
     #calculated_weighted_analogy_matrix
     my_weighted_matrix = \
-    calculate_weighted_analogy_matrix(weights = ARGWEIGHTS)
+    calculate_weighted_analogy_matrix(weights = arg_weights)
     
     #calling the get_analogies function to derive the final data
     get_analogies(args.volcano_name,my_weighted_matrix,count)
+    
+    #calling the get_many_analogy_percentiles function
+    #to print 'better analogues'
+    if my_apriori_volcanoes is not None:
+        get_many_analogy_percentiles(args.volcano_name, my_apriori_volcanoes,
+                                     my_weighted_matrix)
