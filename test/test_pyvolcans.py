@@ -5,13 +5,18 @@ Created on Fri May 15 12:49:55 2020
 @author: pablo
 """
 
-from pyvolcans_func import get_volcano_idx_from_name, get_volcano_name_from_idx, get_volcano_number_from_name, fuzzy_matching
+from pyvolcans.pyvolcans_func import (
+    fuzzy_matching,
+    get_volcano_idx_from_name,
+    get_volcano_name_from_idx,
+    get_volcano_number_from_name
+)
 
 
 def test_volcano_idx():
     idx = get_volcano_idx_from_name(volcano_name='Fuego')
     assert 1071 == idx
-    
+
 
 def test_volcano_name():
     name = get_volcano_name_from_idx(volcano_idx=1071)

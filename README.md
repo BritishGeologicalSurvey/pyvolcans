@@ -9,3 +9,15 @@ In a clean virtual environment, run the following to install dependecies:
 ```bash
 python -m pip install -r requirements.txt
 ```
+
+Prior to running tests, set the PYTHONPATH to include the project directory:
+
+```bash
+export PYTHONPATH=.
+```
+
+Run tests with:
+
+```bash
+pytest -vs test
+```
