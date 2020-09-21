@@ -25,10 +25,13 @@ def test_volcano_name():
 
 
 def test_fuzzy_matching():
-    name = fuzzy_matching('West Eifel')
-    assert isinstance(name, str)
-    name = fuzzy_matching('West Eiffel')
-    assert isinstance(name, str)
+    names = fuzzy_matching('West Eifel')
+    assert len(names) == 10
+    assert 'West Eifel Volcanic Field' in names
+
+    names = fuzzy_matching('West Eiffel', limit=2)
+    assert len(names) == 2
+    assert 'West Eifel Volcanic Field' in names
 
 
 def test_volcano_number():

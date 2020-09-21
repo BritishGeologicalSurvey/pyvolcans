@@ -39,17 +39,20 @@ def _frac_to_float(value):
        and return the float representation."""
     return float(Fraction(value))
 
-def fuzzy_matching(volcano_name, limit = 10):
-    """Accepts a volcano name and compares against all the volcano
-    names. If there are more than one best matches return a list
-    with the matches and use the first. If there is a single best
-    match use the best match"""
+
+def fuzzy_matching(volcano_name, limit=10):
+    """
+    List volcanoes with names most similar to volcano_name.
+
+    :param volcano_name: str, name of volcano
+    :param limit: int, number of values to return
+    :return names: list of str of similar names
+    """
     matches = process.extract(volcano_name, volcano_names[0], limit=limit,
                               scorer=fuzz.UQRatio)
-    
     names = [item[0] for item in matches]
-    
-    return names 
+    return names
+
 
 def get_volcano_idx_from_name(volcano_name):
     """

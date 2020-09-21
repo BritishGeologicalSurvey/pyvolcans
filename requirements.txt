@@ -8,6 +8,7 @@ scipy
 
 # Development tools
 flake8
+ipdb
 ipython
 pylint
 pytest
