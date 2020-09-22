@@ -11,6 +11,7 @@ Created on Tue Mar  3 09:49:16 2020
 #standard packages
 from pathlib import Path
 from fractions import Fraction
+import logging
 #external packages
 from pymatreader import read_mat
 import pandas as pd
@@ -166,9 +167,10 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS,
     #print(weighted_morphology_analogy[2,2])
     #print(weighted_eruption_size_analogy[9,9])
     #print(weighted_eruption_style_analogy[20,20])
-    
-    print(weighted_total_analogy_matrix[100,100])
-    
+
+    logging.debug("Weighted matrix: %s",
+                  weighted_total_analogy_matrix[100, 100])
+
     return weighted_total_analogy_matrix
 
 def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
@@ -201,9 +203,9 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     #print the names of the top <count> analogues
     ##print(volcano_names.iloc[top_idx,2],volcano_names.iloc[top_idx,0:1],
       ##     top_analogies)
-      
-    print(volcano_names.iloc[top_idx,0:3])
-    
+
+    logging.debug("Top analogies: \n%s", volcano_names.iloc[top_idx, 0:3])
+
     for ii in range(len(top_idx)):
         #print('%d\t%s\t%s\t%.3f\n' %
         print(f'{volcano_names.iloc[top_idx[ii],2]:d}\t\
