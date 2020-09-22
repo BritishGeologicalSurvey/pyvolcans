@@ -12,6 +12,7 @@ Created on Tue Mar  3 09:49:16 2020
 from pathlib import Path
 from fractions import Fraction
 import logging
+import sys
 #external packages
 from pymatreader import read_mat
 import pandas as pd
@@ -206,13 +207,14 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
 
     logging.debug("Top analogies: \n%s", volcano_names.iloc[top_idx, 0:3])
 
-    for ii in range(len(top_idx)):
-        #print('%d\t%s\t%s\t%.3f\n' %
-        print(f'{volcano_names.iloc[top_idx[ii],2]:d}\t\
-                 {volcano_names.iloc[top_idx[ii],0]:s}\t\
-                 {volcano_names.iloc[top_idx[ii],1]:s}\t\
-                 {top_analogies[ii]:.3f}')
-    
+    # Prepare results table and print to standard output
+    result = volcano_names.iloc[top_idx].copy()
+    result.columns = ['name', 'country', 'smithsonian_id']
+    result['analogy_score'] = top_analogies
+    result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
+                  index=False, columns=('analogy_score', 'smithsonian_id',
+                                        'name', 'country'))
+
     #open the GVP website of the top 1 analogue
     top_analogue_vnum = volcano_names.iloc[top_idx[1],2] #[0]=target volcano!!
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
