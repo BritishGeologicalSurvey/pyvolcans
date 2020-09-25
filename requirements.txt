@@ -1,0 +1,14 @@
+# Required for pyvolcans
+fuzzywuzzy
+numpy
+pandas
+pymatreader
+python-Levenshtein
+scipy
+
+# Development tools
+flake8
+ipdb
+ipython
+pylint
+pytest
