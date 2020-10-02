@@ -11,14 +11,26 @@ Created on Mon Feb 17 12:13:20 2020
 #Pytonic order
 #standard library
 import argparse
+import logging
 from pathlib import Path
 from fractions import Fraction
+import sys
 #external packages
 from pymatreader import read_mat
 #personal packages
-from pyvolcans_func import (_frac_to_float, get_analogies,
-calculate_weighted_analogy_matrix, get_many_analogy_percentiles)
-#import pyvolcans_func
+from pyvolcans_func import (
+    _frac_to_float,
+    calculate_weighted_analogy_matrix,
+    get_analogies,
+    get_many_analogy_percentiles,
+    PyvolcansError
+)
+
+# Setup logging
+formatter = logging.Formatter('pyvolcans: %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+logging.basicConfig(handlers=[handler], level=logging.INFO)
 
 #loading the files required to calculate analogies and analogue volcanoes
 #ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
@@ -72,10 +84,14 @@ if __name__ == '__main__':
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
                         default='10', type=int)
-    
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="print debug-level logging output")
+
     #'parsing the arguments'
     args = parser.parse_args()
-      
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
+
     #defining some intermediate variables
     volcano_name = args.volcano_name
     count = args.count
@@ -86,21 +102,26 @@ if __name__ == '__main__':
                'eruption_style': _frac_to_float(args.eruption_style)}
 
     my_apriori_volcanoes = args.apriori
-        
-    print(args)
-    print(volcano_name)
-    print(arg_weights)
-    print(args.rock_geochemistry)
-    
-    #calculated_weighted_analogy_matrix
-    my_weighted_matrix = \
-    calculate_weighted_analogy_matrix(weights = arg_weights)
-    
-    #calling the get_analogies function to derive the final data
-    get_analogies(args.volcano_name,my_weighted_matrix,count)
-    
-    #calling the get_many_analogy_percentiles function
-    #to print 'better analogues'
-    if my_apriori_volcanoes is not None:
-        get_many_analogy_percentiles(args.volcano_name, my_apriori_volcanoes,
-                                     my_weighted_matrix)
+
+    logging.debug("Supplied arguments: %s", args)
+    logging.debug("Arg weights as float: %s", arg_weights)
+
+    # Call pyvolcans
+    try:
+        # calculated_weighted_analogy_matrix
+        my_weighted_matrix = calculate_weighted_analogy_matrix(
+            weights=arg_weights)
+
+        # calling the get_analogies function to derive the final data
+        get_analogies(args.volcano_name, my_weighted_matrix, count)
+
+        # calling the get_many_analogy_percentiles function
+        # to print 'better analogues'
+        if my_apriori_volcanoes is not None:
+            get_many_analogy_percentiles(args.volcano_name,
+                                         my_apriori_volcanoes,
+                                         my_weighted_matrix)
+    except PyvolcansError as exc:
+        # Print error message and quit program on error
+        logging.error(exc.args[0])
+        sys.exit(1)
