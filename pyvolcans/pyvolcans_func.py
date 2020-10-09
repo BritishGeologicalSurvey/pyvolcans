@@ -268,7 +268,9 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     my_analogy_values=weighted_analogy_matrix[my_volcano_idx,]
     
     #calculate percentiles from 0 to 100 (like in VOLCANS for now)
-    analogy_percentiles=np.percentile(my_analogy_values,np.linspace(0,100,101))
+    analogy_percentiles=np.percentile(my_analogy_values,
+                                      np.linspace(0,100,101),
+                                      interpolation='midpoint')
     
     #find the closest value to the analogy of the a priori volcano
     #NOTE that this value already represents the percentile (0-100)
