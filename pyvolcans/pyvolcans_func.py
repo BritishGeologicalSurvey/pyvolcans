@@ -27,7 +27,7 @@ from fuzzywuzzy import process
 #morphology_analogy, eruption_size_analogy, eruption_style_analogy)
 
 #remember we have no header in the file below
-volcano_names = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
+VOLCANO_NAMES = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
                             "volc_names.csv", header = None)
 
 #dictionary of weights for the criteria
@@ -50,7 +50,7 @@ def fuzzy_matching(volcano_name, limit=10):
     :param limit: int, number of values to return
     :return names: list of str of similar names
     """
-    matches = process.extract(volcano_name, volcano_names[0], limit=limit,
+    matches = process.extract(volcano_name, VOLCANO_NAMES[0], limit=limit,
                               scorer=fuzz.UQRatio)
     names = [item[0] for item in matches]
     return names
@@ -81,7 +81,7 @@ def get_volcano_name_from_idx(volcano_idx):
     ##volcanoes in VOTW 4.6.7 database)."
     
     volcano_name = \
-        volcano_names.iloc[volcano_idx,0]
+        VOLCANO_NAMES.iloc[volcano_idx,0]
     
     return volcano_name
 
@@ -107,7 +107,7 @@ def get_volcano_name_from_volcano_number(volcano_number):
     ##Please provide a non-zero, positive, six digits number. To check for
     ##existing volcano numbers (VNUM), please visit www.volcano.si.edu"
     
-    matched_volcanoes = volcano_names.loc[volcano_names[2] == volcano_number]
+    matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[2] == volcano_number]
     
     if len(matched_volcanoes) == 0:
         msg = f"Volcano number {volcano_number} does not exist!" 
@@ -205,13 +205,13 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     top_analogies = my_volcano_analogies[top_idx]
     
     #print the names of the top <count> analogues
-    ##print(volcano_names.iloc[top_idx,2],volcano_names.iloc[top_idx,0:1],
+    ##print(VOLCANO_NAMES.iloc[top_idx,2],VOLCANO_NAMES.iloc[top_idx,0:1],
       ##     top_analogies)
 
-    logging.debug("Top analogies: \n%s", volcano_names.iloc[top_idx, 0:3])
+    logging.debug("Top analogies: \n%s", VOLCANO_NAMES.iloc[top_idx, 0:3])
 
     # Prepare results table and print to standard output
-    result = volcano_names.iloc[top_idx].copy()
+    result = VOLCANO_NAMES.iloc[top_idx].copy()
     result.columns = ['name', 'country', 'smithsonian_id']
     result['analogy_score'] = top_analogies
     result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
@@ -219,7 +219,7 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
                                         'name', 'country'))
 
     #open the GVP website of the top 1 analogue
-    top_analogue_vnum = volcano_names.iloc[top_idx[1],2] #[0]=target volcano!!
+    top_analogue_vnum = VOLCANO_NAMES.iloc[top_idx[1],2] #[0]=target volcano!!
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
                 '&vtab=GeneralInfo' #Getting to open the General Info tab
     webbrowser.open(my_web)
@@ -229,7 +229,7 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     
 
 def match_name(volcano_name):
-    matched_volcanoes = volcano_names.loc[volcano_names[0] == volcano_name]
+    matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[0] == volcano_name]
     #throw errors whether if volcano does not exist
     #or there are 2+ identical names
     if len(matched_volcanoes) == 0:
