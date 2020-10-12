@@ -12,3 +12,4 @@ ipdb
 ipython
 pylint
 pytest
+versioneer
