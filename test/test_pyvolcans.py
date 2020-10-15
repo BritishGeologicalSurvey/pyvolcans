@@ -4,14 +4,29 @@ Created on Fri May 15 12:49:55 2020
 
 @author: pablo
 """
+import functools
+
+import numpy as np
+from unittest.mock import patch
+
 from pyvolcans.pyvolcans_func import (
     fuzzy_matching,
     get_volcano_idx_from_name,
     get_volcano_name_from_idx,
-    get_volcano_number_from_name
+    get_volcano_number_from_name,
+    calculate_weighted_analogy_matrix
 )
 
+import pyvolcans
+from pyvolcans import (load_tectonic_analogy,
+                       load_geochemistry_analogy,
+                       load_eruption_size_analogy,
+                       load_eruption_style_analogy,
+                       load_morphology_analogy)
+
 # pylint: disable=missing-docstring
+
+WEIGHTS = {}
 
 
 def test_volcano_idx():
