@@ -18,7 +18,7 @@ import sys
 #external packages
 from pymatreader import read_mat
 #personal packages
-from pyvolcans_func import (
+from pyvolcans.pyvolcans_func import (
     _frac_to_float,
     calculate_weighted_analogy_matrix,
     get_analogies,
@@ -52,8 +52,11 @@ logging.basicConfig(handlers=[handler], level=logging.INFO)
 #var5
 #
 #weights = {var1,...,var5}
-if __name__ == '__main__':
     
+def cli():
+    """
+    Command line interface to run Pyvolcans and return analogues.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("volcano_name",
                         help="Set target volcano",
@@ -125,3 +128,7 @@ if __name__ == '__main__':
         # Print error message and quit program on error
         logging.error(exc.args[0])
         sys.exit(1)
+
+
+if __name__ == '__main__':
+    cli()
