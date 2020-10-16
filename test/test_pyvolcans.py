@@ -5,19 +5,21 @@ Created on Fri May 15 12:49:55 2020
 @author: pablo
 """
 import functools
-
-import numpy as np
+import pytest
 from unittest.mock import patch
 
+import numpy as np
+
+import pyvolcans
 from pyvolcans.pyvolcans_func import (
     fuzzy_matching,
     get_volcano_idx_from_name,
     get_volcano_name_from_idx,
     get_volcano_number_from_name,
-    calculate_weighted_analogy_matrix
+    calculate_weighted_analogy_matrix,
+    PyvolcansError
 )
 
-import pyvolcans
 from pyvolcans import (load_tectonic_analogy,
                        load_geochemistry_analogy,
                        load_eruption_size_analogy,
@@ -160,3 +162,19 @@ def test_calculate_combined_analogy_matrix_no_eruption_style(*args, **kwargs):
                                             morphology_analogy=pyvolcans.load_morphology_analogy(),
                                             geochemistry_analogy=pyvolcans.load_geochemistry_analogy())
     assert mat.astype(int) == 11110
+
+
+@patch.dict(WEIGHTS, {'tectonic_setting':0.25,
+                      'geochemistry': 0.25,
+                      'morphology': 0.25,
+                      'eruption_size': 0.25,
+                      'eruption_style': 0.25}, clear=True)
+def test_calculate_combined_analogy_matrix_exception(*args, **kwargs):
+    with pytest.raises(PyvolcansError):
+        assert calculate_weighted_analogy_matrix(weights=WEIGHTS,
+                                                 tectonic_analogy=pyvolcans.load_tectonic_analogy(),
+                                                 eruption_style_analogy=pyvolcans.load_eruption_style_analogy(), 
+                                                 eruption_size_analogy=pyvolcans.load_eruption_size_analogy(),
+                                                 morphology_analogy=pyvolcans.load_morphology_analogy(),
+                                                 geochemistry_analogy=pyvolcans.load_geochemistry_analogy())
+    
