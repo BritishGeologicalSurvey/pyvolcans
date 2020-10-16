@@ -7,7 +7,7 @@ Collaborative effort to create an free-software (Python), open-access version of
 `pyvolcans` can be imported to a new environment as follows:
 
 ```
-pip install git+https://gitlab.com/PTierz/pyvolcans.git@add-setup
+pip install git+https://gitlab.com/PTierz/pyvolcans.git
 ```
 
 It is necessary to have git installed and on the system path.  You will be
