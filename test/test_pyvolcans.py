@@ -54,119 +54,77 @@ def test_volcano_number():
     number = get_volcano_number_from_name('Santorini')
     assert number == 212040
 
-def mock_tectonic_analogy():
-    return np.array([40000])
-
-def mock_geochemistry_analogy():
-    return np.array([4000])
-
-def mock_morphology_analogy():
-    return np.array([400])
-
-def mock_eruption_size_analogy():
-    return np.array([40])
-
-def mock_eruption_style_analogy():
-    return np.array([4])
-
 
 @pytest.fixture
-def mock_analogies(monkeypatch):
-    monkeypatch.setattr('pyvolcans.load_tectonic_analogy', mock_tectonic_analogy)
-    monkeypatch.setattr('pyvolcans.load_eruption_style_analogy', mock_eruption_style_analogy)
-    monkeypatch.setattr('pyvolcans.load_eruption_size_analogy', mock_eruption_size_analogy)
-    monkeypatch.setattr('pyvolcans.load_geochemistry_analogy', mock_geochemistry_analogy)
-    monkeypatch.setattr('pyvolcans.load_morphology_analogy', mock_morphology_analogy)
-    
+def analogies():
+    analogies = {'tectonic_setting': np.array([40000]), 'geochemistry': np.array([4000]),
+                 'morphology': np.array([400]), 'eruption_size': np.array([40]), 'eruption_style': np.array([4])}
+    return analogies
 
-@patch.dict(WEIGHTS, {'tectonic_setting': 0,
-                      'geochemistry': 0.25,
-                      'morphology': 0.25,
-                      'eruption_size': 0.25,
-                      'eruption_style': 0.25}, clear=True)
-def test_calculate_combined_analogy_matrix_no_tectonic(mock_analogies):
-    matrix = calculate_weighted_analogy_matrix(weights=WEIGHTS,
-                                            tectonic_analogy=pyvolcans.load_tectonic_analogy(),
-                                            eruption_style_analogy=pyvolcans.load_eruption_style_analogy(),
-                                            eruption_size_analogy=pyvolcans.load_eruption_size_analogy(),
-                                            morphology_analogy=pyvolcans.load_morphology_analogy(),
-                                            geochemistry_analogy=pyvolcans.load_geochemistry_analogy())
- 
-    assert matrix.astype(int) == 1111
+@pytest.mark.parametrize("weights,expected",
+                        [({'tectonic_setting': 0,
+                         'geochemistry': 0.25,
+                         'morphology': 0.25,
+                         'eruption_size': 0.25,
+                         'eruption_style': 0.25}, 1111)])
+def test_combined_analogy_matrix_no_tectonic(weights, expected, analogies):
+    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    assert matrix.astype(int) == expected
 
 
-@patch.dict(WEIGHTS, {'tectonic_setting':0.25,
-                      'geochemistry': 0,
-                      'morphology': 0.25,
-                      'eruption_size': 0.25,
-                      'eruption_style': 0.25}, clear=True)
-def test_calculate_combined_analogy_matrix_no_geochem(mock_analogies):
-    matrix = calculate_weighted_analogy_matrix(weights=WEIGHTS,
-                                             tectonic_analogy=pyvolcans.load_tectonic_analogy(),
-                                             eruption_style_analogy=pyvolcans.load_eruption_style_analogy(),
-                                             eruption_size_analogy=pyvolcans.load_eruption_size_analogy(),
-                                             morphology_analogy=pyvolcans.load_morphology_analogy(),
-                                             geochemistry_analogy=pyvolcans.load_geochemistry_analogy())
-
-    assert matrix.astype(int) == 10111
+@pytest.mark.parametrize("weights,expected",
+                        [({'tectonic_setting': 0.25,
+                           'geochemistry': 0,
+                           'morphology': 0.25,
+                           'eruption_size': 0.25,
+                           'eruption_style': 0.25}, 10111)])
+def test_combined_analogy_matrix_no_geochemistry(weights, expected, analogies):
+    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    assert matrix.astype(int) == expected
 
 
-@patch.dict(WEIGHTS, {'tectonic_setting':0.25,
-                      'geochemistry': 0.25,
-                      'morphology': 0,
-                      'eruption_size': 0.25,
-                      'eruption_style': 0.25}, clear=True)
-def test_calculate_combined_analogy_matrix_no_morphology(mock_analogies):
-    matrix = calculate_weighted_analogy_matrix(weights=WEIGHTS,
-                                            tectonic_analogy=pyvolcans.load_tectonic_analogy(),
-                                            eruption_style_analogy=pyvolcans.load_eruption_style_analogy(),
-                                            eruption_size_analogy=pyvolcans.load_eruption_size_analogy(),
-                                            morphology_analogy=pyvolcans.load_morphology_analogy(),
-                                            geochemistry_analogy=pyvolcans.load_geochemistry_analogy())
-    assert matrix.astype(int) == 11011
+@pytest.mark.parametrize("weights,expected", 
+                       [({'tectonic_setting':0.25,
+                          'geochemistry': 0.25,
+                          'morphology': 0,
+                          'eruption_size': 0.25,
+                          'eruption_style': 0.25}, 11011)])
+def test_combined_analogy_matrix_no_morphology(weights, expected, analogies):
+    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    assert matrix.astype(int) == expected
 
 
 
-@patch.dict(WEIGHTS, {'tectonic_setting':0.25,
-                      'geochemistry': 0.25,
-                      'morphology': 0.25,
-                      'eruption_size': 0,
-                      'eruption_style': 0.25}, clear=True)
-def test_calculate_combined_analogy_matrix_no_eruption_size(mock_analogies):
-    matrix = calculate_weighted_analogy_matrix(weights=WEIGHTS,
-                                            tectonic_analogy=pyvolcans.load_tectonic_analogy(),
-                                            eruption_style_analogy=pyvolcans.load_eruption_style_analogy(),
-                                            eruption_size_analogy=pyvolcans.load_eruption_size_analogy(),
-                                            morphology_analogy=pyvolcans.load_morphology_analogy(),
-                                            geochemistry_analogy=pyvolcans.load_geochemistry_analogy())
-    assert matrix.astype(int) == 11101
+@pytest.mark.parametrize("weights,expected",
+                        [({'tectonic_setting':0.25,
+                           'geochemistry': 0.25,
+                           'morphology': 0.25,
+                           'eruption_size': 0,
+                           'eruption_style': 0.25}, 11101)])
 
-@patch.dict(WEIGHTS, {'tectonic_setting':0.25,
-                      'geochemistry': 0.25,
-                      'morphology': 0.25,
-                      'eruption_size': 0.25,
-                      'eruption_style': 0}, clear=True)
-def test_calculate_combined_analogy_matrix_no_eruption_style(mock_analogies):
-    matrix = calculate_weighted_analogy_matrix(weights=WEIGHTS,
-                                            tectonic_analogy=pyvolcans.load_tectonic_analogy(),
-                                            eruption_style_analogy=pyvolcans.load_eruption_style_analogy(),
-                                            eruption_size_analogy=pyvolcans.load_eruption_size_analogy(),
-                                            morphology_analogy=pyvolcans.load_morphology_analogy(),
-                                            geochemistry_analogy=pyvolcans.load_geochemistry_analogy())
-    assert matrix.astype(int) == 11110
+def test_combined_analogy_matrix_no_eruption_size(weights, expected, analogies):
+    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    assert matrix.astype(int) == expected
+
+@pytest.mark.parametrize("weights,expected",
+                        [({'tectonic_setting':0.25,
+                           'geochemistry': 0.25,
+                           'morphology': 0.25,
+                           'eruption_size': 0.25,
+                           'eruption_style': 0}, 11110)])
+def test_combined_analogy_matrix_no_eruption_style(weights, expected, analogies):
+    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    assert matrix.astype(int) == expected
 
 
-@patch.dict(WEIGHTS, {'tectonic_setting':99,
-                      'geochemistry': 99,
-                      'morphology': 99,
-                      'eruption_size': 99,
-                      'eruption_style': 99}, clear=True)
-def test_calculate_combined_analogy_matrix_exception_weights_more_than_one(mock_analogies):
-    with pytest.raises(PyvolcansError):
-        calculate_weighted_analogy_matrix(weights=WEIGHTS,
-                                          tectonic_analogy=pyvolcans.load_tectonic_analogy(),
-                                          eruption_style_analogy=pyvolcans.load_eruption_style_analogy(), 
-                                          eruption_size_analogy=pyvolcans.load_eruption_size_analogy(),
-                                          morphology_analogy=pyvolcans.load_morphology_analogy(),
-                                          geochemistry_analogy=pyvolcans.load_geochemistry_analogy())
+@pytest.mark.parametrize("weights,expected",
+                       [({'tectonic_setting':99,
+                          'geochemistry': 99,
+                          'morphology': 99,
+                          'eruption_size': 99,
+                          'eruption_style': 99}, PyvolcansError)])
+def test_combined_analogy_matrix_exception_weights_more_than_one(weights, expected, analogies):
+    with pytest.raises(expected):
+        calculate_weighted_analogy_matrix(weights, analogies)
+                                        
     
