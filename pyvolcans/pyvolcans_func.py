@@ -22,19 +22,26 @@ from scipy import stats
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
-#from pyvolcans import tectonic_analogy
-#geochemistry_analogy,
-#morphology_analogy, eruption_size_analogy, eruption_style_analogy)
+from pyvolcans import (load_tectonic_analogy,
+                       load_geochemistry_analogy,
+                       load_morphology_analogy,
+                       load_eruption_size_analogy,
+                       load_eruption_style_analogy,
+                       load_volcano_names)
 
-#remember we have no header in the file below
-VOLCANO_NAMES = pd.read_csv("VOLCANS_mat_files/VOTW_prepared_data/" +
-                            "volc_names.csv", header=None)
+VOLCANO_NAMES = load_volcano_names()
 
 #dictionary of weights for the criteria
 WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
            'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
+
 #loading all the data
-ANALOGY_DIR = Path("VOLCANS_mat_files/analogy_mats")
+ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
+                  'geochemistry': load_geochemistry_analogy(),
+                  'morphology': load_morphology_analogy(),
+                  'eruption_size': load_eruption_size_analogy(),
+                  'eruption_style': load_eruption_style_analogy()
+                  }
 
 def _frac_to_float(value):
     """Take a string of decimal or fractional number (e.g. '0.5' or '1/2')
@@ -123,7 +130,7 @@ def get_volcano_name_from_volcano_number(volcano_number):
     return volcano_name
 
 def calculate_weighted_analogy_matrix(weights = WEIGHTS,
-                                      analogy_dir = ANALOGY_DIR):
+                                      analogies = ANALOGY_MATRIX):
     """
     Input is dictionary of weights
     e.g. {‘tectonic_setting’: 0.5, ‘geochemistry’: 0.5}
@@ -131,49 +138,28 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS,
     NB. We load all the matrices here inside the function
     """
 
-    tectonic_analogy = read_mat(analogy_dir /
-                                "ATfinal_allvolcs.mat")['AT_allcross']
-    geochemistry_analogy = read_mat(analogy_dir /
-                                    "AGfinal_allvolcs_ALU.mat")['AG_allcross']
-    morphology_analogy = read_mat(analogy_dir /
-                                  "AMfinal_allvolcs.mat")['AM_allcross']
-    eruption_size_analogy = read_mat(analogy_dir /
-                                     "ASzfinal_allvolcs_SINA.mat")['ASz_allcross']
-    eruption_style_analogy = read_mat(analogy_dir /
-                                      "AStfinal_allvolcs_SINA.mat")['ASt_allcross']
-
     #ERROR HANDLING!! (AND TEST!!!)
     if sum(weights.values()) != 1:
         msg = f"Sum of weights is different from 1!"
         raise PyvolcansError(msg)
 
-    weighted_tectonic_analogy = \
-        weights['tectonic_setting'] * tectonic_analogy
+        weights['tectonic_setting'] * analogies['tectonic_setting']
 
     weighted_geochemistry_analogy = \
-        weights['geochemistry'] * geochemistry_analogy
+        weights['geochemistry'] * analogies['geochemistry']
 
     weighted_morphology_analogy = \
-        weights['morphology'] * morphology_analogy
+        weights['morphology'] * analogies['morphology']
 
     weighted_eruption_size_analogy = \
-        weights['eruption_size'] * eruption_size_analogy
+        weights['eruption_size'] * analogies['eruption_size']
 
     weighted_eruption_style_analogy = \
-        weights['eruption_style'] * eruption_style_analogy
+        weights['eruption_style'] * analogies['eruption_style']
 
     weighted_total_analogy_matrix = weighted_tectonic_analogy + \
         weighted_geochemistry_analogy + weighted_morphology_analogy + \
         weighted_eruption_size_analogy + weighted_eruption_style_analogy
-
-    #print(weighted_tectonic_analogy[100,100])
-    #print(weighted_geochemistry_analogy[110,110])
-    #print(weighted_morphology_analogy[2,2])
-    #print(weighted_eruption_size_analogy[9,9])
-    #print(weighted_eruption_style_analogy[20,20])
-
-    logging.debug("Weighted matrix: %s",
-                  weighted_total_analogy_matrix[100, 100])
 
     return weighted_total_analogy_matrix
 
@@ -321,4 +307,8 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
 
 
 class PyvolcansError(Exception):
+<<<<<<< HEAD
     pass
+=======
+    pass
+>>>>>>> add-tests
