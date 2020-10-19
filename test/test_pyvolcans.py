@@ -4,7 +4,6 @@ Created on Fri May 15 12:49:55 2020
 
 @author: pablo
 """
-import functools
 import pytest
 from unittest.mock import patch
 
