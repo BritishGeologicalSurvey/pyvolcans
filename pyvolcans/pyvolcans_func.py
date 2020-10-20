@@ -143,6 +143,7 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS,
         msg = f"Sum of weights is different from 1!"
         raise PyvolcansError(msg)
 
+    weighted_tectonic_analogy = \
         weights['tectonic_setting'] * analogies['tectonic_setting']
 
     weighted_geochemistry_analogy = \
@@ -307,8 +308,4 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
 
 
 class PyvolcansError(Exception):
-<<<<<<< HEAD
     pass
-=======
-    pass
->>>>>>> add-tests
