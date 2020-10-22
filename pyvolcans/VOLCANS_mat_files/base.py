@@ -11,10 +11,10 @@ def load_tectonic_analogy():
     return read_mat(DIRNAME_ANALOGY.joinpath("ATfinal_allvolcs.mat"))["AT_allcross"]
 
 def load_geochemistry_analogy():
-    return read_mat(DIRNAME_ANALOGY.joinpath("AGfinal_allvolcs_ALU.mat"))["AG_allcross"]
+    return read_mat(DIRNAME_ANALOGY.joinpath("AGfinal_allvolcs_ALU_QUET.mat"))["AG_allcross"]
 
 def load_morphology_analogy():
-    return read_mat(DIRNAME_ANALOGY.joinpath("AMfinal_allvolcs.mat"))["AM_allcross"]
+    return read_mat(DIRNAME_ANALOGY.joinpath("AMfinal_allvolcs_QUET.mat"))["AM_allcross"]
 
 def load_eruption_size_analogy():
     return read_mat(DIRNAME_ANALOGY.joinpath("ASzfinal_allvolcs_SINA.mat"))["ASz_allcross"]

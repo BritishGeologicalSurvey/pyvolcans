@@ -1,0 +1,14 @@
+fuzzywuzzy
+numpy
+pandas
+pymatreader
+python-Levenshtein
+scipy
+
+[dev]
+flake8
+ipdb
+ipython
+pytest
+pytest-cov
+versioneer

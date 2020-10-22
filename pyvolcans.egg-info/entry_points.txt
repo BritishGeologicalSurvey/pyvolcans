@@ -1,0 +1,3 @@
+[console_scripts]
+pyvolcans = pyvolcans.pyvolcans:cli
+
