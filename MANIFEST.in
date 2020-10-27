@@ -1,2 +1,3 @@
 include versioneer.py
 include pyvolcans/_version.py
+recursive-include pyvolcans/VOLCANS_mat_files *.mat *.csv
