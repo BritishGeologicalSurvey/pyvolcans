@@ -1,3 +1,4 @@
 include versioneer.py
 include pyvolcans/_version.py
-recursive-include pyvolcans/VOLCANS_mat_files *
+include pyvolcans/VOLCANS_mat_files/A*.mat
+include pyvolcans/VOLCANS_mat_files/VOTW_prepared_data/volc_names.csv
