@@ -14,6 +14,7 @@ from fractions import Fraction
 import logging
 import sys
 import webbrowser
+import os
 #external packages
 from pymatreader import read_mat
 import pandas as pd
@@ -202,6 +203,12 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     result.columns = ['name', 'country', 'smithsonian_id']
     result['analogy_score'] = top_analogies
     result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
+                  index=False, columns=('smithsonian_id','name', 'country',
+                                        'analogy_score'))
+    #just adding the same line but outputting the list to a file [IMPROVE]
+    #NB. {count - 1} because 'count' includes the target volcano!
+    output_filename = os.getcwd() + f'\\{my_volcano}_top{count-1}_analogues.csv'
+    result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id','name', 'country',
                                         'analogy_score'))
 
