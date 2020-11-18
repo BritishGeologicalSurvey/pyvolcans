@@ -207,8 +207,13 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
                                         'analogy_score'))
     #just adding the same line but outputting the list to a file [IMPROVE]
     #NB. {count - 1} because 'count' includes the target volcano!
+    #processing the volcano name to make it more 'machine-friendly'
+    my_volcano_clean = my_volcano.replace('\'','').replace(',',''). \
+                                         replace('.','')
+    my_volcano_splitted = my_volcano_clean.replace(',','').split()
+    my_volcano_joined = '_'.join(my_volcano_splitted)
     output_filename = os.getcwd() + os.path.sep + \
-                      f'{my_volcano}_top{count-1}_analogues.csv'
+                      f'{my_volcano_joined}_top{count-1}_analogues.csv'
     result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id','name', 'country',
                                         'analogy_score'))
