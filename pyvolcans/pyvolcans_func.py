@@ -210,7 +210,7 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     #processing the volcano name to make it more 'machine-friendly'
     my_volcano_clean = my_volcano.replace('\'','').replace(',',''). \
                                          replace('.','')
-    my_volcano_splitted = my_volcano_clean.replace(',','').split()
+    my_volcano_splitted = my_volcano_clean.split()
     my_volcano_joined = '_'.join(my_volcano_splitted)
     output_filename = os.getcwd() + os.path.sep + \
                       f'{my_volcano_joined}_top{count-1}_analogues.csv'
