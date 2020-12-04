@@ -11,11 +11,11 @@ Created on Mon Feb 17 12:13:20 2020
 #standard library
 import argparse
 import logging
-from pathlib import Path
-from fractions import Fraction
+#from pathlib import Path
+#from fractions import Fraction
 import sys
 #external packages
-from pymatreader import read_mat
+#from pymatreader import read_mat
 #personal packages
 from pyvolcans.pyvolcans_func import (
     _frac_to_float,
@@ -34,10 +34,10 @@ logging.basicConfig(handlers=[handler], level=logging.INFO)
 
 def cli():
     """
-    Command line interface to run Pyvolcans and return analogues.
+    Command line interface to run PyVOLCANS and return analogues.
     """
     args = parse_args()
-    
+
     #get volcano_name from volcano arg
     try:
         volcano_id = int(args.volcano)
@@ -48,17 +48,17 @@ def cli():
         # Print error message and quit program on error
         logging.error(exc.args[0])
         sys.exit(1)
-    
+
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
     #defining some intermediate variables
     count = args.count
     arg_weights = {'tectonic_setting': _frac_to_float(args.tectonic_setting),
-               'geochemistry': _frac_to_float(args.rock_geochemistry),
-               'morphology': _frac_to_float(args.morphology),
-               'eruption_size': _frac_to_float(args.eruption_size),
-               'eruption_style': _frac_to_float(args.eruption_style)}
+                   'geochemistry': _frac_to_float(args.rock_geochemistry),
+                   'morphology': _frac_to_float(args.morphology),
+                   'eruption_size': _frac_to_float(args.eruption_size),
+                   'eruption_style': _frac_to_float(args.eruption_style)}
 
     my_apriori_volcanoes = args.apriori
 
@@ -86,6 +86,10 @@ def cli():
         sys.exit(1)
 
 def parse_args():
+    """
+    Reads PyVOLCANS arguments from command line and returns values
+    that are usable by the program.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("volcano",
                         help="Set target volcano name or Smithsonian ID",
@@ -121,8 +125,9 @@ def parse_args():
 
     #'parsing the arguments'
     args = parser.parse_args()
-    
+
     return args
 
 if __name__ == '__main__':
     cli()
+    
