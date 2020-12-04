@@ -11,11 +11,7 @@ Created on Mon Feb 17 12:13:20 2020
 #standard library
 import argparse
 import logging
-#from pathlib import Path
-#from fractions import Fraction
 import sys
-#external packages
-#from pymatreader import read_mat
 #personal packages
 from pyvolcans.pyvolcans_func import (
     _frac_to_float,
@@ -26,16 +22,17 @@ from pyvolcans.pyvolcans_func import (
     PyvolcansError
 )
 
-# Setup logging
-formatter = logging.Formatter('pyvolcans: %(message)s')
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-logging.basicConfig(handlers=[handler], level=logging.INFO)
-
 def cli():
     """
     Command line interface to run PyVOLCANS and return analogues.
     """
+    # Setup logging
+    formatter = logging.Formatter('pyvolcans: %(message)s')
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logging.basicConfig(handlers=[handler], level=logging.INFO)
+
+    #getting the arguments
     args = parse_args()
 
     #get volcano_name from volcano arg
