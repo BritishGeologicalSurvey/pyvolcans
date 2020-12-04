@@ -7,9 +7,6 @@ Created on Mon Feb 17 12:13:20 2020
          Edinburgh, UK).
 """
 
-#import scipy.io as sio
-#matfile = sio.loadmat("VOLCANS_mat_files/analogy_mats/ATfinal_allvolcs.mat")
-
 #Pytonic order
 #standard library
 import argparse
