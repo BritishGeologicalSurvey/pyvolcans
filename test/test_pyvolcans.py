@@ -2,7 +2,9 @@
 """
 Created on Fri May 15 12:49:55 2020
 
-@author: pablo
+@author: Vyron Christodoulou, John A. Stevenson, Pablo Tierz  
+         (British Geological Survey, The Lyell Centre,
+         Edinburgh, UK).
 """
 import pytest
 from unittest.mock import patch

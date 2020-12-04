@@ -2,7 +2,9 @@
 """
 Created on Mon Feb 17 12:13:20 2020
 
-@author: pablo
+@author: Pablo Tierz, John A. Stevenson, Vyron Christodoulou
+         (British Geological Survey, The Lyell Centre,
+         Edinburgh, UK).
 """
 
 #import scipy.io as sio

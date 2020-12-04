@@ -2,7 +2,9 @@
 """
 Created on Tue Mar  3 09:49:16 2020
 
-@author: pablo
+@author: Pablo Tierz, John A. Stevenson, Vyron Christodoulou
+         (British Geological Survey, The Lyell Centre,
+         Edinburgh, UK).
 """
 
 #set of functions related to the implementation of PyVOLCANS
