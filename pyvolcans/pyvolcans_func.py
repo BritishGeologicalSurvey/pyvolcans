@@ -16,6 +16,7 @@ from fractions import Fraction
 import logging
 import sys
 import webbrowser
+import os
 #external packages
 from pymatreader import read_mat
 import pandas as pd
@@ -204,8 +205,10 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     result.columns = ['name', 'country', 'smithsonian_id']
     result['analogy_score'] = top_analogies
     result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
-                  index=False, columns=('analogy_score', 'smithsonian_id',
-                                        'name', 'country'))
+                  index=False, columns=('smithsonian_id','name', 'country',
+                                        'analogy_score'))
+
+    write_csv(my_volcano, result, count)
 
     #open the GVP website of the top 1 analogue
     top_analogue_vnum = VOLCANO_NAMES.iloc[top_idx[1], 2] #[0]=target volcano!!
@@ -213,6 +216,21 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
                 '&vtab=GeneralInfo' #Getting to open the General Info tab
     webbrowser.open(my_web)
 
+def write_csv(my_volcano, result, count):
+    """
+    TO DO!
+    """
+    #just adding the same line but outputting the list to a file [IMPROVE]
+    #NB. {count - 1} because 'count' includes the target volcano!
+    #processing the volcano name to make it more 'machine-friendly'
+    my_volcano_clean = my_volcano.replace('\'','').replace(',',''). \
+                                         replace('.','')
+    my_volcano_splitted = my_volcano_clean.split()
+    my_volcano_joined = '_'.join(my_volcano_splitted)
+    output_filename = Path.cwd() / f'{my_volcano_joined}_top{count-1}_analogues.csv'
+    result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
+                  index=False, columns=('smithsonian_id','name', 'country',
+                                        'analogy_score'))
 
 def match_name(volcano_name):
     matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[0] == volcano_name]
