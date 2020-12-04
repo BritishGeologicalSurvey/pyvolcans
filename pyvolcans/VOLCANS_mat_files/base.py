@@ -1,3 +1,10 @@
+"""
+Created on Thu Oct 15 12:48:00 2020
+
+@author: Vyron Christodoulou, John A. Stevenson, Pablo Tierz  
+         (British Geological Survey, The Lyell Centre,
+         Edinburgh, UK).
+"""
 import pandas as pd
 from pathlib import Path
 from pymatreader import read_mat
