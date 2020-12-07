@@ -63,7 +63,11 @@ def fuzzy_matching(volcano_name, limit=10):
     matches = process.extract(volcano_name, VOLCANO_NAMES[0], limit=limit,
                               scorer=fuzz.UQRatio)
     names = [item[0] for item in matches]
-    return names
+    volcano_info = VOLCANO_NAMES[VOLCANO_NAMES[0].isin(names)].rename(columns=
+                                                                      {0:'Name',
+                                                                       1:'Country',
+                                                                       2:'ID'})
+    return volcano_info
 
 
 def get_volcano_idx_from_name(volcano_name):
@@ -238,8 +242,7 @@ def match_name(volcano_name):
     #or there are 2+ identical names
     if len(matched_volcanoes) == 0:
         name_suggestions = fuzzy_matching(volcano_name)
-        suggestions_string = "\n".join(name_suggestions)
-        msg = (f'"{volcano_name}" not found! Did you mean:\n{suggestions_string}')
+        msg = (f'"{volcano_name}" not found! Did you mean:\n{name_suggestions}')
         raise PyvolcansError(msg)    
     elif len(matched_volcanoes) > 1:
         msg = f"Volcano name {volcano_name} is not unique!"
