@@ -242,10 +242,12 @@ def match_name(volcano_name):
     #or there are 2+ identical names
     if len(matched_volcanoes) == 0:
         name_suggestions = fuzzy_matching(volcano_name)
-        msg = (f'"{volcano_name}" not found! Did you mean:\n{name_suggestions}')
+        msg = (f"{volcano_name} not found! Did you mean:\n{name_suggestions}")
         raise PyvolcansError(msg)    
     elif len(matched_volcanoes) > 1:
-        msg = f"Volcano name {volcano_name} is not unique!"
+        name_suggestions = fuzzy_matching(volcano_name)
+        msg = (f"Volcano name {volcano_name} is not unique. "
+               f"Please provide smithsonian id instead of name.\n{name_suggestions}")
         raise PyvolcansError(msg)
 
     return matched_volcanoes
