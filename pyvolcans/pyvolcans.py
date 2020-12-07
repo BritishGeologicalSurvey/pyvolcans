@@ -22,6 +22,8 @@ from pyvolcans.pyvolcans_func import (
     PyvolcansError
 )
 
+from pyvolcans import __version__
+
 def cli():
     """
     Command line interface to run PyVOLCANS and return analogues.
@@ -119,7 +121,9 @@ def parse_args():
                         default='10', type=int)
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="print debug-level logging output")
-
+    parser.add_argument("--version", "-V", action="version",
+                        help="Show package version",
+                        version=__version__)
     #'parsing the arguments'
     args = parser.parse_args()
 
