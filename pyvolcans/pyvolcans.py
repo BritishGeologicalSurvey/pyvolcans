@@ -121,7 +121,7 @@ def parse_args():
                         default='10', type=int)
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="print debug-level logging output")
-    parser.add_argument("--version", "-V", action="version",
+    parser.add_argument("-V", "--version", action="version",
                         help="Show package version",
                         version=__version__)
     #'parsing the arguments'
