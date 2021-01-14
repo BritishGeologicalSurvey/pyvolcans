@@ -14,6 +14,7 @@ import numpy as np
 import pyvolcans
 from pyvolcans.pyvolcans_func import (
     fuzzy_matching,
+    match_name,
     get_volcano_idx_from_name,
     get_volcano_name_from_idx,
     get_volcano_number_from_name,
@@ -55,6 +56,13 @@ def test_fuzzy_matching():
 def test_volcano_number():
     number = get_volcano_number_from_name('Santorini')
     assert number == 212040
+
+
+@pytest.mark.parametrize("name,expected", [('blah', 'not found'), ('Santa Isabel', 'not unique')])
+def test_match_name(name, expected):
+    with pytest.raises(PyvolcansError) as excinfo:
+         matched = match_name(name)
+    assert expected in str(excinfo.value)
 
 
 @pytest.fixture
