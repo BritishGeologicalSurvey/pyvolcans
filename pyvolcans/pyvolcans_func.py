@@ -68,6 +68,20 @@ def fuzzy_matching(volcano_name, limit=10):
                                                                  2:'smithsonian_id'})
     return volcano_info.to_string(index=False)
 
+
+def get_volcano_idx_from_number(volcano_number):
+    """
+       Input smithsonian id and get index of the volcano matrix
+    """ 
+    volcano_idx = VOLCANO_NAMES.loc[VOLCANO_NAMES[2] == volcano_number]
+    if volcano_idx.empty:
+        msg = ("Volcano number does not exist. "
+               "Please provide a non-zero, positive, six digits number. To check for "
+               "existing volcano numbers (VNUM), please visit www.volcano.si.edu")
+        raise PyvolcansError(msg) 
+
+    return volcano_idx.index[0]
+
 def get_volcano_idx_from_name(volcano_name):
     """
     Input is volcano name as text, output is the index
@@ -178,8 +192,10 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     """
 
     #get the index for my_volcano
-    volcano_idx = get_volcano_idx_from_name(my_volcano)
-
+    if isinstance(my_volcano, str):
+        volcano_idx = get_volcano_idx_from_name(my_volcano)
+    else:
+        volcano_idx = get_volcano_idx_from_number(my_volcano)
     #calculate the <count> highest values of multi-criteria analogy
     #getting the row corresponding to the target volcano ('my_volcano')
     my_volcano_analogies = weighted_analogy_matrix[volcano_idx,]
