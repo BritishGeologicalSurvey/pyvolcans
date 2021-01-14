@@ -62,13 +62,11 @@ def fuzzy_matching(volcano_name, limit=10):
     """
     matches = process.extract(volcano_name, VOLCANO_NAMES[0], limit=limit,
                               scorer=fuzz.UQRatio)
-    names = [item[0] for item in matches]
-    volcano_info = VOLCANO_NAMES[VOLCANO_NAMES[0].isin(names)].rename(columns=
-                                                                      {0:'name',
-                                                                       1:'country',
-                                                                       2:'smithsonian_id'})
+    match_idx = [item[2] for item in matches]
+    volcano_info = VOLCANO_NAMES.iloc[match_idx].rename(columns={0:'name',
+                                                                 1:'country',
+                                                                 2:'smithsonian_id'})
     return volcano_info.to_string(index=False)
-
 
 def get_volcano_idx_from_name(volcano_name):
     """
