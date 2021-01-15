@@ -39,10 +39,9 @@ def cli():
 
     #get volcano_name from volcano arg
     try:
-        volcano_id = int(args.volcano)
-        volcano_name = get_volcano_name_from_volcano_number(volcano_id)
+        volcano_input = int(args.volcano)
     except ValueError:
-        volcano_name = args.volcano
+        volcano_input = args.volcano
     except PyvolcansError as exc:
         # Print error message and quit program on error
         logging.error(exc.args[0])
@@ -71,12 +70,12 @@ def cli():
             weights=arg_weights)
 
         # calling the get_analogies function to derive the final data
-        get_analogies(volcano_name, my_weighted_matrix, count)
+        get_analogies(volcano_input, my_weighted_matrix, count)
 
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
         if my_apriori_volcanoes is not None:
-            get_many_analogy_percentiles(volcano_name,
+            get_many_analogy_percentiles(volcano_input,
                                          my_apriori_volcanoes,
                                          my_weighted_matrix)
     except PyvolcansError as exc:
