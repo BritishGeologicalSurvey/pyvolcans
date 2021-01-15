@@ -124,29 +124,6 @@ def get_volcano_number_from_name(volcano_name):
     volcano_vnum = matched_volcanoes.iloc[0, 2]
     return volcano_vnum
 
-def get_volcano_name_from_volcano_number(volcano_number):
-    """
-    Input is volcano number as indicated by the GVP,
-    output is the volcano name.
-    """
-    ##we need to create a message error here: "Volcano number does not exist.
-    ##Please provide a non-zero, positive, six digits number. To check for
-    ##existing volcano numbers (VNUM), please visit www.volcano.si.edu"
-
-    matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[2] == volcano_number]
-
-    if len(matched_volcanoes) == 0:
-        msg = f"Volcano number {volcano_number} does not exist!"
-        raise PyvolcansError(msg)
-    #NB. This error below should never occur because VNUM should be unique
-    elif len(matched_volcanoes) > 1:
-        msg = f"Volcano number {volcano_number} is not unique!"
-        raise PyvolcansError(msg)
-
-    volcano_name = \
-        matched_volcanoes.iloc[0, 0]
-
-    return volcano_name
 
 def calculate_weighted_analogy_matrix(weights = WEIGHTS,
                                       analogies = ANALOGY_MATRIX):
@@ -211,21 +188,19 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
 
     # obtain the volcano names and the analogy values
     top_analogies = my_volcano_analogies[top_idx]
-
     #print the names of the top <count> analogues
     ##print(VOLCANO_NAMES.iloc[top_idx,2],VOLCANO_NAMES.iloc[top_idx,0:1],
       ##     top_analogies)
-
     logging.debug("Top analogies: \n%s", VOLCANO_NAMES.iloc[top_idx, 0:3])
 
     # Prepare results table and print to standard output
-    result = VOLCANO_NAMES.iloc[top_idx].copy()
+    result =  VOLCANO_NAMES.iloc[top_idx].copy()
     result.columns = ['name', 'country', 'smithsonian_id']
     result['analogy_score'] = top_analogies
     result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id','name', 'country',
                                         'analogy_score'))
-
+'''
     write_csv(my_volcano, result, count)
 
     #open the GVP website of the top 1 analogue
@@ -248,7 +223,9 @@ def write_csv(my_volcano, result, count):
     output_filename = Path.cwd() / f'{my_volcano_joined}_top{count-1}_analogues.csv'
     result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id','name', 'country',
-                                        'analogy_score'))
+                                       'analogy_score'))
+'''
+
 
 def match_name(volcano_name):
     matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[0] == volcano_name]
