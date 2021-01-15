@@ -18,6 +18,7 @@ from pyvolcans.pyvolcans_func import (
     get_volcano_idx_from_name,
     get_volcano_name_from_idx,
     get_volcano_number_from_name,
+    get_volcano_idx_from_number,
     calculate_weighted_analogy_matrix,
     PyvolcansError
 )
@@ -56,6 +57,11 @@ def test_fuzzy_matching():
 def test_volcano_number():
     number = get_volcano_number_from_name('Santorini')
     assert number == 212040
+
+
+def test_volcano_idx_from_number():
+    idx = get_volcano_idx_from_number(212040)
+    assert idx == 21
 
 
 @pytest.mark.parametrize("name,expected", [('blah', 'not found'), ('Santa Isabel', 'not unique')])
