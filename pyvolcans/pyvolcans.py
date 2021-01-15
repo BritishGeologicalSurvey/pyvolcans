@@ -15,7 +15,6 @@ import sys
 #personal packages
 from pyvolcans.pyvolcans_func import (
     _frac_to_float,
-    get_volcano_name_from_volcano_number,
     calculate_weighted_analogy_matrix,
     get_analogies,
     get_many_analogy_percentiles,
