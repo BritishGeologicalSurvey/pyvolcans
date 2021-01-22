@@ -125,6 +125,27 @@ def get_volcano_number_from_name(volcano_name):
     return volcano_vnum
 
 
+def set_weights_from_args(weights):
+    """ 
+    Given arguments from cli, set new weights.
+    Output weights dictionary based on argument input.
+    """
+
+    keys = np.array([*weights.keys()])
+    values = np.array([*weights.values()])
+
+    if sum(weights.values()) > 1:
+        msg = f"Sum of weights is more than 1!"
+        raise PyvolcansError(msg)
+    elif sum(weights.values()) == 0:
+        weights = dict.fromkeys(weights, 0.2)
+    else:
+        idx_arr = np.where(values == 0)[0]
+        for idx in idx_arr:
+            weights[keys[idx]] = values[idx]
+    
+    return weights
+        
 def calculate_weighted_analogy_matrix(weights = WEIGHTS,
                                       analogies = ANALOGY_MATRIX):
     """
