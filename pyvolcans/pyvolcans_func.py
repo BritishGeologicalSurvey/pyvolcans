@@ -201,8 +201,9 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
                   index=False, columns=('smithsonian_id','name', 'country',
                                         'analogy_score'))
     
-    write_csv(my_volcano, result, count)
-    
+    # anywhere 'volcano_idx' came from, make it a str
+    volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
+    write_csv(volcano_name_csv, result, count)
 
     #open the GVP website of the top 1 analogue
     top_analogue_vnum = VOLCANO_NAMES.iloc[top_idx[1], 2] #[0]=target volcano!!
