@@ -59,8 +59,7 @@ def cli():
                    'eruption_style': _frac_to_float(args.eruption_style)} 
     new_weights = set_weights_from_args(arg_weights)
     my_apriori_volcanoes = args.apriori
-    logging.debug("Supplied arguments: %s", args)
-    logging.debug("Arg weights as float: %s", arg_weights)
+    logging.debug("Supplied weights: %s", new_weights)
 
     # Call pyvolcans
     try:
