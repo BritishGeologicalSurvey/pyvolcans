@@ -34,9 +34,6 @@ from pyvolcans import (load_tectonic_analogy,
 
 VOLCANO_NAMES = load_volcano_names()
 
-#dictionary of weights for the criteria
-WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
-           'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
 
 #loading all the data
 ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
@@ -125,28 +122,27 @@ def get_volcano_number_from_name(volcano_name):
     return volcano_vnum
 
 
-def set_weights_from_args(weights):
+def set_weights_from_args(args_dict):
     """ 
     Given arguments from cli, set new weights.
     Output weights dictionary based on argument input.
     """
-
-    keys = np.array([*weights.keys()])
-    values = np.array([*weights.values()])
-
-    if sum(weights.values()) > 1:
-        msg = f"Sum of weights is more than 1!"
-        raise PyvolcansError(msg)
-    elif sum(weights.values()) == 0:
-        weights = dict.fromkeys(weights, 0.2)
-    else:
-        idx_arr = np.where(values == 0)[0]
-        for idx in idx_arr:
-            weights[keys[idx]] = values[idx]
+    keys = np.array([*args_dict.keys()])
+    values = np.array([*args_dict.values()])
+    passed_args_idx = np.where(values != 0.2)[0]
+    if len(passed_args_idx) == 0:
+       return args_dict
+    elif (len(passed_args_idx) <= len(values)):
+        if sum(values[:len(passed_args_idx)]) != 1:
+            msg = f"Sum of weights is different than 1!"
+            raise PyvolcansError(msg)
+        else:
+            def_val_idx = np.where(values == 0.2)[0]
+            for idx in def_val_idx:
+                args_dict[keys[idx]] = 0
+            return args_dict
     
-    return weights
-        
-def calculate_weighted_analogy_matrix(weights = WEIGHTS,
+def calculate_weighted_analogy_matrix(weights,
                                       analogies = ANALOGY_MATRIX):
     """
     Input is dictionary of weights
@@ -154,12 +150,6 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS,
     returns numpy array of weighted matrix.
     NB. We load all the matrices here inside the function
     """
-
-    #ERROR HANDLING!! (AND TEST!!!)
-    if sum(weights.values()) != 1:
-        msg = f"Sum of weights is different from 1!"
-        raise PyvolcansError(msg)
-
     weighted_tectonic_analogy = \
         weights['tectonic_setting'] * analogies['tectonic_setting']
 
