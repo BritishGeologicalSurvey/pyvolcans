@@ -18,7 +18,8 @@ from pyvolcans.pyvolcans_func import (
     calculate_weighted_analogy_matrix,
     get_analogies,
     get_many_analogy_percentiles,
-    PyvolcansError
+    PyvolcansError,
+    set_weights_from_args
 )
 
 from pyvolcans import __version__
@@ -55,10 +56,9 @@ def cli():
                    'geochemistry': _frac_to_float(args.rock_geochemistry),
                    'morphology': _frac_to_float(args.morphology),
                    'eruption_size': _frac_to_float(args.eruption_size),
-                   'eruption_style': _frac_to_float(args.eruption_style)}
-
+                   'eruption_style': _frac_to_float(args.eruption_style)} 
+    new_weights = set_weights_from_args(arg_weights)
     my_apriori_volcanoes = args.apriori
-
     logging.debug("Supplied arguments: %s", args)
     logging.debug("Arg weights as float: %s", arg_weights)
 
@@ -66,7 +66,7 @@ def cli():
     try:
         # calculated_weighted_analogy_matrix
         my_weighted_matrix = calculate_weighted_analogy_matrix(
-            weights=arg_weights)
+            weights=new_weights)
 
         # calling the get_analogies function to derive the final data
         get_analogies(volcano_input, my_weighted_matrix, count)
