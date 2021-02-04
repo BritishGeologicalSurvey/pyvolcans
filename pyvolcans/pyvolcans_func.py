@@ -130,7 +130,7 @@ def set_weights_from_args(args_dict):
     keys = np.array([*args_dict.keys()])
     values = np.array([*args_dict.values()])
     passed_args_idx = np.where(values != 0.2)[0]
-    if len(passed_args_idx) == 0:
+    if len(passed_args_idx) == 0 or sum(values) == 1:
        return args_dict
     elif (len(passed_args_idx) <= len(values)):
         if sum(values[passed_args_idx]) != 1:
