@@ -133,9 +133,11 @@ def set_weights_from_args(args_dict):
     if len(passed_args_idx) == 0:
        return args_dict
     elif (len(passed_args_idx) <= len(values)):
-        if sum(values[:len(passed_args_idx)]) != 1:
+        if sum(values[passed_args_idx]) != 1:
             msg = f"Sum of weights is different than 1!"
             raise PyvolcansError(msg)
+        #elif sum(values) == 1:
+        #    return args_dict
         else:
             def_val_idx = np.where(values == 0.2)[0]
             for idx in def_val_idx:
