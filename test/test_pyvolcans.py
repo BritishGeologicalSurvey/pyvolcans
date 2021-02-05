@@ -32,18 +32,6 @@ from pyvolcans import (load_tectonic_analogy,
 
 # pylint: disable=missing-docstring
 
-DEFAULT_ARGS =  {'tectonic_setting': 0.2,
-                 'geochemistry': 0.2,
-                 'morphology': 0.2,
-                 'eruption_size': 0.2,
-                 'eruption_style': 0.2}
-                      
-SOME_ARGS =  {'tectonic_setting': 0.5,
-         'geochemistry': 0.5,
-         'morphology': 0.2,
-         'eruption_size': 0.2,  
-         'eruption_style': 0.2} 
-
 
 
 def test_volcano_idx():
@@ -70,29 +58,48 @@ def test_volcano_number():
     number = get_volcano_number_from_name('Santorini')
     assert number == 212040
 
-@pytest.mark.parametrize("weights,expected",
-                        [({'tectonic_setting': 99,
-                         'geochemistry': 99,
-                         'morphology': 99,
-                         'eruption_size': 99,
-                         'eruption_style': 99}, PyvolcansError)])
 
-def test_set_weights_from_args_error(weights, expected):
-    with pytest.raises(expected) as exc_info:
-         set_weights_from_args(weights)
-         assert 'different' in exc_info 
-   
+def test_set_weights_from_args_error():
+    args_dict = {'tectonic_setting': 99,
+                 'geochemistry': 99,
+                 'morphology': 99,
+                 'eruption_size': 99,
+                 'eruption_style': 99}
 
-@pytest.mark.parametrize("weights, expected", [(DEFAULT_ARGS, DEFAULT_ARGS)])
-def test_set_weights_from_args_defaults(weights, expected):
-    args_dict = set_weights_from_args(weights)
-    assert weights == args_dict
+    with pytest.raises(PyvolcansError) as exc_info:
+        set_weights_from_args(args_dict)
 
-@pytest.mark.parametrize("weights, expected", [(SOME_ARGS, SOME_ARGS)])
-def test_set_weights_from_args_some_args(weights, expected):
-     args_dict = set_weights_from_args(weights)
-     values = np.array([*args_dict.values()])
-     assert sum(values) == 1 
+    assert str(exc_info.value) == "Sum of weights (495) is different from 1!"
+
+
+@pytest.mark.parametrize("args_dict, expected_weights", [
+    ({'tectonic_setting': 0.2,
+      'morphology': 0.2,
+      'eruption_size': 0.2,
+      'geochemistry': 0.2,
+      'eruption_style': 0.2}, [0.2, 0.2, 0.2, 0.2, 0.2]),
+    ({'tectonic_setting': None,
+      'morphology': None,
+      'eruption_size': None,
+      'geochemistry': None,
+      'eruption_style': None}, [0.2, 0.2, 0.2, 0.2, 0.2]),
+    ({'tectonic_setting': 1,
+      'morphology': None,
+      'eruption_size': None,
+      'geochemistry': None,
+      'eruption_style': None}, [1, 0, 0, 0, 0]),
+    ({'tectonic_setting': 0.2,
+      'morphology': 0.4,
+      'eruption_size': None,
+      'geochemistry': 0.2,
+      'eruption_style': 0.2}, [0.2, 0.4, 0, 0.2, 0.2])
+    ])
+def test_set_weights_from_args(args_dict, expected_weights):
+    names = list(args_dict.keys())
+    result = set_weights_from_args(args_dict)
+
+    assert list(result.keys()) == names
+    assert list(result.values()) == expected_weights
 
 
 def test_volcano_idx_from_number():
@@ -144,7 +151,6 @@ def test_combined_analogy_matrix_no_geochemistry(weights, expected, analogies):
 def test_combined_analogy_matrix_no_morphology(weights, expected, analogies):
     matrix = calculate_weighted_analogy_matrix(weights, analogies)
     assert matrix.astype(int) == expected
-
 
 
 @pytest.mark.parametrize("weights,expected",

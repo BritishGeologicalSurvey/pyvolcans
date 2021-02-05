@@ -79,6 +79,7 @@ def get_volcano_idx_from_number(volcano_number):
 
     return volcano_idx.index[0]
 
+
 def get_volcano_idx_from_name(volcano_name):
     """
     Input is volcano name as text, output is the index
@@ -123,28 +124,29 @@ def get_volcano_number_from_name(volcano_name):
 
 
 def set_weights_from_args(args_dict):
-    """ 
+    """
     If no arguments are specified everything is set to 0.2
     """
     no_values_set = all(value is None for value in args_dict.values())
-    
+
     if no_values_set:
-       args_dict = dict.from_keys(args_dict.iterkeys(), 0.2)
-       return args_dict
+        args_dict = dict.fromkeys(args_dict.keys(), 0.2)
+        return args_dict
 
     sum_of_weights = 0
     for key, value in args_dict.items():
         if value is None:
-           args_dict[key] = 0
+            args_dict[key] = 0
         else:
-           sum_of_weights += value 
-          
-    if sum_of_weights != 1:	 
+            sum_of_weights += value
+
+    if sum_of_weights != 1:
         msg = f"Sum of weights ({sum_of_weights}) is different from 1!"
         raise PyvolcansError(msg)
-     
-     return args_dict
-    
+
+    return args_dict
+
+
 def calculate_weighted_analogy_matrix(weights,
                                       analogies = ANALOGY_MATRIX):
     """
