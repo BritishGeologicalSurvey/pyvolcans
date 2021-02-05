@@ -7,14 +7,15 @@ Created on Mon Feb 17 12:13:20 2020
          Edinburgh, UK).
 """
 
-#Pytonic order
-#standard library
+# Standard library
 import argparse
 import logging
 import sys
-#personal packages
+
+# Our packages
 from pyvolcans.pyvolcans_func import (
     _frac_to_float,
+
     calculate_weighted_analogy_matrix,
     get_analogies,
     get_many_analogy_percentiles,
@@ -23,6 +24,7 @@ from pyvolcans.pyvolcans_func import (
 )
 
 from pyvolcans import __version__
+
 
 def cli():
     """
@@ -34,10 +36,10 @@ def cli():
     handler.setFormatter(formatter)
     logging.basicConfig(handlers=[handler], level=logging.INFO)
 
-    #getting the arguments
+    # getting the arguments
     args = parse_args()
 
-    #get volcano_name from volcano arg
+    # get volcano_name from volcano arg
     try:
         volcano_input = int(args.volcano)
     except ValueError:
@@ -50,7 +52,7 @@ def cli():
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    #defining some intermediate variables
+    # defining some intermediate variables
     count = args.count
     arg_weights = {'tectonic_setting': _frac_to_float(args.tectonic_setting),
                    'geochemistry': _frac_to_float(args.rock_geochemistry),
@@ -80,6 +82,7 @@ def cli():
         # Print error message and quit program on error
         logging.error(exc.args[0])
         sys.exit(1)
+
 
 def parse_args():
     """
@@ -121,7 +124,7 @@ def parse_args():
     parser.add_argument("-V", "--version", action="version",
                         help="Show package version",
                         version=__version__)
-    #'parsing the arguments'
+
     args = parser.parse_args()
 
     return args
