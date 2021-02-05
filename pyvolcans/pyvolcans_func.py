@@ -200,14 +200,17 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id','name', 'country',
                                         'analogy_score'))
-'''
-    write_csv(my_volcano, result, count)
+    
+    # anywhere 'volcano_idx' came from, make it a str
+    volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
+    write_csv(volcano_name_csv, result, count)
 
     #open the GVP website of the top 1 analogue
     top_analogue_vnum = VOLCANO_NAMES.iloc[top_idx[1], 2] #[0]=target volcano!!
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
                 '&vtab=GeneralInfo' #Getting to open the General Info tab
     webbrowser.open(my_web)
+
 
 def write_csv(my_volcano, result, count):
     """
@@ -224,8 +227,6 @@ def write_csv(my_volcano, result, count):
     result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id','name', 'country',
                                        'analogy_score'))
-'''
-
 
 def match_name(volcano_name):
     matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[0] == volcano_name]
