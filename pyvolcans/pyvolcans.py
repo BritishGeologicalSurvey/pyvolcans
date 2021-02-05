@@ -57,6 +57,7 @@ def cli():
                    'morphology': _frac_to_float(args.morphology),
                    'eruption_size': _frac_to_float(args.eruption_size),
                    'eruption_style': _frac_to_float(args.eruption_style)} 
+    print(sys.argv)
     new_weights = set_weights_from_args(arg_weights)
     my_apriori_volcanoes = args.apriori
     logging.debug("Supplied weights: %s", new_weights)
@@ -96,23 +97,23 @@ def parse_args():
     parser.add_argument("--tectonic_setting",
                         help=
                         "Set tectonic setting weight (e.g. '0.2' or '1/5')",
-                        default='0.2', type=str)
+                        default=None, type=str)
     parser.add_argument("--rock_geochemistry",
                         help=
                         "Set rock geochemistry weight (e.g. '0.2' or '1/5')",
-                        default='0.2', type=str)
+                        default=None, type=str)
     parser.add_argument("--morphology",
                         help=
                         "Set volcano morphology weight (e.g. '0.2' or '1/5')",
-                        default='0.2', type=str)
+                        default=None, type=str)
     parser.add_argument("--eruption_size",
                         help=
                         "Set eruption size weight (e.g. '0.2' or '1/5')",
-                        default='0.2', type=str)
+                        default=None, type=str)
     parser.add_argument("--eruption_style",
                         help=
                         "Set eruption style weight (e.g. '0.2' or '1/5')",
-                        default='0.2', type=str)
+                        default=None, type=str)
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
                         default='10', type=int)
