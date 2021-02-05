@@ -43,10 +43,14 @@ ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
                   'eruption_style': load_eruption_style_analogy()
                   }
 
+
 def _frac_to_float(value):
     """Take a string of decimal or fractional number (e.g. '0.5' or '1/2')
        and return the float representation."""
-    return float(Fraction(value))
+    if value is None:
+        return None
+    else:
+        return float(Fraction(value))
 
 
 def fuzzy_matching(volcano_name, limit=10):
