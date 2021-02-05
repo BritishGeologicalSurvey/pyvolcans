@@ -34,9 +34,6 @@ from pyvolcans import (load_tectonic_analogy,
 
 VOLCANO_NAMES = load_volcano_names()
 
-#dictionary of weights for the criteria
-WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
-           'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
 
 #loading all the data
 ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
@@ -46,10 +43,14 @@ ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
                   'eruption_style': load_eruption_style_analogy()
                   }
 
+
 def _frac_to_float(value):
     """Take a string of decimal or fractional number (e.g. '0.5' or '1/2')
        and return the float representation."""
-    return float(Fraction(value))
+    if value is None:
+        return None
+    else:
+        return float(Fraction(value))
 
 
 def fuzzy_matching(volcano_name, limit=10):
@@ -81,6 +82,7 @@ def get_volcano_idx_from_number(volcano_number):
         raise PyvolcansError(msg) 
 
     return volcano_idx.index[0]
+
 
 def get_volcano_idx_from_name(volcano_name):
     """
@@ -125,7 +127,31 @@ def get_volcano_number_from_name(volcano_name):
     return volcano_vnum
 
 
-def calculate_weighted_analogy_matrix(weights = WEIGHTS,
+def set_weights_from_args(args_dict):
+    """
+    If no arguments are specified everything is set to 0.2
+    """
+    no_values_set = all(value is None for value in args_dict.values())
+
+    if no_values_set:
+        args_dict = dict.fromkeys(args_dict.keys(), 0.2)
+        return args_dict
+
+    sum_of_weights = 0
+    for key, value in args_dict.items():
+        if value is None:
+            args_dict[key] = 0
+        else:
+            sum_of_weights += value
+
+    if sum_of_weights != 1:
+        msg = f"Sum of weights ({sum_of_weights}) is different from 1!"
+        raise PyvolcansError(msg)
+
+    return args_dict
+
+
+def calculate_weighted_analogy_matrix(weights,
                                       analogies = ANALOGY_MATRIX):
     """
     Input is dictionary of weights
@@ -133,12 +159,6 @@ def calculate_weighted_analogy_matrix(weights = WEIGHTS,
     returns numpy array of weighted matrix.
     NB. We load all the matrices here inside the function
     """
-
-    #ERROR HANDLING!! (AND TEST!!!)
-    if sum(weights.values()) != 1:
-        msg = f"Sum of weights is different from 1!"
-        raise PyvolcansError(msg)
-
     weighted_tectonic_analogy = \
         weights['tectonic_setting'] * analogies['tectonic_setting']
 

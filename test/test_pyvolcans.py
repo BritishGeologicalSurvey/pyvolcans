@@ -20,6 +20,7 @@ from pyvolcans.pyvolcans_func import (
     get_volcano_number_from_name,
     get_volcano_idx_from_number,
     calculate_weighted_analogy_matrix,
+    set_weights_from_args,
     PyvolcansError
 )
 
@@ -31,7 +32,6 @@ from pyvolcans import (load_tectonic_analogy,
 
 # pylint: disable=missing-docstring
 
-WEIGHTS = {}
 
 
 def test_volcano_idx():
@@ -57,6 +57,49 @@ def test_fuzzy_matching():
 def test_volcano_number():
     number = get_volcano_number_from_name('Santorini')
     assert number == 212040
+
+
+def test_set_weights_from_args_error():
+    args_dict = {'tectonic_setting': 99,
+                 'geochemistry': 99,
+                 'morphology': 99,
+                 'eruption_size': 99,
+                 'eruption_style': 99}
+
+    with pytest.raises(PyvolcansError) as exc_info:
+        set_weights_from_args(args_dict)
+
+    assert str(exc_info.value) == "Sum of weights (495) is different from 1!"
+
+
+@pytest.mark.parametrize("args_dict, expected_weights", [
+    ({'tectonic_setting': 0.2,
+      'morphology': 0.2,
+      'eruption_size': 0.2,
+      'geochemistry': 0.2,
+      'eruption_style': 0.2}, [0.2, 0.2, 0.2, 0.2, 0.2]),
+    ({'tectonic_setting': None,
+      'morphology': None,
+      'eruption_size': None,
+      'geochemistry': None,
+      'eruption_style': None}, [0.2, 0.2, 0.2, 0.2, 0.2]),
+    ({'tectonic_setting': 1,
+      'morphology': None,
+      'eruption_size': None,
+      'geochemistry': None,
+      'eruption_style': None}, [1, 0, 0, 0, 0]),
+    ({'tectonic_setting': 0.2,
+      'morphology': 0.4,
+      'eruption_size': None,
+      'geochemistry': 0.2,
+      'eruption_style': 0.2}, [0.2, 0.4, 0, 0.2, 0.2])
+    ])
+def test_set_weights_from_args(args_dict, expected_weights):
+    names = list(args_dict.keys())
+    result = set_weights_from_args(args_dict)
+
+    assert list(result.keys()) == names
+    assert list(result.values()) == expected_weights
 
 
 def test_volcano_idx_from_number():
@@ -110,7 +153,6 @@ def test_combined_analogy_matrix_no_morphology(weights, expected, analogies):
     assert matrix.astype(int) == expected
 
 
-
 @pytest.mark.parametrize("weights,expected",
                         [({'tectonic_setting':0.25,
                            'geochemistry': 0.25,
@@ -133,14 +175,3 @@ def test_combined_analogy_matrix_no_eruption_style(weights, expected, analogies)
     assert matrix.astype(int) == expected
 
 
-@pytest.mark.parametrize("weights,expected",
-                       [({'tectonic_setting':99,
-                          'geochemistry': 99,
-                          'morphology': 99,
-                          'eruption_size': 99,
-                          'eruption_style': 99}, PyvolcansError)])
-def test_combined_analogy_matrix_exception_weights_more_than_one(weights, expected, analogies):
-    with pytest.raises(expected):
-        calculate_weighted_analogy_matrix(weights, analogies)
-                                        
-    
