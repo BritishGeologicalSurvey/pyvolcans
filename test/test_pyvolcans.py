@@ -14,9 +14,11 @@ import numpy as np
 import pyvolcans
 from pyvolcans.pyvolcans_func import (
     fuzzy_matching,
+    match_name,
     get_volcano_idx_from_name,
     get_volcano_name_from_idx,
     get_volcano_number_from_name,
+    get_volcano_idx_from_number,
     calculate_weighted_analogy_matrix,
     PyvolcansError
 )
@@ -43,18 +45,30 @@ def test_volcano_name():
 
 
 def test_fuzzy_matching():
-    names = fuzzy_matching('West Eifel')
-    assert len(names) == 10
-    assert 'West Eifel Volcanic Field' in names
-
-    names = fuzzy_matching('West Eiffel', limit=2)
-    assert len(names) == 2
-    assert 'West Eifel Volcanic Field' in names
+    volc_matches = fuzzy_matching('West Eifel')
+    assert isinstance(volc_matches, str)
+    assert len(volc_matches) == 681
+    assert 'West Eifel Volcanic Field' in volc_matches
+    volc_matches_limit = fuzzy_matching('West Eiffel', limit=2)
+    assert len(volc_matches_limit) == 161
+    assert 'West Eifel Volcanic Field' in volc_matches
 
 
 def test_volcano_number():
     number = get_volcano_number_from_name('Santorini')
     assert number == 212040
+
+
+def test_volcano_idx_from_number():
+    idx = get_volcano_idx_from_number(212040)
+    assert idx == 21
+
+
+@pytest.mark.parametrize("name,expected", [('blah', 'not found'), ('Santa Isabel', 'not unique')])
+def test_match_name(name, expected):
+    with pytest.raises(PyvolcansError) as excinfo:
+         matched = match_name(name)
+    assert expected in str(excinfo.value)
 
 
 @pytest.fixture

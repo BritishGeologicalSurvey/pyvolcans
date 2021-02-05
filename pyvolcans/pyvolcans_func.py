@@ -62,13 +62,25 @@ def fuzzy_matching(volcano_name, limit=10):
     """
     matches = process.extract(volcano_name, VOLCANO_NAMES[0], limit=limit,
                               scorer=fuzz.UQRatio)
-    names = [item[0] for item in matches]
-    volcano_info = VOLCANO_NAMES[VOLCANO_NAMES[0].isin(names)].rename(columns=
-                                                                      {0:'name',
-                                                                       1:'country',
-                                                                       2:'smithsonian_id'})
+    match_idx = [item[2] for item in matches]
+    volcano_info = VOLCANO_NAMES.iloc[match_idx].rename(columns={0:'name',
+                                                                 1:'country',
+                                                                 2:'smithsonian_id'})
     return volcano_info.to_string(index=False)
 
+
+def get_volcano_idx_from_number(volcano_number):
+    """
+       Input smithsonian id and get index of the volcano matrix
+    """ 
+    volcano_idx = VOLCANO_NAMES.loc[VOLCANO_NAMES[2] == volcano_number]
+    if volcano_idx.empty:
+        msg = ("Volcano number does not exist. "
+               "Please provide a non-zero, positive, six digits number. To check for "
+               "existing volcano numbers (VNUM), please visit www.volcano.si.edu")
+        raise PyvolcansError(msg) 
+
+    return volcano_idx.index[0]
 
 def get_volcano_idx_from_name(volcano_name):
     """
@@ -112,29 +124,6 @@ def get_volcano_number_from_name(volcano_name):
     volcano_vnum = matched_volcanoes.iloc[0, 2]
     return volcano_vnum
 
-def get_volcano_name_from_volcano_number(volcano_number):
-    """
-    Input is volcano number as indicated by the GVP,
-    output is the volcano name.
-    """
-    ##we need to create a message error here: "Volcano number does not exist.
-    ##Please provide a non-zero, positive, six digits number. To check for
-    ##existing volcano numbers (VNUM), please visit www.volcano.si.edu"
-
-    matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[2] == volcano_number]
-
-    if len(matched_volcanoes) == 0:
-        msg = f"Volcano number {volcano_number} does not exist!"
-        raise PyvolcansError(msg)
-    #NB. This error below should never occur because VNUM should be unique
-    elif len(matched_volcanoes) > 1:
-        msg = f"Volcano number {volcano_number} is not unique!"
-        raise PyvolcansError(msg)
-
-    volcano_name = \
-        matched_volcanoes.iloc[0, 0]
-
-    return volcano_name
 
 def calculate_weighted_analogy_matrix(weights = WEIGHTS,
                                       analogies = ANALOGY_MATRIX):
@@ -180,8 +169,10 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     """
 
     #get the index for my_volcano
-    volcano_idx = get_volcano_idx_from_name(my_volcano)
-
+    if isinstance(my_volcano, str):
+        volcano_idx = get_volcano_idx_from_name(my_volcano)
+    else:
+        volcano_idx = get_volcano_idx_from_number(my_volcano)
     #calculate the <count> highest values of multi-criteria analogy
     #getting the row corresponding to the target volcano ('my_volcano')
     my_volcano_analogies = weighted_analogy_matrix[volcano_idx,]
@@ -197,28 +188,29 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
 
     # obtain the volcano names and the analogy values
     top_analogies = my_volcano_analogies[top_idx]
-
     #print the names of the top <count> analogues
     ##print(VOLCANO_NAMES.iloc[top_idx,2],VOLCANO_NAMES.iloc[top_idx,0:1],
       ##     top_analogies)
-
     logging.debug("Top analogies: \n%s", VOLCANO_NAMES.iloc[top_idx, 0:3])
 
     # Prepare results table and print to standard output
-    result = VOLCANO_NAMES.iloc[top_idx].copy()
+    result =  VOLCANO_NAMES.iloc[top_idx].copy()
     result.columns = ['name', 'country', 'smithsonian_id']
     result['analogy_score'] = top_analogies
     result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id','name', 'country',
                                         'analogy_score'))
-
-    write_csv(my_volcano, result, count)
+    
+    # anywhere 'volcano_idx' came from, make it a str
+    volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
+    write_csv(volcano_name_csv, result, count)
 
     #open the GVP website of the top 1 analogue
     top_analogue_vnum = VOLCANO_NAMES.iloc[top_idx[1], 2] #[0]=target volcano!!
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
                 '&vtab=GeneralInfo' #Getting to open the General Info tab
     webbrowser.open(my_web)
+
 
 def write_csv(my_volcano, result, count):
     """
@@ -234,7 +226,7 @@ def write_csv(my_volcano, result, count):
     output_filename = Path.cwd() / f'{my_volcano_joined}_top{count-1}_analogues.csv'
     result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id','name', 'country',
-                                        'analogy_score'))
+                                       'analogy_score'))
 
 def match_name(volcano_name):
     matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[0] == volcano_name]
