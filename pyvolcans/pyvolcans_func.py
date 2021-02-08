@@ -10,7 +10,6 @@ Created on Tue Mar  3 09:49:16 2020
 # set of functions related to the implementation of PyVOLCANS
 
 # standard packages
-import os
 import logging
 import sys
 import webbrowser
@@ -18,10 +17,7 @@ from pathlib import Path
 from fractions import Fraction
 
 # external packages
-from pymatreader import read_mat
-import pandas as pd
 import numpy as np
-from scipy import stats
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 

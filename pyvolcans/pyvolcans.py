@@ -58,7 +58,7 @@ def cli():
                    'geochemistry': _frac_to_float(args.rock_geochemistry),
                    'morphology': _frac_to_float(args.morphology),
                    'eruption_size': _frac_to_float(args.eruption_size),
-                   'eruption_style': _frac_to_float(args.eruption_style)} 
+                   'eruption_style': _frac_to_float(args.eruption_style)}
     new_weights = set_weights_from_args(arg_weights)
     my_apriori_volcanoes = args.apriori
     logging.debug("Supplied weights: %s", new_weights)
@@ -131,4 +131,3 @@ def parse_args():
 
 if __name__ == '__main__':
     cli()
-    
