@@ -146,7 +146,7 @@ def set_weights_from_args(args_dict):
             sum_of_weights += value
 
     if sum_of_weights != 1:
-        msg = f"Sum of weights ({sum_of_weights}) is different from 1!"
+        msg = f"Sum of weights ({sum_of_weights:.5f}) is different from 1!"
         raise PyvolcansError(msg)
 
     return args_dict
