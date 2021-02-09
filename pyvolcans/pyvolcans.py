@@ -83,7 +83,8 @@ def cli():
             open_gvp_website(top_analogues_idx)
             
         #calling the function to write the top analogues to a csv file
-        write_csv(volcano_name, top_analogues, count)
+        if args.write_csv_file:
+            write_csv(volcano_name, top_analogues, count)
         
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
@@ -132,6 +133,9 @@ def parse_args():
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
                         default='10', type=int)
+    parser.add_argument("-w", "--write_csv_file", action="store_true",
+                        help=
+                        "Write list of top analogue volcanoes as .csv file")
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
     parser.add_argument("-v", "--verbose", action="store_true",
