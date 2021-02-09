@@ -71,9 +71,12 @@ def cli():
             weights=new_weights)
 
         # calling the get_analogies function to derive the final data
-        top_analogues_idx = get_analogies(volcano_input,
-                                          my_weighted_matrix,
-                                          count)
+        [top_analogues_idx,
+        top_analogues,
+        volcano_name] = get_analogies(
+                                     volcano_input,
+                                     my_weighted_matrix,
+                                     count)
         #calling the function to open the GVP website
         if args.website:
             open_gvp_website(top_analogues_idx)
