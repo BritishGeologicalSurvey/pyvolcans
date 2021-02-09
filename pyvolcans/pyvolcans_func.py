@@ -253,7 +253,7 @@ def write_csv(my_volcano, result, count):
     my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
     my_volcano_splitted = my_volcano_clean.split()
     my_volcano_joined = '_'.join(my_volcano_splitted)
-    output_filename = Path.cwd() / f'{my_volcano_joined}_top{count-1}_analogues.csv'
+    output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
     result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id', 'name', 'country',
                                         'analogy_score'))
