@@ -227,7 +227,6 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
 
     # anywhere 'volcano_idx' came from, make it a str
     volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
-    #write_csv(volcano_name_csv, result, count)
 
     return top_idx, result, volcano_name_csv
 

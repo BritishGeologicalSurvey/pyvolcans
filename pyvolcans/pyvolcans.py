@@ -21,7 +21,8 @@ from pyvolcans.pyvolcans_func import (
     get_many_analogy_percentiles,
     PyvolcansError,
     set_weights_from_args,
-    open_gvp_website
+    open_gvp_website,
+    write_csv
 )
 
 from pyvolcans import __version__
@@ -80,7 +81,10 @@ def cli():
         #calling the function to open the GVP website
         if args.website:
             open_gvp_website(top_analogues_idx)
-
+            
+        #calling the function to write the top analogues to a csv file
+        write_csv(volcano_name, top_analogues, count)
+        
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
         if my_apriori_volcanoes is not None:
