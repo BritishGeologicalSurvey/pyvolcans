@@ -20,7 +20,8 @@ from pyvolcans.pyvolcans_func import (
     get_analogies,
     get_many_analogy_percentiles,
     PyvolcansError,
-    set_weights_from_args
+    set_weights_from_args,
+    open_gvp_website
 )
 
 from pyvolcans import __version__
@@ -70,7 +71,11 @@ def cli():
             weights=new_weights)
 
         # calling the get_analogies function to derive the final data
-        get_analogies(volcano_input, my_weighted_matrix, count)
+        top_analogues_idx = get_analogies(volcano_input,
+                                          my_weighted_matrix,
+                                          count)
+        #calling the function to open the GVP website
+        open_gvp_website(top_analogues_idx)
 
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
