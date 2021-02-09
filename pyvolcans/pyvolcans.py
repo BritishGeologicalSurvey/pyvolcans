@@ -75,7 +75,8 @@ def cli():
                                           my_weighted_matrix,
                                           count)
         #calling the function to open the GVP website
-        open_gvp_website(top_analogues_idx)
+        if args.website:
+            open_gvp_website(top_analogues_idx)
 
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
@@ -124,8 +125,10 @@ def parse_args():
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
                         default='10', type=int)
+    parser.add_argument("-W", "--website", action="store_true",
+                        help="Open GVP website for top analogue volcano")
     parser.add_argument("-v", "--verbose", action="store_true",
-                        help="print debug-level logging output")
+                        help="Print debug-level logging output")
     parser.add_argument("-V", "--version", action="version",
                         help="Show package version",
                         version=__version__)
