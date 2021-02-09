@@ -60,16 +60,16 @@ def test_volcano_number():
 
 
 def test_set_weights_from_args_error():
-    args_dict = {'tectonic_setting': 99,
-                 'geochemistry': 99,
-                 'morphology': 99,
-                 'eruption_size': 99,
-                 'eruption_style': 99}
+    args_dict = {'tectonic_setting': 99.00001,
+                 'geochemistry': 99.00001,
+                 'morphology': 99.00001,
+                 'eruption_size': 99.00001,
+                 'eruption_style': 99.00001}
 
     with pytest.raises(PyvolcansError) as exc_info:
         set_weights_from_args(args_dict)
 
-    assert str(exc_info.value) == "Sum of weights (495) is different from 1!"
+    assert str(exc_info.value) == "Sum of weights (495.00005) is different from 1!"
 
 
 @pytest.mark.parametrize("args_dict, expected_weights", [
