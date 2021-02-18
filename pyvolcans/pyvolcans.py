@@ -60,7 +60,14 @@ def cli():
                    'eruption_size': _frac_to_float(args.eruption_size),
                    'eruption_style': _frac_to_float(args.eruption_style)} 
     new_weights = set_weights_from_args(arg_weights)
-    my_apriori_volcanoes = args.apriori
+    try:
+        my_apriori_volcanoes = [int(x) for x in args.apriori]
+    except ValueError:
+        my_apriori_volcanoes = args.apriori
+    except PyvolcansErorr as exc:
+        logging.error(exc.args[0])
+        sys.exit(1)
+
     logging.debug("Supplied weights: %s", new_weights)
 
     # Call pyvolcans
