@@ -291,8 +291,16 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     :return percentile: float
     """
     # convert volcano names into inds to access the weighted_analogy_matrix
-    my_volcano_idx = get_volcano_idx_from_name(my_volcano)
-    apriori_volcano_idx = get_volcano_idx_from_name(apriori_volcano)
+    if isinstance(my_volcano, str):
+        my_volcano_idx = get_volcano_idx_from_name(my_volcano)
+    else:
+        my_volcano_idx = get_volcano_idx_from_number(my_volcano)
+
+    if isinstance(apriori_volcano, str):
+        apriori_volcano_idx = get_volcano_idx_from_name(apriori_volcano)
+    else:
+        apriori_volcano_idx = get_volcano_idx_from_number(apriori_volcano)
+        
     
     # derive a vector with the analogy values for the target volcano
     my_analogy_values = weighted_analogy_matrix[my_volcano_idx,]
