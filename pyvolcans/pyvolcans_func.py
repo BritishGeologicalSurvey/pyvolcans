@@ -230,18 +230,22 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
 
     return top_idx, result, volcano_name_csv
 
-def open_gvp_website(top_analogues_idx):
+
+def open_gvp_website(top_analogue_vnum):
     """
     This function takes a list of indices for the top analogue
     volcanoes to the target volcano (given the weighting scheme
     specified by the user) and opens the Global Volcanism Program
     (GVP) website for the top analogue volcano.
     """
-    
-    top_analogue_vnum = VOLCANO_NAMES.iloc[top_analogues_idx[1], 2] #[0]=target volcano!!
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
-                '&vtab=GeneralInfo' #Getting to open the General Info tab
-    webbrowser.open(my_web)
+              '&vtab=GeneralInfo'  # Getting to open the General Info tab
+    browser_opened = webbrowser.open(my_web)
+
+    if not browser_opened:
+        msg = f"No suitable browser to open {my_web}"
+        raise PyvolcansError(msg)
+
 
 def write_csv(my_volcano, result, count):
     """

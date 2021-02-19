@@ -20,6 +20,7 @@ from pyvolcans.pyvolcans_func import (
     get_volcano_number_from_name,
     get_volcano_idx_from_number,
     calculate_weighted_analogy_matrix,
+    open_gvp_website,
     set_weights_from_args,
     PyvolcansError
 )
@@ -175,3 +176,20 @@ def test_combined_analogy_matrix_no_eruption_style(weights, expected, analogies)
     assert matrix.astype(int) == expected
 
 
+def test_open_gvp_website(monkeypatch):
+    # Arrange
+
+    def always_false(my_web):
+        # This function will replace webbrowser.open and always returns false
+        # We have my_web as an argument so our function has the same inputs as
+        # webbrowser.open
+        return False
+
+    monkeypatch.setattr('pyvolcans.pyvolcans_func.webbrowser.open', always_false)
+
+    # Act
+    with pytest.raises(PyvolcansError) as exc_info:
+        open_gvp_website(123456)
+
+    # Assert
+    assert str(exc_info.value) == "No suitable browser to open https://volcano.si.edu/volcano.cfm?vn=123456&vtab=GeneralInfo"

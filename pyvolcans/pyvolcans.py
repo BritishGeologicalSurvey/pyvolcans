@@ -15,14 +15,14 @@ import sys
 # Our packages
 from pyvolcans.pyvolcans_func import (
     _frac_to_float,
-
     calculate_weighted_analogy_matrix,
     get_analogies,
     get_many_analogy_percentiles,
     PyvolcansError,
     set_weights_from_args,
     open_gvp_website,
-    write_csv
+    write_csv,
+    VOLCANO_NAMES
 )
 
 from pyvolcans import __version__
@@ -80,12 +80,16 @@ def cli():
                                      count)
         #calling the function to open the GVP website
         if args.website:
-            open_gvp_website(top_analogues_idx)
-            
+            top_analogue_vnum = VOLCANO_NAMES.iloc[top_analogues_idx[1], 2]  # [0]=target volcano!!
+            try:
+                open_gvp_website(top_analogue_vnum)
+            except PyvolcansError as exc:
+                logging.warn(exc.args[0])
+
         #calling the function to write the top analogues to a csv file
         if args.write_csv_file:
             write_csv(volcano_name, top_analogues, count)
-        
+
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
         if my_apriori_volcanoes is not None:
