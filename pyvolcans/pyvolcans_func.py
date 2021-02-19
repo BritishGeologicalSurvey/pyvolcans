@@ -146,7 +146,7 @@ def set_weights_from_args(args_dict):
             sum_of_weights += value
 
     if sum_of_weights != 1:
-        msg = f"Sum of weights ({sum_of_weights}) is different from 1!"
+        msg = f"Sum of weights ({sum_of_weights:.5f}) is different from 1!"
         raise PyvolcansError(msg)
 
     return args_dict
@@ -227,13 +227,25 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
 
     # anywhere 'volcano_idx' came from, make it a str
     volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
-    write_csv(volcano_name_csv, result, count)
 
-    #open the GVP website of the top 1 analogue
-    top_analogue_vnum = VOLCANO_NAMES.iloc[top_idx[1], 2] #[0]=target volcano!!
+    return top_idx, result, volcano_name_csv
+
+
+def open_gvp_website(top_analogue_vnum):
+    """
+    This function takes a list of indices for the top analogue
+    volcanoes to the target volcano (given the weighting scheme
+    specified by the user) and opens the Global Volcanism Program
+    (GVP) website for the top analogue volcano.
+    """
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
-                '&vtab=GeneralInfo' #Getting to open the General Info tab
-    webbrowser.open(my_web)
+              '&vtab=GeneralInfo'  # Getting to open the General Info tab
+    browser_opened = webbrowser.open(my_web)
+
+    if not browser_opened:
+        msg = f"No suitable browser to open {my_web}"
+        raise PyvolcansError(msg)
+
 
 def write_csv(my_volcano, result, count):
     """
@@ -245,7 +257,7 @@ def write_csv(my_volcano, result, count):
     my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
     my_volcano_splitted = my_volcano_clean.split()
     my_volcano_joined = '_'.join(my_volcano_splitted)
-    output_filename = Path.cwd() / f'{my_volcano_joined}_top{count-1}_analogues.csv'
+    output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
     result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
                   index=False, columns=('smithsonian_id', 'name', 'country',
                                         'analogy_score'))
@@ -340,7 +352,7 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
 
     # adding a 'printing functionality' to the function
     print('\n\nAccording to PyVOLCANS, the following percentages of volcanoes'
-          + ' in the GVP database\nare better analogues to {my_volcano:s}'
+          + f' in the GVP database\nare better analogues to {my_volcano:s}'
           + ' than the a priori analogues reported below:\n')
     for volcano, percentage in better_analogues_dictionary.items():
         print(f'{volcano:s}: {percentage:d}%\n')
