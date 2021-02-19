@@ -10,7 +10,6 @@ Created on Tue Mar  3 09:49:16 2020
 # set of functions related to the implementation of PyVOLCANS
 
 # standard packages
-import os
 import logging
 import sys
 import webbrowser
@@ -18,10 +17,7 @@ from pathlib import Path
 from fractions import Fraction
 
 # external packages
-from pymatreader import read_mat
-import pandas as pd
 import numpy as np
-from scipy import stats
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
@@ -76,13 +72,13 @@ def fuzzy_matching(volcano_name, limit=10):
 def get_volcano_idx_from_number(volcano_number):
     """
        Input smithsonian id and get index of the volcano matrix
-    """ 
+    """
     volcano_idx = VOLCANO_NAMES.loc[VOLCANO_NAMES[2] == volcano_number]
     if volcano_idx.empty:
         msg = ("Volcano number does not exist. "
                "Please provide a non-zero, positive, six digits number. To check for "
                "existing volcano numbers (VNUM), please visit www.volcano.si.edu")
-        raise PyvolcansError(msg) 
+        raise PyvolcansError(msg)
 
     return volcano_idx.index[0]
 
@@ -157,7 +153,7 @@ def set_weights_from_args(args_dict):
 
 
 def calculate_weighted_analogy_matrix(weights,
-                                      analogies = ANALOGY_MATRIX):
+                                      analogies=ANALOGY_MATRIX):
     """
     Input is dictionary of weights
     e.g. {‘tectonic_setting’: 0.5, ‘geochemistry’: 0.5}
@@ -222,13 +218,13 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
     logging.debug("Top analogies: \n%s", VOLCANO_NAMES.iloc[top_idx, 0:3])
 
     # Prepare results table and print to standard output
-    result =  VOLCANO_NAMES.iloc[top_idx].copy()
+    result = VOLCANO_NAMES.iloc[top_idx].copy()
     result.columns = ['name', 'country', 'smithsonian_id']
     result['analogy_score'] = top_analogies
     result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
-                  index=False, columns=('smithsonian_id','name', 'country',
+                  index=False, columns=('smithsonian_id', 'name', 'country',
                                         'analogy_score'))
-    
+
     # anywhere 'volcano_idx' came from, make it a str
     volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
     write_csv(volcano_name_csv, result, count)
@@ -293,14 +289,14 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     # convert volcano names into inds to access the weighted_analogy_matrix
     my_volcano_idx = get_volcano_idx_from_name(my_volcano)
     apriori_volcano_idx = get_volcano_idx_from_name(apriori_volcano)
-    
+
     # derive a vector with the analogy values for the target volcano
     my_analogy_values = weighted_analogy_matrix[my_volcano_idx,]
 
     # calculate percentiles from 0 to 100 (like in VOLCANS for now)
     analogy_percentiles = np.percentile(my_analogy_values,
                                         np.linspace(0, 100, 101),
-                                        interpolation = 'midpoint')
+                                        interpolation='midpoint')
     # find the closest value to the analogy of the a priori volcano
     # NOTE that this value already represents the percentile (0-100)
     my_percentile = (np.abs(analogy_percentiles - \
@@ -323,9 +319,9 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     in the GVP database.
     :param my_volcano: str
     :param apriori_volcano: list of str
-    :param weighted_analogy_matrix: numpy array  
+    :param weighted_analogy_matrix: numpy array
     :return percentile: dict of apriori volcano name and percentile
-    :return better_analogues: dict of 'better analogues' name and percentage  
+    :return better_analogues: dict of 'better analogues' name and percentage
     """
 
     # check a priori volcanoes is a list
@@ -354,4 +350,3 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
 
 class PyvolcansError(Exception):
     """Base class for all Pyvolcans errors"""
-    pass
