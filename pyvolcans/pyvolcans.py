@@ -64,7 +64,7 @@ def cli():
         my_apriori_volcanoes = [int(x) for x in args.apriori]
     except ValueError:
         my_apriori_volcanoes = args.apriori
-    except PyvolcansErorr as exc:
+    except PyvolcansError as exc:
         logging.error(exc.args[0])
         sys.exit(1)
 
