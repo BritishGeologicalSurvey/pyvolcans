@@ -160,6 +160,11 @@ def calculate_weighted_analogy_matrix(weights,
     returns numpy array of weighted matrix.
     NB. We load all the matrices here inside the function
     """
+#    # get the index for my_volcano
+#    if isinstance(my_volcano, str):
+#        volcano_idx = get_volcano_idx_from_name(my_volcano)
+#    else:
+#        volcano_idx = get_volcano_idx_from_number(my_volcano)
     weighted_tectonic_analogy = \
         weights['tectonic_setting'] * analogies['tectonic_setting']
 
@@ -178,6 +183,14 @@ def calculate_weighted_analogy_matrix(weights,
     weighted_total_analogy_matrix = weighted_tectonic_analogy + \
         weighted_geochemistry_analogy + weighted_morphology_analogy + \
         weighted_eruption_size_analogy + weighted_eruption_style_analogy
+
+    print(weighted_total_analogy_matrix.shape)
+    volcans_result = VOLCANO_NAMES.copy()
+    volcans_result.columns = ['name', 'country', 'smithsonian_id']
+#    volcans_result['total_analogy'] = \
+#        weighted_total_analogy_matrix[volcano_idx,]
+    print(volcans_result)
+    print(type(volcans_result))
 
     return weighted_total_analogy_matrix
 
