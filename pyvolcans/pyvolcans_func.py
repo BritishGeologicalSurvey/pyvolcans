@@ -191,8 +191,23 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     volcans_result.columns = ['name', 'country', 'smithsonian_id']
     volcans_result['total_analogy'] = \
         weighted_total_analogy_matrix[volcano_idx,]
-    print(volcans_result)
-    print(type(volcans_result))
+    volcans_result['ATs'] = \
+        weighted_tectonic_analogy[volcano_idx,]
+    volcans_result['AG'] = \
+        weighted_geochemistry_analogy[volcano_idx,]
+    volcans_result['AM'] = \
+        weighted_morphology_analogy[volcano_idx,]
+    volcans_result['ASz'] = \
+        weighted_eruption_size_analogy[volcano_idx,]
+    volcans_result['ASt'] = \
+        weighted_eruption_style_analogy[volcano_idx,]
+#    print(volcans_result)
+#    print(type(volcans_result))
+#    test1=volcans_result.iloc[get_volcano_idx_from_name('Ulawun'),3:9]
+#    print(test1)
+#    print(test1.iloc[1:6].sum())
+#    print(test1.iloc[0]-test1.iloc[1:6].sum())
+    
 
     return weighted_total_analogy_matrix
 
