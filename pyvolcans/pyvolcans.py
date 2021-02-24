@@ -68,8 +68,9 @@ def cli():
     # Call pyvolcans
     try:
         # calculated_weighted_analogy_matrix
-        my_weighted_matrix = calculate_weighted_analogy_matrix(
-            volcano_input, weights=new_weights)
+        [my_weighted_matrix,
+         volcans_result] = calculate_weighted_analogy_matrix(
+             volcano_input, weights=new_weights)
 
         # calling the get_analogies function to derive the final data
         [top_analogues_idx,
