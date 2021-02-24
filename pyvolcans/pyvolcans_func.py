@@ -152,19 +152,21 @@ def set_weights_from_args(args_dict):
     return args_dict
 
 
-def calculate_weighted_analogy_matrix(weights,
+def calculate_weighted_analogy_matrix(my_volcano, weights,
                                       analogies=ANALOGY_MATRIX):
     """
+    [TEXT TO BE UPDATED]
     Input is dictionary of weights
     e.g. {‘tectonic_setting’: 0.5, ‘geochemistry’: 0.5}
     returns numpy array of weighted matrix.
     NB. We load all the matrices here inside the function
     """
-#    # get the index for my_volcano
-#    if isinstance(my_volcano, str):
-#        volcano_idx = get_volcano_idx_from_name(my_volcano)
-#    else:
-#        volcano_idx = get_volcano_idx_from_number(my_volcano)
+    # get the index for my_volcano
+    if isinstance(my_volcano, str):
+        volcano_idx = get_volcano_idx_from_name(my_volcano)
+    else:
+        volcano_idx = get_volcano_idx_from_number(my_volcano)
+        
     weighted_tectonic_analogy = \
         weights['tectonic_setting'] * analogies['tectonic_setting']
 
@@ -184,11 +186,11 @@ def calculate_weighted_analogy_matrix(weights,
         weighted_geochemistry_analogy + weighted_morphology_analogy + \
         weighted_eruption_size_analogy + weighted_eruption_style_analogy
 
-    print(weighted_total_analogy_matrix.shape)
+    #print(weighted_total_analogy_matrix.shape)
     volcans_result = VOLCANO_NAMES.copy()
     volcans_result.columns = ['name', 'country', 'smithsonian_id']
-#    volcans_result['total_analogy'] = \
-#        weighted_total_analogy_matrix[volcano_idx,]
+    volcans_result['total_analogy'] = \
+        weighted_total_analogy_matrix[volcano_idx,]
     print(volcans_result)
     print(type(volcans_result))
 
