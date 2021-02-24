@@ -208,7 +208,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
 #    print(test1.iloc[1:6].sum())
 #    print(test1.iloc[0]-test1.iloc[1:6].sum())
 
-    return weighted_total_analogy_matrix, volcans_result
+    return volcans_result
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
