@@ -77,7 +77,7 @@ def cli():
         top_analogues,
         volcano_name] = get_analogies(
                                      volcano_input,
-                                     my_weighted_matrix,
+                                     volcans_result,
                                      count)
         #calling the function to open the GVP website
         if args.website:

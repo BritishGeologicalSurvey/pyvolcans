@@ -211,7 +211,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     return weighted_total_analogy_matrix, volcans_result
 
 
-def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
+def get_analogies(my_volcano, volcans_result, count=10):
     """
     Returns, on screen, the names of the top <count> analogues to
     the target volcano (i.e. my_volcano) and their multi-criteria
@@ -226,7 +226,7 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
         volcano_idx = get_volcano_idx_from_number(my_volcano)
     # calculate the <count> highest values of multi-criteria analogy
     # getting the row corresponding to the target volcano ('my_volcano')
-    my_volcano_analogies = weighted_analogy_matrix[volcano_idx,]
+    my_volcano_analogies = volcans_result['total_analogy']
     # adding 1 to 'count' to consider 'my_volcano' itself in the search
     count = count+1
     # getting the indices corresponding to the highest values of analogy
