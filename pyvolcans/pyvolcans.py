@@ -96,7 +96,7 @@ def cli():
         if my_apriori_volcanoes is not None:
             get_many_analogy_percentiles(volcano_input,
                                          my_apriori_volcanoes,
-                                         my_weighted_matrix)
+                                         volcans_result)
     except PyvolcansError as exc:
         # Print error message and quit program on error
         logging.error(exc.args[0])
