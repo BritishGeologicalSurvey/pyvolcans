@@ -83,6 +83,8 @@ def cli():
                                      volcano_input,
                                      volcans_result,
                                      count)
+        #write the result
+        write_result('stdout', volcano_name, top_analogues, count)
         #calling the function to open the GVP website
         if args.website:
             # .iloc[0]=target volcano!! (in principle; we need to fix this)
