@@ -274,9 +274,12 @@ def open_gvp_website(top_analogue_vnum):
         raise PyvolcansError(msg)
 
 
-def write_csv(my_volcano, result, count):
+def write_result(my_volcano, result, count):
     """
     TO DO!
+    channel: string that specifies whether the writing is to be mode onto
+             the standard output or to a csv file. Available options: 'stdout'
+             and 'csv'
     """
     # just adding the same line but outputting the list to a file [IMPROVE]
     # NB. {count - 1} because 'count' includes the target volcano!
@@ -290,7 +293,6 @@ def write_csv(my_volcano, result, count):
                           columns=('smithsonian_id', 'name',
                                    'country', 'total_analogy',
                                    'ATs', 'AG', 'AM', 'ASz', 'ASt'))
-
 
 def match_name(volcano_name):
     """Attempt to match name to Smithsonian catalogue."""
