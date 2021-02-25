@@ -85,7 +85,8 @@ def cli():
                                      count)
         #calling the function to open the GVP website
         if args.website:
-            top_analogue_vnum = VOLCANO_NAMES.iloc[top_analogues_idx[1], 2]  # [0]=target volcano!!
+            # .iloc[0]=target volcano!! (in principle; we need to fix this)
+            top_analogue_vnum = VOLCANO_NAMES.iloc[top_analogues_idx.iloc[1],2]
             try:
                 open_gvp_website(top_analogue_vnum)
             except PyvolcansError as exc:
