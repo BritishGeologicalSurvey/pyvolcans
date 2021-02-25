@@ -241,10 +241,6 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # np.argpartition(my_volcano_analogies, \
     # len(my_volcano_analogies) - count)[-count:]
 
-    #This below may not be needed, as it is a repetition of what PyVOLCANS
-    #prints in stdout in its 'non-verbose' mode
-    logging.debug("Top analogies: \n%s", VOLCANO_NAMES.iloc[top_idx, 0:3])
-
     # Prepare results table and print to standard output
     ####result = VOLCANO_NAMES.iloc[top_idx].copy()
     ####result.columns = ['name', 'country', 'smithsonian_id']
