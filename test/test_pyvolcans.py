@@ -70,7 +70,10 @@ def test_set_weights_from_args_error():
     with pytest.raises(PyvolcansError) as exc_info:
         set_weights_from_args(args_dict)
 
-    assert str(exc_info.value) == "Sum of weights (495.00005) is different from 1!"
+    msg = ("Sum of weights (495.00005) is different from 1!"
+           " Please revise your weighting scheme.")
+
+    assert str(exc_info.value) == msg
 
 
 @pytest.mark.parametrize("args_dict, expected_weights", [
