@@ -251,7 +251,7 @@ def get_analogies(my_volcano, volcans_result, count=10):
     result = VOLCANO_NAMES.iloc[top_idx].copy()
     result.columns = ['name', 'country', 'smithsonian_id']
     result['analogy_score'] = top_analogies
-    result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
+    result.to_csv(sys.stdout, sep='\t', float_format='%.5f', header=True,
                   index=False, columns=('smithsonian_id', 'name', 'country',
                                         'analogy_score'))
 
@@ -288,7 +288,7 @@ def write_csv(my_volcano, result, count):
     my_volcano_splitted = my_volcano_clean.split()
     my_volcano_joined = '_'.join(my_volcano_splitted)
     output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
-    result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
+    result.to_csv(output_filename, sep='\t', float_format='%.5f', header=True,
                   index=False, columns=('smithsonian_id', 'name', 'country',
                                         'analogy_score'))
 
@@ -381,9 +381,9 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         better_analogues_dictionary[volcano] = 100 - percentile
 
     # adding a 'printing functionality' to the function
-    print('\n\nAccording to PyVOLCANS, the following percentages of volcanoes'
+    print('\n\nAccording to PyVOLCANS, the following percentage of volcanoes'
           + f' in the GVP database\nare better analogues to {my_volcano:s}'
-          + ' than the a priori analogues reported below:\n')
+          + ' than the \'a priori\' analogues reported below:\n')
     for volcano, percentage in better_analogues_dictionary.items():
         print(f'{volcano:s}: {percentage:d}%\n')
 
