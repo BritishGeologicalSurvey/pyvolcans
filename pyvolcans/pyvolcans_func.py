@@ -238,13 +238,8 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # np.argpartition(my_volcano_analogies, \
     # len(my_volcano_analogies) - count)[-count:]
 
-    # obtain the volcano names and the analogy values
-    top_analogies = my_volcano_analogies[top_idx]
-
-    # print the names of the top <count> analogues
-    # print(VOLCANO_NAMES.iloc[top_idx,2],VOLCANO_NAMES.iloc[top_idx,0:1],
-    #     top_analogies)
-
+    #This below may not be needed, as it is a repetition of what PyVOLCANS
+    #prints in stdout in its 'non-verbose' mode
     logging.debug("Top analogies: \n%s", VOLCANO_NAMES.iloc[top_idx, 0:3])
 
     # Prepare results table and print to standard output
@@ -291,9 +286,11 @@ def write_csv(my_volcano, result, count):
     my_volcano_splitted = my_volcano_clean.split()
     my_volcano_joined = '_'.join(my_volcano_splitted)
     output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
-    result.to_csv(output_filename, sep='\t', float_format='%.5f', header=True,
-                  index=False, columns=('smithsonian_id', 'name', 'country',
-                                        'analogy_score'))
+    result.to_csv(output_filename, sep='\t', float_format='%.5f',
+                          header=True, index=False,
+                          columns=('smithsonian_id', 'name',
+                                   'country', 'total_analogy',
+                                   'ATs', 'AG', 'AM', 'ASz', 'ASt'))
 
 
 def match_name(volcano_name):
