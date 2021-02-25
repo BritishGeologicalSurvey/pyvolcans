@@ -254,8 +254,9 @@ def get_analogies(my_volcano, volcans_result, count=10):
     result = volcans_result.iloc[top_idx]
     result.to_csv(sys.stdout, sep='\t', float_format='%.5f',
                           header=True, index=False,
-                          columns=('smithsonian_id','name',
-                                   'country','total_analogy'))
+                          columns=('smithsonian_id', 'name',
+                                   'country', 'total_analogy',
+                                   'ATs', 'AG', 'AM', 'ASz', 'ASt'))
 
     # anywhere 'volcano_idx' came from, make it a str
     volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
