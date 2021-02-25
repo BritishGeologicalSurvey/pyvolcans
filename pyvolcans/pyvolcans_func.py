@@ -274,20 +274,24 @@ def open_gvp_website(top_analogue_vnum):
         raise PyvolcansError(msg)
 
 
-def write_result(my_volcano, result, count):
+def write_result(channel, my_volcano, result, count):
     """
     TO DO!
-    channel: string that specifies whether the writing is to be mode onto
+    channel: string that specifies whether the writing is to be made onto
              the standard output or to a csv file. Available options: 'stdout'
              and 'csv'
     """
     # just adding the same line but outputting the list to a file [IMPROVE]
     # NB. {count - 1} because 'count' includes the target volcano!
     # processing the volcano name to make it more 'machine-friendly'
-    my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
-    my_volcano_splitted = my_volcano_clean.split()
-    my_volcano_joined = '_'.join(my_volcano_splitted)
-    output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
+    if channel == 'stdout':
+        output_filename = sys.stdout
+    elif channel == 'csv':
+        my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
+        my_volcano_splitted = my_volcano_clean.split()
+        my_volcano_joined = '_'.join(my_volcano_splitted)
+        output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
+        
     result.to_csv(output_filename, sep='\t', float_format='%.5f',
                           header=True, index=False,
                           columns=('smithsonian_id', 'name',

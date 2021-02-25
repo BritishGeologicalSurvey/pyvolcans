@@ -94,7 +94,7 @@ def cli():
 
         #calling the function to write the top analogues to a csv file
         if args.write_csv_file:
-            write_result(volcano_name, top_analogues, count)
+            write_result('csv', volcano_name, top_analogues, count)
 
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
