@@ -49,8 +49,11 @@ def _frac_to_float(value):
     if value is None:
         return None
     else:
-        return float(Fraction(value))
-
+        if value.find('/') != -1:
+            numerator, denominator =  value.split('/')
+            return float(Fraction(numerator)/Fraction(denominator))
+        else:
+            return float(Fraction(value))
 
 def fuzzy_matching(volcano_name, limit=10):
     """
