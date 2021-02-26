@@ -21,7 +21,7 @@ from pyvolcans.pyvolcans_func import (
     PyvolcansError,
     set_weights_from_args,
     open_gvp_website,
-    write_result,
+    output_result,
     VOLCANO_NAMES
 )
 
@@ -84,8 +84,9 @@ def cli():
                                      volcans_result,
                                      count)
         #write the result
-        write_result(args.verbose, 'stdout',
-                     volcano_name, top_analogues, count)
+        output_result(verbose=args.verbose,
+                      my_volcano=volcano_name,
+                      result=top_analogues)
         #calling the function to open the GVP website
         if args.website:
             # .iloc[0]=target volcano!! (in principle; we need to fix this)
@@ -97,8 +98,10 @@ def cli():
 
         #calling the function to write the top analogues to a csv file
         if args.write_csv_file:
-            write_result(args.verbose, 'csv',
-                         volcano_name, top_analogues, count)
+            output_result(args.verbose,
+                         volcano_name,
+                         top_analogues,
+                         to_file='csv')
 
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
