@@ -49,8 +49,11 @@ def _frac_to_float(value):
     if value is None:
         return None
     else:
-        return float(Fraction(value))
-
+        if value.find('/') != -1:
+            numerator, denominator =  value.split('/')
+            return float(Fraction(numerator)/Fraction(denominator))
+        else:
+            return float(Fraction(value))
 
 def fuzzy_matching(volcano_name, limit=10):
     """
@@ -146,7 +149,8 @@ def set_weights_from_args(args_dict):
             sum_of_weights += value
 
     if sum_of_weights != 1:
-        msg = f"Sum of weights ({sum_of_weights:.5f}) is different from 1!"
+        msg = (f"Sum of weights ({sum_of_weights:.5f}) is different from 1! "
+               "Please revise your weighting scheme.")
         raise PyvolcansError(msg)
 
     return args_dict
@@ -237,28 +241,16 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # np.argpartition(my_volcano_analogies, \
     # len(my_volcano_analogies) - count)[-count:]
 
-    # obtain the volcano names and the analogy values
-    top_analogies = my_volcano_analogies[top_idx]
-
-    # print the names of the top <count> analogues
-    # print(VOLCANO_NAMES.iloc[top_idx,2],VOLCANO_NAMES.iloc[top_idx,0:1],
-    #     top_analogies)
-
-    logging.debug("Top analogies: \n%s", VOLCANO_NAMES.iloc[top_idx, 0:3])
-
     # Prepare results table and print to standard output
-    result = VOLCANO_NAMES.iloc[top_idx].copy()
-    result.columns = ['name', 'country', 'smithsonian_id']
-    result['analogy_score'] = top_analogies
-    result.to_csv(sys.stdout, sep='\t', float_format='%.3f', header=True,
-                  index=False, columns=('smithsonian_id', 'name', 'country',
-                                        'analogy_score'))
-
+    ####result = VOLCANO_NAMES.iloc[top_idx].copy()
+    ####result.columns = ['name', 'country', 'smithsonian_id']
+    ####result['analogy_score'] = top_analogies
+    result = volcans_result.iloc[top_idx]
+    
     # anywhere 'volcano_idx' came from, make it a str
     volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
-
+    
     return top_idx, result, volcano_name_csv
-
 
 def open_gvp_website(top_analogue_vnum):
     """
@@ -276,20 +268,36 @@ def open_gvp_website(top_analogue_vnum):
         raise PyvolcansError(msg)
 
 
-def write_csv(my_volcano, result, count):
+def write_result(verbose, channel, my_volcano, result, count):
     """
     TO DO!
+    channel: string that specifies whether the writing is to be made onto
+             the standard output or to a csv file. Available options: 'stdout'
+             and 'csv'
+    verbose: true/false to control whether only total analogy or total and
+             single-criterion analogies are given as output
     """
     # just adding the same line but outputting the list to a file [IMPROVE]
     # NB. {count - 1} because 'count' includes the target volcano!
     # processing the volcano name to make it more 'machine-friendly'
-    my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
-    my_volcano_splitted = my_volcano_clean.split()
-    my_volcano_joined = '_'.join(my_volcano_splitted)
-    output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
-    result.to_csv(output_filename, sep='\t', float_format='%.3f', header=True,
-                  index=False, columns=('smithsonian_id', 'name', 'country',
-                                        'analogy_score'))
+    if channel == 'stdout':
+        output_filename = sys.stdout
+        separator = '\t'
+    elif channel == 'csv':
+        my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
+        my_volcano_splitted = my_volcano_clean.split()
+        my_volcano_joined = '_'.join(my_volcano_splitted)
+        output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
+        separator = ','
+        
+    if verbose:
+        my_columns = ('smithsonian_id', 'name', 'country', 'total_analogy',
+                      'ATs', 'AG', 'AM', 'ASz', 'ASt')
+    else:
+        my_columns = ('smithsonian_id', 'name', 'country', 'total_analogy')
+
+    result.to_csv(output_filename, sep=separator, float_format='%.5f',
+                  header=True, index=False, columns=my_columns)
 
 
 def match_name(volcano_name):
@@ -380,9 +388,9 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         better_analogues_dictionary[volcano] = 100 - percentile
 
     # adding a 'printing functionality' to the function
-    print('\n\nAccording to PyVOLCANS, the following percentages of volcanoes'
+    print('\n\nAccording to PyVOLCANS, the following percentage of volcanoes'
           + f' in the GVP database\nare better analogues to {my_volcano:s}'
-          + ' than the a priori analogues reported below:\n')
+          + ' than the \'a priori\' analogues reported below:\n')
     for volcano, percentage in better_analogues_dictionary.items():
         print(f'{volcano:s}: {percentage:d}%\n')
 

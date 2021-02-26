@@ -21,7 +21,7 @@ from pyvolcans.pyvolcans_func import (
     PyvolcansError,
     set_weights_from_args,
     open_gvp_website,
-    write_csv,
+    write_result,
     VOLCANO_NAMES
 )
 
@@ -61,7 +61,12 @@ def cli():
                    'morphology': _frac_to_float(args.morphology),
                    'eruption_size': _frac_to_float(args.eruption_size),
                    'eruption_style': _frac_to_float(args.eruption_style)}
-    new_weights = set_weights_from_args(arg_weights)
+    try:
+        new_weights = set_weights_from_args(arg_weights)
+    except PyvolcansError as exc:
+        # Print error message and quit program on error
+        logging.error(exc.args[0])
+        sys.exit(1)    
     my_apriori_volcanoes = args.apriori
     logging.debug("Supplied weights: %s", new_weights)
 
@@ -78,9 +83,13 @@ def cli():
                                      volcano_input,
                                      volcans_result,
                                      count)
+        #write the result
+        write_result(args.verbose, 'stdout',
+                     volcano_name, top_analogues, count)
         #calling the function to open the GVP website
         if args.website:
-            top_analogue_vnum = VOLCANO_NAMES.iloc[top_analogues_idx[1], 2]  # [0]=target volcano!!
+            # .iloc[0]=target volcano!! (in principle; we need to fix this)
+            top_analogue_vnum = VOLCANO_NAMES.iloc[top_analogues_idx.iloc[1],2]
             try:
                 open_gvp_website(top_analogue_vnum)
             except PyvolcansError as exc:
@@ -88,7 +97,8 @@ def cli():
 
         #calling the function to write the top analogues to a csv file
         if args.write_csv_file:
-            write_csv(volcano_name, top_analogues, count)
+            write_result(args.verbose, 'csv',
+                         volcano_name, top_analogues, count)
 
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
