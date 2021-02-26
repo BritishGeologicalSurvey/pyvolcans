@@ -291,16 +291,14 @@ def write_result(verbose, channel, my_volcano, result, count):
         separator = ','
         
     if verbose:
-        result.to_csv(output_filename, sep=separator, float_format='%.5f',
-                      header=True, index=False,
-                      columns=('smithsonian_id', 'name',
-                               'country', 'total_analogy',
-                               'ATs', 'AG', 'AM', 'ASz', 'ASt'))
+        my_columns = ('smithsonian_id', 'name', 'country', 'total_analogy',
+                      'ATs', 'AG', 'AM', 'ASz', 'ASt')
     else:
-        result.to_csv(output_filename, sep=separator, float_format='%.5f',
-                      header=True, index=False,
-                      columns=('smithsonian_id', 'name',
-                               'country', 'total_analogy'))
+        my_columns = ('smithsonian_id', 'name', 'country', 'total_analogy')
+
+    result.to_csv(output_filename, sep=separator, float_format='%.5f',
+                  header=True, index=False, columns=my_columns)
+
 
 def match_name(volcano_name):
     """Attempt to match name to Smithsonian catalogue."""
