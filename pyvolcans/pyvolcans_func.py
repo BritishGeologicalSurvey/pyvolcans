@@ -282,20 +282,22 @@ def write_result(verbose, channel, my_volcano, result, count):
     # processing the volcano name to make it more 'machine-friendly'
     if channel == 'stdout':
         output_filename = sys.stdout
+        separator = '\t'
     elif channel == 'csv':
         my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
         my_volcano_splitted = my_volcano_clean.split()
         my_volcano_joined = '_'.join(my_volcano_splitted)
         output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
+        separator = ','
         
     if verbose:
-        result.to_csv(output_filename, sep='\t', float_format='%.5f',
+        result.to_csv(output_filename, sep=separator, float_format='%.5f',
                       header=True, index=False,
                       columns=('smithsonian_id', 'name',
                                'country', 'total_analogy',
                                'ATs', 'AG', 'AM', 'ASz', 'ASt'))
     else:
-        result.to_csv(output_filename, sep='\t', float_format='%.5f',
+        result.to_csv(output_filename, sep=separator, float_format='%.5f',
                       header=True, index=False,
                       columns=('smithsonian_id', 'name',
                                'country', 'total_analogy'))
