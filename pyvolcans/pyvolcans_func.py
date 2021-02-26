@@ -267,7 +267,7 @@ def open_gvp_website(top_analogue_vnum):
         raise PyvolcansError(msg)
 
 
-def write_result(verbose, channel, my_volcano, result, count):
+def output_result(verbose, my_volcano, result, to_file=None):
     """
     TO DO!
     channel: string that specifies whether the writing is to be made onto
@@ -279,24 +279,17 @@ def write_result(verbose, channel, my_volcano, result, count):
     # just adding the same line but outputting the list to a file [IMPROVE]
     # NB. {count - 1} because 'count' includes the target volcano!
     # processing the volcano name to make it more 'machine-friendly'
-    if channel == 'stdout':
-        output_filename = sys.stdout
-        separator = '\t'
-    elif channel == 'csv':
-        my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
-        my_volcano_splitted = my_volcano_clean.split()
-        my_volcano_joined = '_'.join(my_volcano_splitted)
-        output_filename = Path.cwd() / f'{my_volcano_joined}_top{count}_analogues.csv'
-        separator = ','
-        
-    if verbose:
-        my_columns = ('smithsonian_id', 'name', 'country', 'total_analogy',
-                      'ATs', 'AG', 'AM', 'ASz', 'ASt')
-    else:
-        my_columns = ('smithsonian_id', 'name', 'country', 'total_analogy')
-
-    result.to_csv(output_filename, sep=separator, float_format='%.5f',
-                  header=True, index=False, columns=my_columns)
+    
+    if to_file == 'csv':
+        top_count = result.shape[0]
+        output_filename = Path.cwd() / f'{my_volcano}_top{top_count}_analogues.csv'
+        result.to_csv(output_filename, sep=',', float_format='%.5f',
+                      header=True, index=False) 
+    #if verbose:
+     #   print(result.to_string(index=False))
+   # else:
+    #    my_columns = ['smithsonian_id', 'name', 'country', 'total_analogy']
+     #   print(result[my_columns].to_string(index=False))
 
 
 def match_name(volcano_name):
