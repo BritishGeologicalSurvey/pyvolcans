@@ -152,14 +152,21 @@ def set_weights_from_args(args_dict):
     return args_dict
 
 
-def calculate_weighted_analogy_matrix(weights,
+def calculate_weighted_analogy_matrix(my_volcano, weights,
                                       analogies=ANALOGY_MATRIX):
     """
+    [TEXT TO BE UPDATED]
     Input is dictionary of weights
     e.g. {‘tectonic_setting’: 0.5, ‘geochemistry’: 0.5}
     returns numpy array of weighted matrix.
     NB. We load all the matrices here inside the function
     """
+    # get the index for my_volcano
+    if isinstance(my_volcano, str):
+        volcano_idx = get_volcano_idx_from_name(my_volcano)
+    else:
+        volcano_idx = get_volcano_idx_from_number(my_volcano)
+        
     weighted_tectonic_analogy = \
         weights['tectonic_setting'] * analogies['tectonic_setting']
 
@@ -179,10 +186,32 @@ def calculate_weighted_analogy_matrix(weights,
         weighted_geochemistry_analogy + weighted_morphology_analogy + \
         weighted_eruption_size_analogy + weighted_eruption_style_analogy
 
-    return weighted_total_analogy_matrix
+    #print(weighted_total_analogy_matrix.shape)
+    volcans_result = VOLCANO_NAMES.copy()
+    volcans_result.columns = ['name', 'country', 'smithsonian_id']
+    volcans_result['total_analogy'] = \
+        weighted_total_analogy_matrix[volcano_idx,]
+    volcans_result['ATs'] = \
+        weighted_tectonic_analogy[volcano_idx,]
+    volcans_result['AG'] = \
+        weighted_geochemistry_analogy[volcano_idx,]
+    volcans_result['AM'] = \
+        weighted_morphology_analogy[volcano_idx,]
+    volcans_result['ASz'] = \
+        weighted_eruption_size_analogy[volcano_idx,]
+    volcans_result['ASt'] = \
+        weighted_eruption_style_analogy[volcano_idx,]
+#    print(volcans_result)
+#    print(type(volcans_result))
+#    test1=volcans_result.iloc[get_volcano_idx_from_name('Ulawun'),3:9]
+#    print(test1)
+#    print(test1.iloc[1:6].sum())
+#    print(test1.iloc[0]-test1.iloc[1:6].sum())
+
+    return volcans_result
 
 
-def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
+def get_analogies(my_volcano, volcans_result, count=10):
     """
     Returns, on screen, the names of the top <count> analogues to
     the target volcano (i.e. my_volcano) and their multi-criteria
@@ -197,7 +226,7 @@ def get_analogies(my_volcano, weighted_analogy_matrix, count=10):
         volcano_idx = get_volcano_idx_from_number(my_volcano)
     # calculate the <count> highest values of multi-criteria analogy
     # getting the row corresponding to the target volcano ('my_volcano')
-    my_volcano_analogies = weighted_analogy_matrix[volcano_idx,]
+    my_volcano_analogies = volcans_result['total_analogy']
     # adding 1 to 'count' to consider 'my_volcano' itself in the search
     count = count+1
     # getting the indices corresponding to the highest values of analogy
@@ -283,8 +312,9 @@ def match_name(volcano_name):
 
 
 def get_analogy_percentile(my_volcano, apriori_volcano,
-                           weighted_analogy_matrix):
+                           volcans_result):
     """
+    [TEXT TO UPDATE!]
     This function takes the target volcano (my_volcano), one 'a priori'
     analogue volcano (apriori_volcano), and the weighted analogy matrix
     calculated for the target volcano (weighted_analogy_matrix), and
@@ -299,12 +329,10 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     :return percentile: float
     """
     # convert volcano names into inds to access the weighted_analogy_matrix
-    my_volcano_idx = get_volcano_idx_from_name(my_volcano)
     apriori_volcano_idx = get_volcano_idx_from_name(apriori_volcano)
 
     # derive a vector with the analogy values for the target volcano
-    my_analogy_values = weighted_analogy_matrix[my_volcano_idx,]
-
+    my_analogy_values = volcans_result['total_analogy']
     # calculate percentiles from 0 to 100 (like in VOLCANS for now)
     analogy_percentiles = np.percentile(my_analogy_values,
                                         np.linspace(0, 100, 101),
@@ -318,8 +346,9 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     return my_percentile
 
 def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
-                                 weighted_analogy_matrix):
+                                 volcans_result):
     """
+    [TEXT TO UPDATE!]
     This function takes the target volcano (my_volcano), a collection
     of one or more 'a priori' analogue volcanoes in a list
     (apriori_volcanoes_list), and the weighted analogy matrix calculated
@@ -346,7 +375,7 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     # loop over get_analogy_percentile
     for volcano in apriori_volcanoes_list:
         percentile = get_analogy_percentile(my_volcano, volcano,
-                                            weighted_analogy_matrix)
+                                            volcans_result)
         percentile_dictionary[volcano] = percentile
         better_analogues_dictionary[volcano] = 100 - percentile
 
