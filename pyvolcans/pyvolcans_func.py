@@ -246,11 +246,10 @@ def get_analogies(my_volcano, volcans_result, count=10):
     ####result.columns = ['name', 'country', 'smithsonian_id']
     ####result['analogy_score'] = top_analogies
     result = volcans_result.iloc[top_idx]
-    
     # anywhere 'volcano_idx' came from, make it a str
-    volcano_name_csv = get_volcano_name_from_idx(volcano_idx)
-    
-    return top_idx, result, volcano_name_csv
+    volcano_name = get_volcano_name_from_idx(volcano_idx)
+
+    return top_idx, result, volcano_name
 
 def open_gvp_website(top_analogue_vnum):
     """
