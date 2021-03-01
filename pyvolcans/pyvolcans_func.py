@@ -133,7 +133,10 @@ def get_volcano_number_from_name(volcano_name):
 
 
 def convert_to_idx(my_volcano):
-
+    """ 
+        Check if input is string or not.
+        Convert to index
+    """
     if isinstance(my_volcano, str):
         volcano_idx = get_volcano_idx_from_name(my_volcano)
     else:
