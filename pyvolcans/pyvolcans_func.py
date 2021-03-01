@@ -55,6 +55,7 @@ def _frac_to_float(value):
         else:
             return float(Fraction(value))
 
+
 def fuzzy_matching(volcano_name, limit=10):
     """
     List volcanoes with names most similar to volcano_name.
@@ -131,6 +132,16 @@ def get_volcano_number_from_name(volcano_name):
     return volcano_vnum
 
 
+def convert_to_idx(my_volcano):
+
+    if isinstance(my_volcano, str):
+        volcano_idx = get_volcano_idx_from_name(my_volcano)
+    else:
+        volcano_idx = get_volcano_idx_from_number(my_volcano)
+
+    return volcano_idx
+
+
 def set_weights_from_args(args_dict):
     """
     If no arguments are specified everything is set to 0.2
@@ -166,11 +177,8 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     NB. We load all the matrices here inside the function
     """
     # get the index for my_volcano
-    if isinstance(my_volcano, str):
-        volcano_idx = get_volcano_idx_from_name(my_volcano)
-    else:
-        volcano_idx = get_volcano_idx_from_number(my_volcano)
-        
+    volcano_idx = convert_to_idx(my_volcano)
+       
     weighted_tectonic_analogy = \
         weights['tectonic_setting'] * analogies['tectonic_setting']
 
@@ -205,12 +213,6 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         weighted_eruption_size_analogy[volcano_idx,]
     volcans_result['ASt'] = \
         weighted_eruption_style_analogy[volcano_idx,]
-#    print(volcans_result)
-#    print(type(volcans_result))
-#    test1=volcans_result.iloc[get_volcano_idx_from_name('Ulawun'),3:9]
-#    print(test1)
-#    print(test1.iloc[1:6].sum())
-#    print(test1.iloc[0]-test1.iloc[1:6].sum())
 
     return volcans_result
 
@@ -224,10 +226,7 @@ def get_analogies(my_volcano, volcans_result, count=10):
     """
 
     # get the index for my_volcano
-    if isinstance(my_volcano, str):
-        volcano_idx = get_volcano_idx_from_name(my_volcano)
-    else:
-        volcano_idx = get_volcano_idx_from_number(my_volcano)
+    volcano_idx = convert_to_idx(my_volcano)
     # calculate the <count> highest values of multi-criteria analogy
     # getting the row corresponding to the target volcano ('my_volcano')
     my_volcano_analogies = volcans_result['total_analogy']
@@ -236,7 +235,6 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # getting the indices corresponding to the highest values of analogy
     # in descending order (highest analogy first)
     top_idx = my_volcano_analogies.argsort()[-count:][::-1]
-    # removing 'my_volcano' from the list
     # top_idx = set(volcano_idx).symmetric_difference(top_idx)
     # np.argpartition(my_volcano_analogies, \
     # len(my_volcano_analogies) - count)[-count:]
@@ -337,19 +335,10 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     :return percentile: float
     """
     # convert volcano names into inds to access the weighted_analogy_matrix
-    if isinstance(my_volcano, str):
-        my_volcano_idx = get_volcano_idx_from_name(my_volcano)
-    else:
-        my_volcano_idx = get_volcano_idx_from_number(my_volcano)
-
-    if isinstance(apriori_volcano, str):
-        apriori_volcano_idx = get_volcano_idx_from_name(apriori_volcano)
-    else:
-        apriori_volcano_idx = get_volcano_idx_from_number(apriori_volcano)
-        
+    volcano_idx = convert_to_idx(my_volcano)
+    apriori_volcano_idx = convert_to_idx(apriori_volcano) 
     
     # derive a vector with the analogy values for the target volcano
-    apriori_volcano_idx = get_volcano_idx_from_name(apriori_volcano)
 
     # derive a vector with the analogy values for the target volcano
     my_analogy_values = volcans_result['total_analogy']
@@ -386,8 +375,6 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     """
 
     # check a priori volcanoes is a list
-    if not isinstance(apriori_volcanoes_list, list):
-        raise PyvolcansError("A priori volcanoes should be a list!")
 
     percentile_dictionary = {}
     better_analogues_dictionary = {} # 100-percentile
@@ -402,9 +389,13 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     # adding a 'printing functionality' to the function
     print('\n\nAccording to PyVOLCANS, the following percentage of volcanoes'
           + f' in the GVP database\nare better analogues to {my_volcano:s}'
-          + ' than the \'a priori\' analogues reported below:\n')
+          + f' than the \'a priori\' analogues reported below:\n')
+    
     for volcano, percentage in better_analogues_dictionary.items():
-        print(f'{volcano:s}: {percentage:d}%\n')
+        if isinstance(volcano, int):
+           print(f'{VOLCANO_NAMES.loc[get_volcano_idx_from_number(volcano)][0]}: {percentage}%\n')
+        else:
+           print(f'{volcano}: {percentage}%\n')
 
     return percentile_dictionary, better_analogues_dictionary
 
