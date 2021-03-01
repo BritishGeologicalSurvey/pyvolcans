@@ -284,12 +284,15 @@ def output_result(verbose, my_volcano, result, to_file=None):
         top_count = result.shape[0]
         output_filename = Path.cwd() / f'{my_volcano}_top{top_count}_analogues.csv'
         result.to_csv(output_filename, sep=',', float_format='%.5f',
-                      header=True, index=False) 
-    #if verbose:
-     #   print(result.to_string(index=False))
-   # else:
-    #    my_columns = ['smithsonian_id', 'name', 'country', 'total_analogy']
-     #   print(result[my_columns].to_string(index=False))
+                      header=True, index=False)
+    
+    if verbose:
+        result = result.to_string(index=False)
+    else:
+        my_columns = ['smithsonian_id', 'name', 'country', 'total_analogy']
+        result = result[my_columns].to_string(index=False)
+
+    return result
 
 
 def match_name(volcano_name):
