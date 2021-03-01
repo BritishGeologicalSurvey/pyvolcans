@@ -61,16 +61,16 @@ def cli():
                    'morphology': _frac_to_float(args.morphology),
                    'eruption_size': _frac_to_float(args.eruption_size),
                    'eruption_style': _frac_to_float(args.eruption_style)} 
-    new_weights = set_weights_from_args(arg_weights)
     try:
-        my_apriori_volcanoes = [int(x) for x in args.apriori]
-    except ValueError:
-        my_apriori_volcanoes = args.apriori
+        new_weights = set_weights_from_args(arg_weights)
     except PyvolcansError as exc:
+        # Print error message and quit program on error
         logging.error(exc.args[0])
-        sys.exit(1)
-
+        sys.exit(1)    
+   
+    my_apriori_volcanoes = args.apriori
     logging.debug("Supplied weights: %s", new_weights)
+
 
     # Call pyvolcans
     try:
@@ -105,14 +105,20 @@ def cli():
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
         if my_apriori_volcanoes is not None:
+            try:
+                my_apriori_volcanoes = [int(x) for x in args.apriori]
+            except ValueError:
+                my_apriori_volcanoes = args.apriori
+            except PyvolcansError as exc:
+                logging.error(exc.args[0])
+                sys.exit(1)
             get_many_analogy_percentiles(volcano_input,
                                          my_apriori_volcanoes,
                                          volcans_result)
     except PyvolcansError as exc:
-        # Print error message and quit program on error
-        logging.error(exc.args[0])
-        sys.exit(1)
-
+       # Print error message and quit program on error
+       logging.error(exc.args[0])
+       sys.exit(1)
 
 def parse_args():
     """
