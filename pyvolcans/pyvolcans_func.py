@@ -231,20 +231,9 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # calculate the <count> highest values of multi-criteria analogy
     # getting the row corresponding to the target volcano ('my_volcano')
     my_volcano_analogies = volcans_result['total_analogy']
-    # adding 1 to 'count' to consider 'my_volcano' itself in the search
-    count = count+1
     # getting the indices corresponding to the highest values of analogy
     # in descending order (highest analogy first)
-    top_idx = my_volcano_analogies.argsort()[-count:][::-1]
-    # removing 'my_volcano' from the list
-    # top_idx = set(volcano_idx).symmetric_difference(top_idx)
-    # np.argpartition(my_volcano_analogies, \
-    # len(my_volcano_analogies) - count)[-count:]
-
-    # Prepare results table and print to standard output
-    ####result = VOLCANO_NAMES.iloc[top_idx].copy()
-    ####result.columns = ['name', 'country', 'smithsonian_id']
-    ####result['analogy_score'] = top_analogies
+    top_idx = my_volcano_analogies.argsort().tail(count)[::-1]
     result = volcans_result.iloc[top_idx]
     # anywhere 'volcano_idx' came from, make it a str
     volcano_name = get_volcano_name_from_idx(volcano_idx)
