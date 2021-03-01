@@ -20,6 +20,7 @@ from pyvolcans.pyvolcans_func import (
     get_volcano_number_from_name,
     get_volcano_idx_from_number,
     calculate_weighted_analogy_matrix,
+    open_gvp_website,
     set_weights_from_args,
     PyvolcansError
 )
@@ -60,16 +61,19 @@ def test_volcano_number():
 
 
 def test_set_weights_from_args_error():
-    args_dict = {'tectonic_setting': 99,
-                 'geochemistry': 99,
-                 'morphology': 99,
-                 'eruption_size': 99,
-                 'eruption_style': 99}
+    args_dict = {'tectonic_setting': 99.00001,
+                 'geochemistry': 99.00001,
+                 'morphology': 99.00001,
+                 'eruption_size': 99.00001,
+                 'eruption_style': 99.00001}
 
     with pytest.raises(PyvolcansError) as exc_info:
         set_weights_from_args(args_dict)
 
-    assert str(exc_info.value) == "Sum of weights (495) is different from 1!"
+    msg = ("Sum of weights (495.00005) is different from 1!"
+           " Please revise your weighting scheme.")
+
+    assert str(exc_info.value) == msg
 
 
 @pytest.mark.parametrize("args_dict, expected_weights", [
@@ -127,7 +131,11 @@ def analogies():
                          'eruption_size': 0.25,
                          'eruption_style': 0.25}, 1111)])
 def test_combined_analogy_matrix_no_tectonic(weights, expected, analogies):
-    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    pandas_df = calculate_weighted_analogy_matrix(
+            'West Eifel Volcanic Field', weights, analogies)
+    matrix = pandas_df.loc[get_volcano_idx_from_name(
+            'West Eifel Volcanic Field'),
+            'total_analogy']
     assert matrix.astype(int) == expected
 
 
@@ -138,7 +146,11 @@ def test_combined_analogy_matrix_no_tectonic(weights, expected, analogies):
                            'eruption_size': 0.25,
                            'eruption_style': 0.25}, 10111)])
 def test_combined_analogy_matrix_no_geochemistry(weights, expected, analogies):
-    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    pandas_df = calculate_weighted_analogy_matrix(
+            'West Eifel Volcanic Field', weights, analogies)
+    matrix = pandas_df.loc[get_volcano_idx_from_name(
+            'West Eifel Volcanic Field'),
+            'total_analogy']
     assert matrix.astype(int) == expected
 
 
@@ -149,7 +161,11 @@ def test_combined_analogy_matrix_no_geochemistry(weights, expected, analogies):
                           'eruption_size': 0.25,
                           'eruption_style': 0.25}, 11011)])
 def test_combined_analogy_matrix_no_morphology(weights, expected, analogies):
-    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    pandas_df = calculate_weighted_analogy_matrix(
+            'West Eifel Volcanic Field', weights, analogies)
+    matrix = pandas_df.loc[get_volcano_idx_from_name(
+            'West Eifel Volcanic Field'),
+            'total_analogy']
     assert matrix.astype(int) == expected
 
 
@@ -161,7 +177,11 @@ def test_combined_analogy_matrix_no_morphology(weights, expected, analogies):
                            'eruption_style': 0.25}, 11101)])
 
 def test_combined_analogy_matrix_no_eruption_size(weights, expected, analogies):
-    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    pandas_df = calculate_weighted_analogy_matrix(
+            'West Eifel Volcanic Field', weights, analogies)
+    matrix = pandas_df.loc[get_volcano_idx_from_name(
+            'West Eifel Volcanic Field'),
+            'total_analogy']
     assert matrix.astype(int) == expected
 
 @pytest.mark.parametrize("weights,expected",
@@ -171,7 +191,28 @@ def test_combined_analogy_matrix_no_eruption_size(weights, expected, analogies):
                            'eruption_size': 0.25,
                            'eruption_style': 0}, 11110)])
 def test_combined_analogy_matrix_no_eruption_style(weights, expected, analogies):
-    matrix = calculate_weighted_analogy_matrix(weights, analogies)
+    pandas_df = calculate_weighted_analogy_matrix(
+            'West Eifel Volcanic Field', weights, analogies)
+    matrix = pandas_df.loc[get_volcano_idx_from_name(
+            'West Eifel Volcanic Field'),
+            'total_analogy']
     assert matrix.astype(int) == expected
 
 
+def test_open_gvp_website(monkeypatch):
+    # Arrange
+
+    def always_false(my_web):
+        # This function will replace webbrowser.open and always returns false
+        # We have my_web as an argument so our function has the same inputs as
+        # webbrowser.open
+        return False
+
+    monkeypatch.setattr('pyvolcans.pyvolcans_func.webbrowser.open', always_false)
+
+    # Act
+    with pytest.raises(PyvolcansError) as exc_info:
+        open_gvp_website(123456)
+
+    # Assert
+    assert str(exc_info.value) == "No suitable browser to open https://volcano.si.edu/volcano.cfm?vn=123456&vtab=GeneralInfo"
