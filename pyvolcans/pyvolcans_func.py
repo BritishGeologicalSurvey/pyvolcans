@@ -289,7 +289,7 @@ def output_result(verbose, my_volcano, result, to_file=None):
     if verbose:
         result = result.to_string(index=False)
     else:
-        my_columns = ['smithsonian_id', 'name', 'country', 'total_analogy']
+        my_columns = ['name', 'country', 'smithsonian_id', 'total_analogy']
         result = result[my_columns].to_string(index=False)
 
     return result
