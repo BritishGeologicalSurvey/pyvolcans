@@ -235,12 +235,18 @@ def get_analogies(my_volcano, volcans_result, count=10):
     my_volcano_analogies = volcans_result['total_analogy']
     # getting the indices corresponding to the highest values of analogy
     # in descending order (highest analogy first)
-    top_idx = my_volcano_analogies.argsort().tail(count)[::-1]
+    top_idx = my_volcano_analogies.argsort().tail(count+1)[::-1] #TOP ANALOGUE IS LIKELY TO BE THE TARGET VOLCANO!
     result = volcans_result.iloc[top_idx]
+    #probably need a warning message around here, to alert the user if the
+    #boolean values below are all 'False', which in short means that the target
+    #volcano is not inside the Top 'count' analogues. This would hint to data
+    #deficiencies for the target volcano
+    my_volcano_boolean_indexes = result.index.isin([volcano_idx])
+    filtered_result = result[~my_volcano_boolean_indexes]
     # anywhere 'volcano_idx' came from, make it a str
     volcano_name = get_volcano_name_from_idx(volcano_idx)
 
-    return top_idx, result, volcano_name
+    return top_idx, filtered_result, volcano_name
 
 def open_gvp_website(top_analogue_vnum):
     """
