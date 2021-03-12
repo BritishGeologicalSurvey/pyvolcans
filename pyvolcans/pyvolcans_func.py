@@ -47,13 +47,21 @@ def _frac_to_float(value):
     """Take a string of decimal or fractional number (e.g. '0.5' or '1/2')
        and return the float representation."""
     if value is None:
-        return None
+        value_as_float = None
     else:
-        if value.find('/') != -1:
-            numerator, denominator =  value.split('/')
-            return float(Fraction(numerator)/Fraction(denominator))
+        if '/' in value:
+            try:
+                numerator, denominator =  value.split('/')
+                value_as_float = float(
+                        Fraction(numerator) / Fraction(denominator))
+            except ValueError:
+                msg = f"Unable to convert given weight ({value}) to number"
+                raise PyvolcansError(msg)
         else:
-            return float(Fraction(value))
+            value_as_float = float(Fraction(value))
+
+    return value_as_float
+
 
 
 def fuzzy_matching(volcano_name, limit=10):

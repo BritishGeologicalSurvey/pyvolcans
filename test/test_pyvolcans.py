@@ -119,10 +119,19 @@ def test_match_name(name, expected):
 
 
 @pytest.fixture
-def analogies():
-    analogies = {'tectonic_setting': np.array([40000]), 'geochemistry': np.array([4000]),
-                 'morphology': np.array([400]), 'eruption_size': np.array([40]), 'eruption_style': np.array([4])}
-    return analogies
+def mock_analogies():
+    """
+    Create mocked analogy matrices for each volcanological criterion.
+    Note: The matrix is only one item long so tests must use 'West Eifel
+    Volcanic Field' because it is first on the list.
+    """
+    mock_analogies = {'tectonic_setting': np.array([40000]),
+                      'geochemistry': np.array([4000]),
+                      'morphology': np.array([400]),
+                      'eruption_size': np.array([40]),
+                      'eruption_style': np.array([4])}   
+    return mock_analogies
+
 
 @pytest.mark.parametrize("weights,expected",
                         [({'tectonic_setting': 0,
@@ -130,9 +139,9 @@ def analogies():
                          'morphology': 0.25,
                          'eruption_size': 0.25,
                          'eruption_style': 0.25}, 1111)])
-def test_combined_analogy_matrix_no_tectonic(weights, expected, analogies):
+def test_combined_analogy_matrix_no_tectonic(weights, expected, mock_analogies): 
     pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, analogies)
+            'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
             'West Eifel Volcanic Field'),
             'total_analogy']
@@ -145,9 +154,9 @@ def test_combined_analogy_matrix_no_tectonic(weights, expected, analogies):
                            'morphology': 0.25,
                            'eruption_size': 0.25,
                            'eruption_style': 0.25}, 10111)])
-def test_combined_analogy_matrix_no_geochemistry(weights, expected, analogies):
+def test_combined_analogy_matrix_no_geochemistry(weights, expected, mock_analogies):
     pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, analogies)
+            'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
             'West Eifel Volcanic Field'),
             'total_analogy']
@@ -160,9 +169,9 @@ def test_combined_analogy_matrix_no_geochemistry(weights, expected, analogies):
                           'morphology': 0,
                           'eruption_size': 0.25,
                           'eruption_style': 0.25}, 11011)])
-def test_combined_analogy_matrix_no_morphology(weights, expected, analogies):
+def test_combined_analogy_matrix_no_morphology(weights, expected, mock_analogies):
     pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, analogies)
+            'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
             'West Eifel Volcanic Field'),
             'total_analogy']
@@ -176,9 +185,9 @@ def test_combined_analogy_matrix_no_morphology(weights, expected, analogies):
                            'eruption_size': 0,
                            'eruption_style': 0.25}, 11101)])
 
-def test_combined_analogy_matrix_no_eruption_size(weights, expected, analogies):
+def test_combined_analogy_matrix_no_eruption_size(weights, expected, mock_analogies):
     pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, analogies)
+            'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
             'West Eifel Volcanic Field'),
             'total_analogy']
@@ -190,9 +199,9 @@ def test_combined_analogy_matrix_no_eruption_size(weights, expected, analogies):
                            'morphology': 0.25,
                            'eruption_size': 0.25,
                            'eruption_style': 0}, 11110)])
-def test_combined_analogy_matrix_no_eruption_style(weights, expected, analogies):
+def test_combined_analogy_matrix_no_eruption_style(weights, expected, mock_analogies):
     pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, analogies)
+            'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
             'West Eifel Volcanic Field'),
             'total_analogy']
