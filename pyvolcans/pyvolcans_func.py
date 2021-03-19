@@ -285,6 +285,12 @@ def output_result(verbose, my_volcano, result, to_file=None):
     # NB. {count - 1} because 'count' includes the target volcano!
     # processing the volcano name to make it more 'machine-friendly'
     
+    if verbose:
+        my_columns = ['name', 'country', 'smithsonian_id', 'total_analogy',
+                      'ATs', 'AG', 'AM', 'ASz', 'ASt']
+    else:
+        my_columns = ['name', 'country', 'smithsonian_id', 'total_analogy']
+
     if to_file == 'csv':
         top_count = result.shape[0]
         my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
@@ -292,13 +298,9 @@ def output_result(verbose, my_volcano, result, to_file=None):
         my_volcano_joined = '_'.join(my_volcano_splitted)
         output_filename = Path.cwd() / f'{my_volcano_joined}_top{top_count}_analogues.csv'
         result.to_csv(output_filename, sep=',', float_format='%.5f',
-                      header=True, index=False)
-    
-    if verbose:
-        result = result.to_string(index=False)
-    else:
-        my_columns = ['name', 'country', 'smithsonian_id', 'total_analogy']
-        result = result[my_columns].to_string(index=False)
+                      header=True, index=False, columns=my_columns)
+
+    result = result[my_columns].to_string(index=False)
 
     return result
 
