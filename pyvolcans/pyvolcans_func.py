@@ -272,7 +272,7 @@ def open_gvp_website(top_analogue_vnum):
         raise PyvolcansError(msg)
 
 
-def output_result(verbose, my_volcano, result, to_file=None):
+def output_result(verbose, my_volcano, result, to_file=None, filename=None):
     """
     TO DO!
     channel: string that specifies whether the writing is to be made onto
@@ -297,7 +297,7 @@ def output_result(verbose, my_volcano, result, to_file=None):
         my_volcano_splitted = my_volcano_clean.split()
         my_volcano_joined = '_'.join(my_volcano_splitted)
         output_filename = Path.cwd() / f'{my_volcano_joined}_top{top_count}_analogues.csv'
-        result.to_csv(output_filename, sep=',', float_format='%.5f',
+        result.to_csv(filename, sep=',', float_format='%.5f',
                       header=True, index=False, columns=my_columns)
 
     result = result[my_columns].to_string(index=False)

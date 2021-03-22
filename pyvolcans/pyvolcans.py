@@ -118,11 +118,11 @@ def cli():
             output_filename = Path.cwd() / \
                 f'{volcano_name_joined}_top{count}_analogues_' \
                 f'Ts{Ts_text}G{G_text}M{M_text}Sz{Sz_text}St{St_text}.csv'
-            print(output_filename)
             result = output_result(args.verbose,
                                    volcano_name,
                                    top_analogues,
-                                   to_file='csv')
+                                   to_file='csv',
+                                   filename=output_filename)
         # calling the get_many_analogy_percentiles function
         # to print 'better analogues'
         if my_apriori_volcanoes is not None:
