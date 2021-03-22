@@ -292,11 +292,6 @@ def output_result(verbose, my_volcano, result, to_file=None, filename=None):
         my_columns = ['name', 'country', 'smithsonian_id', 'total_analogy']
 
     if to_file == 'csv':
-        top_count = result.shape[0]
-        my_volcano_clean = my_volcano.replace('\'', '').replace(',', '').replace('.', '')
-        my_volcano_splitted = my_volcano_clean.split()
-        my_volcano_joined = '_'.join(my_volcano_splitted)
-        output_filename = Path.cwd() / f'{my_volcano_joined}_top{top_count}_analogues.csv'
         result.to_csv(filename, sep=',', float_format='%.5f',
                       header=True, index=False, columns=my_columns)
 
