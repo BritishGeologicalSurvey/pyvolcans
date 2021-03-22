@@ -11,6 +11,7 @@ Created on Mon Feb 17 12:13:20 2020
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 # Our packages
 from pyvolcans.pyvolcans_func import (
@@ -105,6 +106,19 @@ def cli():
 
         #calling the function to write the top analogues to a csv file
         if args.write_csv_file:
+            volcano_name_clean = \
+                volcano_name.replace('\'', '').replace(',', '').replace('.', '')
+            volcano_name_splitted = volcano_name_clean.split()
+            volcano_name_joined = '_'.join(volcano_name_splitted)
+            Ts_text = "{:.3f}".format(new_weights['tectonic_setting']).replace('.', '')
+            G_text = "{:.3f}".format(new_weights['geochemistry']).replace('.', '')
+            M_text = "{:.3f}".format(new_weights['morphology']).replace('.', '')
+            Sz_text = "{:.3f}".format(new_weights['eruption_size']).replace('.', '')
+            St_text = "{:.3f}".format(new_weights['eruption_style']).replace('.', '')
+            output_filename = Path.cwd() / \
+                f'{volcano_name_joined}_top{count}_analogues_' \
+                f'Ts{Ts_text}G{G_text}M{M_text}Sz{Sz_text}St{St_text}.csv'
+            print(output_filename)
             result = output_result(args.verbose,
                                    volcano_name,
                                    top_analogues,
