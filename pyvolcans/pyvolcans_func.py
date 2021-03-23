@@ -15,6 +15,7 @@ import sys
 import webbrowser
 from pathlib import Path
 from fractions import Fraction
+from decimal import *
 
 # external packages
 import numpy as np
@@ -163,14 +164,20 @@ def set_weights_from_args(args_dict):
         args_dict = dict.fromkeys(args_dict.keys(), 0.2)
         return args_dict
 
+    #sum_of_weights = Decimal('0')
     sum_of_weights = 0
     for key, value in args_dict.items():
         if value is None:
             args_dict[key] = 0
         else:
             sum_of_weights += value
+            #sum_of_weights = Decimal(sum_of_weights) + Decimal(str(value))
 
-    if sum_of_weights != 1:
+    print(sum_of_weights)
+    print(type(sum_of_weights))
+
+    #if sum_of_weights != Decimal('1'):
+    if (sum_of_weights < 1-1e-10) or (sum_of_weights > 1+1e-10):
         msg = (f"Sum of weights ({sum_of_weights:.5f}) is different from 1! "
                "Please revise your weighting scheme.")
         raise PyvolcansError(msg)
