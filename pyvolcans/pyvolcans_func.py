@@ -427,9 +427,20 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     
     for volcano, percentage in better_analogues_dictionary.items():
         if isinstance(volcano, int):
-           print(f'{VOLCANO_NAMES.loc[get_volcano_idx_from_number(volcano)][0]}: {percentage}%\n')
+            volcano_idx_to_print = get_volcano_idx_from_number(volcano)
+            name_to_print = \
+                VOLCANO_NAMES.loc[volcano_idx_to_print][0]
+            vnum_to_print = \
+                volcans_result['smithsonian_id'].iloc[volcano_idx_to_print]
+            print(volcano_idx_to_print); print(name_to_print); print(vnum_to_print)
+            print(f'{VOLCANO_NAMES.loc[get_volcano_idx_from_number(volcano)][0]}: {percentage}%\n')
         else:
-           print(f'{volcano}: {percentage}%\n')
+            volcano_idx_to_print = get_volcano_idx_from_name(volcano)
+            name_to_print = volcano
+            vnum_to_print = \
+                volcans_result['smithsonian_id'].iloc[volcano_idx_to_print]
+            print(volcano_idx_to_print); print(name_to_print); print(vnum_to_print)
+            print(f'{volcano}: {percentage}%\n')
 
     return percentile_dictionary, better_analogues_dictionary
 
