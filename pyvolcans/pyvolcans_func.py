@@ -268,6 +268,26 @@ def get_analogies(my_volcano, volcans_result, count=10):
 
     return top_idx, filtered_result, volcano_name
 
+
+def check_for_perfect_analogues(result):
+    """
+    This function takes the main result from running PyVOLCANS
+    and assesses whether all the top analogue volcanoes share
+    the same value of total analogy, in which case, the user
+    might suspect that there are either issues with the data
+    or with the weighting scheme (e.g. too simplified) used.
+    """
+    maximum_analogy=result['total_analogy'].iloc[0]
+    if result['total_analogy'].eq(maximum_analogy).all():
+        msg = ("WARNING!!! "
+               "All top analogue volcanoes have the same value "
+               "of total analogy. Please be aware of possible "
+               "data deficiencies and/or the use of a simplified "
+               "weighting scheme (see Tierz et al., 2019 for more "
+               "details).\n")
+        raise PyvolcansError(msg)
+
+
 def open_gvp_website(top_analogue_vnum):
     """
     This function takes a list of indices for the top analogue

@@ -23,6 +23,7 @@ from pyvolcans.pyvolcans_func import (
     set_weights_from_args,
     open_gvp_website,
     output_result,
+    check_for_perfect_analogues,
     VOLCANO_NAMES
 )
 
@@ -90,11 +91,19 @@ def cli():
                                      volcano_input,
                                      volcans_result,
                                      count)
+        
+        #checking for 'too many perfect analogues'
+        try:
+            check_for_perfect_analogues(result=top_analogues)
+        except PyvolcansError as exc:
+            logging.warn(exc.args[0])
+        
         #return the result
         result = output_result(verbose=args.verbose,
                                my_volcano=volcano_name,
                                result=top_analogues)
         print(result)
+        
         #calling the function to open the GVP website
         if args.website:
             # .iloc[0]=target volcano!! (in principle; we need to fix this)
