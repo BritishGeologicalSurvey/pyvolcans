@@ -154,23 +154,23 @@ def parse_args():
     parser.add_argument("--apriori", nargs='*',
                         help="Provide one or more a priori analogue volcanoes",
                         default=None)
-    parser.add_argument("-Ts","--tectonic_setting",
+    parser.add_argument("-Ts","--tectonic_setting", action='append',
                         help=
                         "Set tectonic setting weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
-    parser.add_argument("-G","--rock_geochemistry",
+    parser.add_argument("-G","--rock_geochemistry", action='append',
                         help=
                         "Set rock geochemistry weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
-    parser.add_argument("-M","--morphology",
+    parser.add_argument("-M","--morphology", action='append',
                         help=
                         "Set volcano morphology weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
-    parser.add_argument("-Sz","--eruption_size",
+    parser.add_argument("-Sz","--eruption_size", action='append',
                         help=
                         "Set eruption size weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
-    parser.add_argument("-St","--eruption_style",
+    parser.add_argument("-St","--eruption_style", action='append',
                         help=
                         "Set eruption style weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)

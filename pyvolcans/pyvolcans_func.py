@@ -46,6 +46,14 @@ ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
 def _frac_to_float(value):
     """Take a string of decimal or fractional number (e.g. '0.5' or '1/2')
        and return the float representation."""
+    if isinstance(value, list):
+        if len(value) > 1:
+            msg = ("Some criterion weights are duplicated! "
+                   "Please revise your weighting scheme.")
+            raise PyvolcansError(msg)
+        elif len(value) == 1:
+            value = value[0]
+       
     if value is None:
         value_as_float = None
     else:
