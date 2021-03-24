@@ -62,11 +62,15 @@ def _frac_to_float(value):
                 numerator, denominator =  value.split('/')
                 value_as_float = float(
                         Fraction(numerator) / Fraction(denominator))
-            except ValueError:
+            except (ValueError, ZeroDivisionError):
                 msg = f"Unable to convert given weight ({value}) to number"
                 raise PyvolcansError(msg)
         else:
-            value_as_float = float(Fraction(value))
+            try:
+                value_as_float = float(Fraction(value))
+            except ValueError:
+                msg = f"Unable to convert given weight ({value}) to number"
+                raise PyvolcansError(msg)
 
     return value_as_float
 
