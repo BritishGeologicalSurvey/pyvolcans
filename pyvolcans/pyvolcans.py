@@ -106,8 +106,9 @@ def cli():
         
         #calling the function to open the GVP website
         if args.website:
-            # .iloc[0]=target volcano!! (in principle; we need to fix this)
-            top_analogue_vnum = VOLCANO_NAMES.iloc[top_analogues_idx.iloc[1],2]
+            #obtaining top-analogue vnum (NB. target volcano has been
+            #                            'filtered out' of 'top_analogues')
+            top_analogue_vnum = top_analogues['smithsonian_id'].iloc[0]
             try:
                 open_gvp_website(top_analogue_vnum)
             except PyvolcansError as exc:
