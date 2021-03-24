@@ -266,7 +266,7 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # anywhere 'volcano_idx' came from, make it a str
     volcano_name = get_volcano_name_from_idx(volcano_idx)
 
-    return top_idx, filtered_result, volcano_name
+    return filtered_result, volcano_name
 
 
 def check_for_perfect_analogues(result):

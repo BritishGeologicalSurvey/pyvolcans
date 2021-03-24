@@ -85,8 +85,7 @@ def cli():
              volcano_input, weights=new_weights)
 
         # calling the get_analogies function to derive the final data
-        [top_analogues_idx,
-        top_analogues,
+        [top_analogues,
         volcano_name] = get_analogies(
                                      volcano_input,
                                      volcans_result,
