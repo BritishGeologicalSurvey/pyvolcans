@@ -494,18 +494,41 @@ def open_gvp_website(top_analogue_vnum):
 
 
 def output_result(verbose, my_volcano, result, to_file=None, filename=None):
+    """Prepares the final PyVOLCANS results to be written either to the
+       standard output or to a comma-separated-value (csv) file.
+
+    Parameters
+    ----------
+    verbose : bool
+        Indicates whether the verbose mode has been chosen by the user (True).
+        This produces an output that includes the single-criterion analogy
+        values, in addition to the total analogy values. If verbose mode is not
+        chosen (False), the PyVOLCANS output only contains the total analogy
+        values.
+    my_volcano : str or int
+        Target volcano selected by the user, as volcano name or volcano number
+    result: Pandas dataframe
+        Sub-set of results from the Pandas dataframe volcans_result,
+        thus only including the data for the top analogue volcanoes
+        to the target volcano.
+    to_file : str, optional
+        Keyword argument that indicates whether the PyVOLCANS result has to be
+        written onto a csv file (to_file='csv') or not (Default, to_file=None)
+    filename : str, optional
+        Keyword argument that indicates the filename to use for the optional
+        csv file containing the PyVOLCANS result. Default filename=None.
+        Note that, if 'filename' is specified but 'to_file=None', the variable
+        'filename' is not used.
+
+    Returns
+    -------
+    result: Pandas dataframe
+        Sub-set of results from the Pandas dataframe volcans_result, including
+        either the total analogy values only or the total and single-criterion
+        analogy values, for the top analogue volcanoes to the target volcano,
+        given the selected weighting scheme.
     """
-    TO DO!
-    channel: string that specifies whether the writing is to be made onto
-             the standard output or to a csv file. Available options: 'stdout'
-             and 'csv'
-    verbose: true/false to control whether only total analogy or total and
-             single-criterion analogies are given as output
-    """
-    # just adding the same line but outputting the list to a file [IMPROVE]
-    # NB. {count - 1} because 'count' includes the target volcano!
-    # processing the volcano name to make it more 'machine-friendly'
-    
+
     if verbose:
         my_columns = ['name', 'country', 'smithsonian_id', 'total_analogy',
                       'ATs', 'AG', 'AM', 'ASz', 'ASt']
