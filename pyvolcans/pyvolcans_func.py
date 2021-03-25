@@ -178,15 +178,22 @@ def get_volcano_idx_from_name(volcano_name):
 
 
 def get_volcano_name_from_idx(volcano_idx):
+    """Derives the the volcano name in the GVP database (www.volcano.si.edu)
+       from the index of the volcano in the analogy matrices (VOLCANS)
+
+    Parameters
+    ----------
+    volcano_idx : int
+
+    Returns
+    -------
+    volcano_name : str
+
+    Restrictions
+    ------
+    The function cannot be called with a value greater than 1438 (N - 1, where
+    N is the number of Holocene volcanoes in the GVP database, v. 4.6.7)
     """
-    Input is volcano index as a number, output is the name
-    of the volcano of interest.
-    NB. Is it better to use Python indexing (starting in zero) or not,
-    if the 'volcano_idx' is input by the user?
-    """
-    # we need to create a message error here: "Volcano index out of bounds.
-    # Please provide a non-zero, positive number smaller than 1439 (Number of
-    # volcanoes in VOTW 4.6.7 database)."
 
     volcano_name = \
         VOLCANO_NAMES.iloc[volcano_idx, 0]
