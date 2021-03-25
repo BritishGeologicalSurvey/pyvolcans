@@ -444,4 +444,4 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
 
 
 class PyvolcansError(Exception):
-    """Base class for all Pyvolcans errors"""
+    """Base class for all PyVOLCANS errors"""

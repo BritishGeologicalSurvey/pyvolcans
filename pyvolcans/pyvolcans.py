@@ -34,7 +34,7 @@ def cli():
     Command line interface to run PyVOLCANS and return analogues.
     """
     # Setup logging
-    formatter = logging.Formatter('pyvolcans: %(message)s')
+    formatter = logging.Formatter('PyVOLCANS: %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     logging.basicConfig(handlers=[handler], level=logging.INFO)
@@ -77,7 +77,7 @@ def cli():
     my_apriori_volcanoes = args.apriori
     logging.debug("Supplied weights: %s", new_weights)
 
-    # Call pyvolcans
+    # Call PyVOLCANS
     try:
         # calculated_weighted_analogy_matrix
         volcans_result = calculate_weighted_analogy_matrix(
