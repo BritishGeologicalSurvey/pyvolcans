@@ -202,13 +202,23 @@ def get_volcano_name_from_idx(volcano_idx):
 
 
 def get_volcano_number_from_name(volcano_name):
+    """Derives the volcano number (VNUM) from the volcano name
+       in the GVP database (www.volcano.si.edu)
+
+    Parameters
+    ----------
+    volcano_name : str
+
+    Returns
+    -------
+    volcano_vnum : int
+
+    Raises
+    ------
+    PyvolcansError
+        Via the call to match_name(volcano_name) function, if the volcano
+        name cannot be matched to a volcano number (VNUM)
     """
-    Input is volcano name as text, output is the volcano
-    number as indicated in the GVP database.
-    """
-    # we need to create a message error here: "Name provided doesn't exist.
-    # #"Please double-check spelling (including commas, e.g. "Ruiz, Nevado del"
-    # #and/or check name on www.volcano.si.edu"
 
     matched_volcanoes = match_name(volcano_name)
     volcano_vnum = matched_volcanoes.iloc[0, 2]
