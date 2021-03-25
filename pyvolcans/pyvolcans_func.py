@@ -320,7 +320,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         Target volcano selected by the user, as volcano name or volcano number
     weights : dict
         Set of weights (weighting scheme) selected by the user to run PyVOLCANS
-    analogies: dict
+    analogies: dict (fixed keyword argument)
         Cross-volcano values of single-criterion analogy between any two
         volcanoes listed in the GVP database (v. 4.6.7), for five different
         volcanological criteria (see Tierz et al., 2019, for more details)
@@ -379,11 +379,35 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
-    """
-    Returns, on screen, the names of the top <count> analogues to
-    the target volcano (i.e. my_volcano) and their multi-criteria
-    analogy values, as a variable: total_analogy.
-    Default <count> = 10.
+    """Derives a filtered Pandas dataframe, which contains the total and
+       single-criterion analogy values between the target volcano and a given
+       number of 'top' analogue volcanoes (specified by count)
+
+    Parameters
+    ----------
+    my_volcano : str or int
+        Target volcano selected by the user, as volcano name or volcano number
+    volcans_result : Pandas dataframe
+        Total and single-criterion analogy values between the target volcano
+        and any volcano listed in the GVP database (v. 4.6.7)
+
+        Please note that the total analogy values are specific to the set of
+        weights (or weighting scheme) that is chosen by the user for each
+        particular run of PyVOLCANS. A different weighting scheme can generate
+        an entirely different set of total analogy values.
+    count: int, optional
+        Number of top analogue volcanoes to derive. Default = 10
+
+    Returns
+    -------
+    filtered_result: Pandas dataframe
+        Sub-set of results from the Pandas dataframe volcans_result,
+        thus only including the data for the top analogue volcanoes
+        to the target volcano.
+    volcano_name: str
+        Target volcano's name in the GVP database (www.volcano.si.edu).
+        NB. Variable required to derive some of the outputs of PyVOLCANS
+        (see 'output_result()' function).
     """
 
     # get the index for my_volcano
@@ -395,10 +419,7 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # in descending order (highest analogy first)
     top_idx = my_volcano_analogies.argsort().tail(count+1)[::-1] #TOP ANALOGUE IS LIKELY TO BE THE TARGET VOLCANO!
     result = volcans_result.iloc[top_idx]
-    #probably need a warning message around here, to alert the user if the
-    #boolean values below are all 'False', which in short means that the target
-    #volcano is not inside the Top 'count' analogues. This would hint to data
-    #deficiencies for the target volcano
+    #'filtering out' the target volcano from the final result
     my_volcano_boolean_indexes = result.index.isin([volcano_idx])
     filtered_result = result[~my_volcano_boolean_indexes]
     # anywhere 'volcano_idx' came from, make it a str
