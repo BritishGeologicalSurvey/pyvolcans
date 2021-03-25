@@ -465,12 +465,25 @@ def check_for_perfect_analogues(result):
 
 
 def open_gvp_website(top_analogue_vnum):
+    """Opens the GVP website for the top analogue volcano to the target volcano
+       identified by PyVOLCANS using the specific weighting scheme selected by
+       the user
+
+    Parameters
+    ----------
+    top_analogue_vnum: int
+        Volcano number (VNUM) of the top analogue volcano. It is used to define
+        the URL to open. Please note that the top analogue volcano identified
+        by PyVOLCANS is not only dependent on the target volcano, but also on
+        the weighting scheme selected to run PyVOLCANS. Different choices of
+        weighting scheme may yield different top analogue volcanoes.
+
+    Raises
+    -------
+    PyvolcansError
+        If a web browser to open the URL cannot be identified
     """
-    This function takes a list of indices for the top analogue
-    volcanoes to the target volcano (given the weighting scheme
-    specified by the user) and opens the Global Volcanism Program
-    (GVP) website for the top analogue volcano.
-    """
+
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
               '&vtab=GeneralInfo'  # Getting to open the General Info tab
     browser_opened = webbrowser.open(my_web)
