@@ -429,13 +429,30 @@ def get_analogies(my_volcano, volcans_result, count=10):
 
 
 def check_for_perfect_analogues(result):
+    """Assesses whether all the calculated top analogue volcanoes share
+       the same value of total analogy, and raises a PyvolcansError exception
+       if that is the case
+
+    Parameters
+    ----------
+    result: Pandas dataframe
+        Sub-set of results from the Pandas dataframe volcans_result,
+        thus only including the data for the top analogue volcanoes
+        to the target volcano.
+
+    Raises
+    -------
+    PyvolcansError
+        If all the top analogue volcanoes have the same value of total analogy.
+        This observation may be related to issues with the data available for
+        the target volcano (and/or analogue volcanoes), but can also be
+        indicative of the fact that the weighting scheme selected is too
+        simplified, or not informative enough (e.g. a single-criterion search
+        of volcanoes on subduction zones under continental crust will yield
+        hundreds of volcanoes that share that same characteristic. Please see
+        Tierz et al., 2019, for more details)
     """
-    This function takes the main result from running PyVOLCANS
-    and assesses whether all the top analogue volcanoes share
-    the same value of total analogy, in which case, the user
-    might suspect that there are either issues with the data
-    or with the weighting scheme (e.g. too simplified) used.
-    """
+
     maximum_analogy=result['total_analogy'].iloc[0]
     if result['total_analogy'].eq(maximum_analogy).all():
         msg = ("WARNING!!! "
