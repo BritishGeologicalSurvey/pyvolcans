@@ -232,6 +232,7 @@ def convert_to_idx(my_volcano):
     Parameters
     ----------
     my_volcano : str or int
+        Target volcano selected by the user, as volcano name or volcano number
 
     Returns
     -------
@@ -309,13 +310,33 @@ def set_weights_from_args(args_dict):
 
 def calculate_weighted_analogy_matrix(my_volcano, weights,
                                       analogies=ANALOGY_MATRIX):
+    """Derives a matrix of total and single-criterion analogy values between
+       the target volcano and any other volcano in the GVP database
+       (www.volcano.si.edu), using the weighting scheme selected by the user
+
+    Parameters
+    ----------
+    my_volcano : str or int
+        Target volcano selected by the user, as volcano name or volcano number
+    weights : dict
+        Set of weights (weighting scheme) selected by the user to run PyVOLCANS
+    analogies: dict
+        Cross-volcano values of single-criterion analogy between any two
+        volcanoes listed in the GVP database (v. 4.6.7), for five different
+        volcanological criteria (see Tierz et al., 2019, for more details)
+
+    Returns
+    -------
+    volcans_result : Pandas dataframe
+        Total and single-criterion analogy values between the target volcano
+        and any volcano listed in the GVP database (v. 4.6.7)
+
+        Please note that the total analogy values are specific to the set of
+        weights (or weighting scheme) that is chosen by the user for each
+        particular run of PyVOLCANS. A different weighting scheme can generate
+        an entirely different set of total analogy values.
     """
-    [TEXT TO BE UPDATED]
-    Input is dictionary of weights
-    e.g. {‘tectonic_setting’: 0.5, ‘geochemistry’: 0.5}
-    returns numpy array of weighted matrix.
-    NB. We load all the matrices here inside the function
-    """
+
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
        
