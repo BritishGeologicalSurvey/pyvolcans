@@ -593,21 +593,50 @@ def match_name(volcano_name):
 
 def get_analogy_percentile(my_volcano, apriori_volcano,
                            volcans_result):
+    """Takes the target volcano and another volcano (an 'a priori analogue'),
+       and calculates the percentile that the total analogy between the two
+       volcanoes represents within the whole distribution of total analogy
+       values between the target volcano and all the other volcanoes in the
+       GVP database is considered (please see Tierz et al., 2019, for more
+       details).
+
+    Parameters
+    ----------
+    my_volcano : str or int
+        Target volcano selected by the user, as volcano name or volcano number
+    apriori_volcano : str or int
+        A volcano that is considered, a priori (i.e. by other means different
+        from running PyVOLCANS), as a good analogue volcano to the selected
+        target volcano
+    volcans_result : Pandas dataframe
+        Total and single-criterion analogy values between the target volcano
+        and any volcano listed in the GVP database (v. 4.6.7)
+
+        Please note that the total analogy values are specific to the set of
+        weights (or weighting scheme) that is chosen by the user for each
+        particular run of PyVOLCANS. A different weighting scheme can generate
+        an entirely different set of total analogy values.
+
+    Returns
+    -------
+    my_percentile : int
+        Percentile that the total analogy value between the a priori analogue
+        and the target volcano represents within the distribution of total
+        analogy values between the target volcanoes and all the volcanoes in
+        the GVP database. Please note that (100 - my_percentile) represents the
+        percentage of volcanoes in the GVP database that have higher values of
+        total analogy with the target volcano, compared to the a priori
+        analogue provided. These volcanoes are interpreted as 'better analogues'
+        to the target volcano than the a priori analogue (please see Tierz et
+        al., 2019, for more details).
+
+        Please also note that the total analogy values, hence the percentiles
+        calculated, are specific to the set of weights (or weighting scheme)
+        that is chosen by the user for each particular run of PyVOLCANS.
+        A different weighting scheme can generate an entirely different set
+        of total analogy values, and hence, of percentile values.
     """
-    [TEXT TO UPDATE!]
-    This function takes the target volcano (my_volcano), one 'a priori'
-    analogue volcano (apriori_volcano), and the weighted analogy matrix
-    calculated for the target volcano (weighted_analogy_matrix), and
-    returns one percentile.
-    This percentile corresponds to the analogy value between the
-    target volcano and the a priori analogue within the distribution of
-    analogy values between the target volcano and any Holocene volcano
-    in the GVP database.
-    :param my_volcano: str
-    :param apriori_volcano: str
-    :param weighted_analogy_matrix: numpy array
-    :return percentile: float
-    """
+
     # convert volcano names into inds to access the weighted_analogy_matrix
     volcano_idx = convert_to_idx(my_volcano)
     apriori_volcano_idx = convert_to_idx(apriori_volcano) 
