@@ -255,9 +255,37 @@ def convert_to_idx(my_volcano):
 
 
 def set_weights_from_args(args_dict):
+    """Transforms the set of weights, for volcanological criteria, introduced
+       by the user into a set of weights usable by PyVOLCANS.
+
+    Parameters
+    ----------
+    args_dict : dict
+        Set of weights introduced by the user through the command line
+        (see PyVOLCANS help and Tierz et al., 2019, for more details on the
+        volcanological criteria associated with the weights)
+
+    Returns
+    -------
+    args_dict : dict
+        Set of weights to be used to run PyVOLCANS. If no weights are given by
+        the user, the function assigns all weights the same value (0.2) and
+        PyVOLCANS is run using an equal-weight weighting scheme.
+
+        If the user specifies the weights for some volcanological criteria but
+        not for others, the function assigns zero values to the those weights
+        that are unspecified, and PyVOLCANS is run, if the sum of weights
+        provided is equal to one.
+
+    Raises
+    ------
+    PyvolcansError
+        If the sum of weights provided by the user is different from one*, so
+        the total analogy computed by PyVOLCANS is not a weighted average of
+        the single-criterion analogies (see Tierz et al., 2019, for more
+        details). *Numerical precision asserting this equality is 1e-10.
     """
-    If no arguments are specified everything is set to 0.2
-    """
+
     no_values_set = all(value is None for value in args_dict.values())
 
     if no_values_set:
