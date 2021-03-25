@@ -226,10 +226,26 @@ def get_volcano_number_from_name(volcano_name):
 
 
 def convert_to_idx(my_volcano):
-    """ 
-        Check if input is string or not.
-        Convert to index
+    """Checks whether the volcano input is a string or not, and in either case,
+       derives the index of the volcano in the analogy matrices (VOLCANS)
+
+    Parameters
+    ----------
+    my_volcano : str or int
+
+    Returns
+    -------
+    volcano_idx : int
+
+    Raises
+    ------
+    PyvolcansError
+        Via either the call to get_volcano_idx_from_name(my_volcano) function,
+        if the volcano name cannot be matched to a volcano index, or the call
+        to get_volcano_idx_from_number(my_volcano), if the volcano number
+        (VNUM) cannot be matched to a volcano index
     """
+
     if isinstance(my_volcano, str):
         volcano_idx = get_volcano_idx_from_name(my_volcano)
     else:
