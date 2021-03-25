@@ -153,16 +153,27 @@ def get_volcano_idx_from_number(volcano_number):
 
 
 def get_volcano_idx_from_name(volcano_name):
+    """Derives the index of the volcano in the analogy matrices (VOLCANS)
+       from the volcano name in the GVP database (www.volcano.si.edu)
+
+    Parameters
+    ----------
+    volcano_name : str
+
+    Returns
+    -------
+    volcano_index : int
+
+    Raises
+    ------
+    PyvolcansError
+        Via the call to match_name(volcano_name) function, if the volcano
+        name cannot be matched to a volcano index
     """
-    Input is volcano name as text, output is the index
-    of the row/column with the volcano in the matrix.
-    """
-    # we need to create a message error here: "Name provided doesn't exist.
-    # #"Please double-check spelling (including commas, e.g. "Ruiz, Nevado del"
-    # #and/or check name on www.volcano.si.edu"
 
     matched_volcanoes = match_name(volcano_name)
     volcano_index = matched_volcanoes.index[0]
+
     return volcano_index
 
 
