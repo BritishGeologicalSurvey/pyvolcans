@@ -123,9 +123,23 @@ def fuzzy_matching(volcano_name, limit=10):
 
 
 def get_volcano_idx_from_number(volcano_number):
+    """Derives the index of the volcano in the analogy matrices (VOLCANS)
+       from the volcano number (VNUM) in the GVP database (www.volcano.si.edu)
+
+    Parameters
+    ----------
+    volcano_number : int
+
+    Returns
+    -------
+    volcano_index : int
+
+    Raises
+    ------
+    PyvolcansError
+        If the VNUM introduced does not exist
     """
-       Input smithsonian id and get index of the volcano matrix
-    """
+
     volcano_idx = VOLCANO_NAMES.loc[VOLCANO_NAMES[2] == volcano_number]
     if volcano_idx.empty:
         msg = ("Volcano number does not exist. "
@@ -133,7 +147,9 @@ def get_volcano_idx_from_number(volcano_number):
                "existing volcano numbers (VNUM), please visit www.volcano.si.edu")
         raise PyvolcansError(msg)
 
-    return volcano_idx.index[0]
+    volcano_index = volcano_idx.index[0]
+
+    return volcano_index
 
 
 def get_volcano_idx_from_name(volcano_name):
