@@ -545,7 +545,35 @@ def output_result(verbose, my_volcano, result, to_file=None, filename=None):
 
 
 def match_name(volcano_name):
-    """Attempt to match name to Smithsonian catalogue."""
+    """Attempts to match the volcano name provided by the user to an existing
+       volcano name in the GVP database (www.volcano.si.edu), and provides a
+       list of alternatives (via 'fuzzy_matching()') if a unique name cannot
+       be found
+
+    Parameters
+    ----------
+    volcano_name : str
+        Name of volcano introduced by the user (i.e. target volcano)
+
+    Returns
+    -------
+    matched_volcanoes : Pandas dataframe
+        Contains volcano data for the unique match for the volcano name
+        provided (volcano_name)
+
+    Raises
+    ------
+    PyvolcansError
+        If the volcano name does not exist in the GVP database. It gives a list
+        of similar volcano names, using fuzzy_matching(volcano_name), before
+        raising the exception.
+
+        If the volcano name exists in the GVP database, but it is not a unique
+        volcano name. That is: more than one volcano in the database has the
+        same name. In this case, it also gives a list of similar volcano names,
+        using fuzzy_matching(volcano_name), before raising the exception.
+    """
+
     matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[0] == volcano_name]
     # throw errors whether if volcano does not exist
     # or there are 2+ identical names
