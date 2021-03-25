@@ -49,11 +49,11 @@ def _frac_to_float(value):
 
     Parameters
     ----------
-    value: str
+    value : str
 
     Returns
     -------
-    value_as_float: float
+    value_as_float : float
 
     Raises
     ------
@@ -96,20 +96,30 @@ def _frac_to_float(value):
 
 
 def fuzzy_matching(volcano_name, limit=10):
-    """
-    List volcanoes with names most similar to volcano_name.
+    """Provides a list of volcanoes with names most similar to volcano_name.
 
-    :param volcano_name: str, name of volcano
-    :param limit: int, number of values to return
-    :return names: list of str of similar names
+    Parameters
+    ----------
+    volcano_name : str
+        Name of volcano introduced by the user (i.e. target volcano)
+    limit : int, optional
+        Number of names that the function returns
+
+    Returns
+    -------
+    similar_volcano_names : str
+        List of volcanoes with similar names to the target volcano
     """
+
     matches = process.extract(volcano_name, VOLCANO_NAMES[0], limit=limit,
                               scorer=fuzz.UQRatio)
     match_idx = [item[2] for item in matches]
     volcano_info = VOLCANO_NAMES.iloc[match_idx].rename(columns={0:'name',
                                                                  1:'country',
                                                                  2:'smithsonian_id'})
-    return volcano_info.to_string(index=False)
+    similar_volcano_names = volcano_info.to_string(index=False)
+
+    return similar_volcano_names
 
 
 def get_volcano_idx_from_number(volcano_number):
