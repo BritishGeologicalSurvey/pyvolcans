@@ -44,8 +44,27 @@ ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
 
 
 def _frac_to_float(value):
-    """Take a string of decimal or fractional number (e.g. '0.5' or '1/2')
-       and return the float representation."""
+    """Converts a string of decimal or fractional number (e.g. '0.5' or '1/2')
+       into a floating-point representation.
+
+    Parameters
+    ----------
+    value: str
+
+    Returns
+    -------
+    value_as_float: float
+
+    Raises
+    ------
+    PyvolcansError
+        If the function is called using a list, instead of a single value.
+
+        If ValueError or ZeroDivisionError exceptions are encountered
+        while trying to convert the string into a float. For example,
+        if the function is called using a string made up of characters.
+    """
+
     if isinstance(value, list):
         if len(value) > 1:
             msg = ("Some criterion weights are duplicated! "
