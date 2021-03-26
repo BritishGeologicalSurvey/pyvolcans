@@ -460,7 +460,7 @@ def check_for_perfect_analogues(result):
                "All top analogue volcanoes have the same value "
                "of total analogy. Please be aware of possible "
                "data deficiencies and/or the use of a simplified "
-               "weighting scheme (see Tierz et al., 2019 for more "
+               "weighting scheme (see Tierz et al., 2019, for more "
                "details).\n")
         raise PyvolcansError(msg)
 

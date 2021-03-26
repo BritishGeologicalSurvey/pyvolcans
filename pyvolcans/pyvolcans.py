@@ -33,7 +33,37 @@ from pyvolcans import __version__
 def cli():
     """
     Command line interface to run PyVOLCANS and return analogues.
+
+    Parameters
+    ----------
+    Please type: `$ pyvolcans --help` to display the PyVOLCANS parameters
+
+    Raises
+    ------
+    PyvolcansError
+        If the value given as target volcano (args.volcano) cannot be
+        interpreted either as a volcano name or volcano number (VNUM),
+        identifiable in the GVP database (www.volcano.si.edu).
+        Code execution is terminated after encountering this issue.
+
+        If the value(s) given as weights for the volcanological criteria cannot
+        be interpreted as a positive number ranging between 0 and 1, and/or if
+        one or more values are provided for a given weight and/or if the sum of
+        weights does not sum up to 1 (because, in such case, the total analogy
+        values are not a weighted average of single-criterion analogy values,
+        please see Tierz et al., 2019, for more details).
+        Code execution is terminated after encountering this issue.
+
+        If all the top analogues identified by PyVOLCANS share the same value
+        of total analogy. Code execution is NOT terminated after encountering
+        this issue.
+
+        If, when the optional flag to open the GVP website of the top analogue
+        volcano to the target volcano is selected, a suitable web browser to
+        open the website cannot be identified. Code execution is NOT terminated
+        after encountering this issue.
     """
+
     # Setup logging
     formatter = logging.Formatter('PyVOLCANS: %(message)s')
     handler = logging.StreamHandler()
