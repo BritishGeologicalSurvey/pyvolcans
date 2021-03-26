@@ -158,7 +158,7 @@ def cli():
             Sz_text = "{:.3f}".format(new_weights['eruption_size']).replace('.', '')
             St_text = "{:.3f}".format(new_weights['eruption_style']).replace('.', '')
             output_filename = Path.cwd() / \
-                f'{volcano_name_joined}_top{count}_analogues_' \
+                f'{volcano_name_joined}_top{count}analogues_' \
                 f'Ts{Ts_text}G{G_text}M{M_text}Sz{Sz_text}St{St_text}.csv'
             result = output_result(args.verbose,
                                    volcano_name,
