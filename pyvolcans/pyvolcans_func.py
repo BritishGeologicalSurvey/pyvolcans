@@ -301,7 +301,7 @@ def set_weights_from_args(args_dict):
         else:
             sum_of_weights += value
 
-    if not np.isclose(sum_of_weights, 1, atol=1e-9):
+    if not np.isclose(sum_of_weights, 1, rtol=0, atol=1e-9):
         msg = (f"Sum of weights ({sum_of_weights:.9f}) is different from 1! "
                "Please revise your weighting scheme.")
         raise PyvolcansError(msg)
