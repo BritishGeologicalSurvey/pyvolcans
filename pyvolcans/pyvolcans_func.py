@@ -285,7 +285,7 @@ def set_weights_from_args(args_dict):
         If the sum of weights provided by the user is different from one*, so
         the total analogy computed by PyVOLCANS is not a weighted average of
         the single-criterion analogies (see Tierz et al., 2019, for more
-        details). *Numerical precision asserting this equality is 1e-5.
+        details). *Numerical precision asserting this equality is 1e-9.
     """
 
     no_values_set = all(value is None for value in args_dict.values())
@@ -301,8 +301,8 @@ def set_weights_from_args(args_dict):
         else:
             sum_of_weights += value
 
-    if (sum_of_weights < 1-1e-5) or (sum_of_weights > 1+1e-5):
-        msg = (f"Sum of weights ({sum_of_weights:.5f}) is different from 1! "
+    if not np.isclose(sum_of_weights, 1, atol=1e-9):
+        msg = (f"Sum of weights ({sum_of_weights:.9f}) is different from 1! "
                "Please revise your weighting scheme.")
         raise PyvolcansError(msg)
 
