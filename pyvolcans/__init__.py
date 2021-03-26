@@ -1,3 +1,8 @@
+"""
+GENERAL DESCRIPTION FOR THE PACKAGE!! WHAT VOLCANS IS, A BIT OF WHY IT WAS
+CREATED.
+"""
+
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
