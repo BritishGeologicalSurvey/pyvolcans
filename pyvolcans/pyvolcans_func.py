@@ -65,12 +65,13 @@ def _frac_to_float(value):
         if the function is called using a string made up of characters.
     """
 
+    #check for lists because value is None if not specified
     if isinstance(value, list):
         if len(value) > 1:
             msg = ("Some criterion weights are duplicated! "
                    "Please revise your weighting scheme.")
             raise PyvolcansError(msg)
-        elif len(value) == 1:
+        else:
             value = value[0]
        
     if value is None:
