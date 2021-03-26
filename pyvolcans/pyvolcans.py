@@ -23,7 +23,8 @@ from pyvolcans.pyvolcans_func import (
     set_weights_from_args,
     open_gvp_website,
     output_result,
-    check_for_perfect_analogues
+    check_for_perfect_analogues,
+    convert_to_idx
 )
 
 from pyvolcans import __version__
@@ -99,6 +100,14 @@ def cli():
         result = output_result(verbose=args.verbose,
                                my_volcano=volcano_name,
                                result=top_analogues)
+
+        my_volcano_country = \
+            volcans_result['country'].iloc[convert_to_idx(volcano_input)]
+        my_volcano_vnum = \
+            volcans_result['smithsonian_id'].iloc[convert_to_idx(volcano_input)]
+
+        print(f"Top {count} analogue volcanoes for {volcano_name}, "
+              f"{my_volcano_country} ({my_volcano_vnum}):")
         print(result)
 
         #calling the function to open the GVP website
