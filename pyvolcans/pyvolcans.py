@@ -34,10 +34,6 @@ def cli():
     """
     Command line interface to run PyVOLCANS and return analogues.
 
-    Parameters
-    ----------
-    Please type: `$ pyvolcans --help` to display the PyVOLCANS parameters
-
     Raises
     ------
     PyvolcansError
@@ -192,10 +188,15 @@ def parse_args():
     """
     Reads PyVOLCANS arguments from command line and returns values
     that are usable by the program.
+
+    Parameters
+    ----------
+    Please type: `$ pyvolcans --help` to display all PyVOLCANS parameters
     """
+
     parser = argparse.ArgumentParser()
     parser.add_argument("volcano",
-                        help="Set target volcano name or Smithsonian ID",
+                        help="Set target volcano name or Smithsonian ID (VNUM)",
                         type=str)
     parser.add_argument("--apriori", nargs='*',
                         help="Provide one or more a priori analogue volcanoes",
@@ -229,9 +230,12 @@ def parse_args():
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
     parser.add_argument("-v", "--verbose", action="store_true",
-                        help="Print debug-level logging output")
+                        help=("Print debug-level logging output, and include "
+                              "single-criterion analogy values, besides the "
+                              "total analogy values, in the PyVOLCANS results")
+                        )
     parser.add_argument("-V", "--version", action="version",
-                        help="Show package version",
+                        help="Show PyVOLCANS package version",
                         version=__version__)
 
     args = parser.parse_args()
