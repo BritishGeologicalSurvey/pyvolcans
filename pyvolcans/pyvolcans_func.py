@@ -659,22 +659,55 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
 
 def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
                                  volcans_result):
-    """
-    [TEXT TO UPDATE!]
-    This function takes the target volcano (my_volcano), a collection
-    of one or more 'a priori' analogue volcanoes in a list
-    (apriori_volcanoes_list), and the weighted analogy matrix calculated
-    for the target volcano (weighted_analogy_matrix), and returns a
-    collection of percentiles (as many as a priori analogues).
-    These percentiles correspond to those of the analogy value between
-    the target volcano and the a priori analogue within the distribution
-    of analogy values between the target volcano and any Holocene volcano
-    in the GVP database.
-    :param my_volcano: str
-    :param apriori_volcano: list of str
-    :param weighted_analogy_matrix: numpy array
-    :return percentile: dict of apriori volcano name and percentile
-    :return better_analogues: dict of 'better analogues' name and percentage
+    """Iteratively calls 'get_analogy_percentile()' function to derive a
+       dictionary of 'a priori analogues' with their corresponding value of
+       percentage of 'better analogues' (to the target volcano) that exist in
+       the GVP database (www.volcano.si.edu). NB. 'better analogue' means that
+       the particular volcano has a higher value of total analogy than the a
+       priori analogue, for the specific weighting scheme selected by the user
+       (please see Tierz et al., 2019, for more details)
+
+    Parameters
+    ----------
+    my_volcano : str or int
+        Target volcano selected by the user, as volcano name or volcano number
+    apriori_volcanoes_list : list
+        List of a priori analogues as introduced by the user via the command
+        line
+    volcans_result : Pandas dataframe
+        Total and single-criterion analogy values between the target volcano
+        and any volcano listed in the GVP database (v. 4.6.7)
+
+        Please note that the total analogy values are specific to the set of
+        weights (or weighting scheme) that is chosen by the user for each
+        particular run of PyVOLCANS. A different weighting scheme can generate
+        an entirely different set of total analogy values.
+
+    Returns
+    -------
+    percentile_dictionary : dict
+        Dictionary containing the volcano name and percentile* for all the
+        a priori analogues provided by the user. *Percentile that the total
+        analogy value between the a priori analogue and the target volcano
+        represents within the distribution of total analogy values between the
+        target volcanoes and all the volcanoes in the GVP database.
+
+    better_analogues_dictionary: dict
+        Dictionary containing the volcano name and percentage* of 'better
+        analogues' for all the a priori analogues provided by the user.
+        *Percentage is calculated as (100 - Percentile) and represents the
+        proportion of volcanoes in the GVP database that are classified as
+        'better analogues' (i.e. higher total analogy) by PyVOLCANS (please
+        see Tierz et al., 2019, for more details).
+
+        Please also note that the total analogy values, hence the percentiles,
+        hence the percentages of 'better analogues' calculated are specific to
+        the set of weights (or weighting scheme) that is chosen by the user for
+        each particular run of PyVOLCANS.
+        A different weighting scheme can generate an entirely different set
+        of total analogy values, hence of percentile values, and hence of
+        percentages of 'better analogues' (please see Tierz et al., 2019, for
+        examples of this).
     """
 
     # check a priori volcanoes is a list
@@ -694,7 +727,7 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         VOLCANO_NAMES.loc[convert_to_idx(my_volcano)][0]
     print('\n\nAccording to PyVOLCANS, the following percentage of volcanoes in'
           + f' the GVP database\nare better analogues to {my_volcano_to_print}'
-          + f' than the \'a priori\' analogues reported below:\n')
+          + ' than the \'a priori\' analogues reported below:\n')
     
     for volcano, percentage in better_analogues_dictionary.items():
         if isinstance(volcano, int):
