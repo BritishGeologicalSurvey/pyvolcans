@@ -27,7 +27,7 @@
     good analogues to the target volcano by other strands of evidence, e.g.
     expert knowledge) with those computed for the rest of volcanoes in the GVP
     database. This permits investigation of sets of analogue volcanoes for
-    varied purposes, and makes PyVOLCANS a valuable complementary method to
+    varied purposes, and makes PyVOLCANS a useful complementary method to
     expert-derived analogue volcanoes. Please see Tierz et al. (2019) for more
     details on the VOLCANS method (https://doi.org/10.1007/s00445-019-1336-3).
 """

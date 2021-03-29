@@ -1,16 +1,44 @@
-# Open-access VOLCANS
+# PyVOLCANS
 
-Collaborative effort to create an free-software (Python), open-access version of VOLCANS (https://doi.org/10.1007/s00445-019-1336-3). 1st stage: provide the users with results from VOLCANS. 2nd stage: clean, re-test and open the whole VOLCANS code
+An open-access Python tool that generates data-driven sets of analogue
+volcanoes for any Holocene volcano listed in the Global Volcanism Program (GVP)
+Volcanoes Of The World database (v. 4.6.7), based on the VOLCANS (VOLCano
+ANalogues Search) method presented by Tierz, Loughlin and Calder (2019):
+[https://doi.org/10.1007/s00445-019-1336-3](https://doi.org/10.1007/s00445-019-1336-3)
+
+VOLCANS uses five volcanological criteria (tectonic setting, rock geochemistry,
+volcano morphology, eruption size and eruption style), and a structured
+combination of them, to quantify overall multi-criteria (or total) volcano
+analogy among any two volcanoes in the GVP database. The data used by the
+method are extracted from the GVP database as well as from a merged database of
+volcano morphology (after Pike and Clow, 1981; Grosse et al., 2014).
+
+PyVOLCANS provides its user with full flexibility to identify customised sets
+of analogue volcanoes, by exploring three main variables:
+
+        (1) target volcano (or volcano of interest);
+        (2) weighting scheme (i.e. set of weights given to each of the five
+        volcanological criteria to calculate multi-criteria, total analogy);
+        (3) number of 'top' analogue volcanoes (i.e. those with the highest
+        value of analogy with the target volcano).
+
+In addition, PyVOLCANS allows the user to compare the values of total analogy
+computed for 'a priori analogues' (i.e. volcanoes thought to be good analogues
+to the target volcano by other strands of evidence, e.g. expert knowledge) with
+those computed for the rest of volcanoes in the GVP database. This permits
+investigation of sets of analogue volcanoes for varied purposes, and makes
+PyVOLCANS a useful complementary method to expert-derived analogue volcanoes.
+Please see [Tierz et al. (2019)](https://doi.org/10.1007/s00445-019-1336-3) for
+more details on the VOLCANS method.
 
 ## Installation
 
-`pyvolcans` can be imported to a new environment as follows:
-
+PyVOLCANS can be imported to a new environment as follows:
 ```
 pip install git+https://github.com/BritishGeologicalSurvey/pyvolcans.git
 ```
 
-It is necessary to have git installed and on the system path.
+It is necessary to have Git installed and on the system path.
 
 This method adds `pyvolcans` to the virtual environment PATH so that it can be
 used from any directory.
@@ -28,7 +56,7 @@ usage: pyvolcans [-h] [--apriori [APRIORI [APRIORI ...]]]
                  volcano
 
 positional arguments:
-  volcano               Set target volcano name or Smithsonian ID
+  volcano               Set target volcano name or Smithsonian ID (VNUM)
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -47,8 +75,10 @@ optional arguments:
   --count COUNT         Set the number of top analogue volcanoes
   -w, --write_csv_file  Write list of top analogue volcanoes as .csv file
   -W, --website         Open GVP website for top analogue volcano
-  -v, --verbose         Print debug-level logging output
-  -V, --version         Show package version
+  -v, --verbose         Print debug-level logging output, and include single-
+                        criterion analogy values, besides the total analogy
+                        values, in the PyVOLCANS results
+  -V, --version         Show PyVOLCANS package version
 ```
 
 ### Default call to PyVOLCANS
@@ -77,7 +107,7 @@ NB. The default weighting scheme used by PyVOLCANS is an equal-weight of all
 ### Modifying the weighting scheme and number of top analogue volcanoes
 
 Use the optional flags `-Ts`, `-G`, `-M`, `-Sz`, `-St` to customise the weights
-that PyVOLCANS assigns to each of the volcanological criterion: tectonic
+that PyVOLCANS assigns to each of the volcanological criteria: tectonic
 setting, rock geochemistry, volcano morphology, eruption size (Volcanic
 Explosivity Index, VEI, Newhall and Self, 1982), and eruption style,
 respectively (abbreviations are as in Tierz et al., 2019, Equation 1).
@@ -103,8 +133,8 @@ Top 10 analogue volcanoes for Hekla, Iceland (372070):
         Agua de Pau       Portugal          382090       0.921154
 ```
 
-NB. You can use fractions to define the weighting scheme.
-For instance: `$ pyvolcans Hekla -Sz 1/2 -St 1/2`
+NB. You can also use fractions to define the weighting scheme. For instance,
+the last command above is equivalent to: `$ pyvolcans Hekla -Sz 1/2 -St 1/2`
 
 Use the optional flag `--count` to change the number of top analogue volcanoes:
 
@@ -118,7 +148,6 @@ Top 5 analogue volcanoes for Hekla, Iceland (372070):
  Prestahnukur  Iceland          371070       0.919877
    Langjokull  Iceland          371080       0.915929
       Hengill  Iceland          371050       0.911855
-
 ```
 
 ### Exploring other functionalities of PyVOLCANS
@@ -130,6 +159,7 @@ analogy values that PyVOLCANS outputs by default:
 ```
 $ pyvolcans Hekla --verbose
 
+PyVOLCANS: Supplied weights: {'tectonic_setting': 0.2, 'geochemistry': 0.2, 'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
 Top 10 analogue volcanoes for Hekla, Iceland (372070):
               name       country  smithsonian_id  total_analogy  ATs        AG        AM       ASz       ASt
        Torfajokull       Iceland          372050       0.941676  0.2  0.188235  0.187584  0.180280  0.185577
@@ -142,19 +172,24 @@ Top 10 analogue volcanoes for Hekla, Iceland (372070):
        Fremrinamar       Iceland          373070       0.905074  0.2  0.188235  0.168421  0.169091  0.179327
            Ecuador       Ecuador          353011       0.901611  0.2  0.164706  0.194737  0.169091  0.173077
      Marion Island  South Africa          234070       0.892960  0.2  0.141176  0.200000  0.169091  0.182692
-
 ```
 
-Or save your PyVOLCANS results into a comma-separated-value (csv) file for your
-record and/or to perform further analyses on the data:
+Or save your PyVOLCANS results into a comma-separated-value (csv) file that
+you might use for your records and/or to perform further analyses on the data.
 
-For example, typing: `$ pyvolcans Hekla --write_csv`, generates the same
-standard PyVOLCANS output as `$ pyvolcans Hekla`, but, in addition, it saves
-a file named: `Hekla_top10analogues_Ts0200G0200M0200Sz0200St0200.csv`, into
-the current working directory.
+For example, typing:
+
+`$ pyvolcans Hekla --write_csv`
+
+generates the same standard PyVOLCANS output as `$ pyvolcans Hekla`, but,
+in addition, it saves a file named:
+
+`Hekla_top10analogues_Ts0200G0200M0200Sz0200St0200.csv`
+
+into the current working directory.
 
 The filename is a unique identifier of the three main parameters that are used
-by PyVOLCANS, separated by the underscored sign:
+by PyVOLCANS, each separated by the underscore sign:
 
     (1) target volcano (`Hekla`);
     (2) weighting scheme (`Ts0200G0200M0200Sz0200St0200`)
@@ -166,13 +201,14 @@ abbreviation of the criterion (see above and in Equation 1 of Tierz et al.,
 units value (either 0 or 1), and the following three numbers indicate the
 decimals of the weight value. Thus, the following examples apply:
 
-`0200` denotes `0.200`, `0850` denotes `0.85`,
+`0200` denotes `0.200`, `0850` denotes `0.850`,
 `0125` denotes `0.125`, `1000` denotes `1.000`, etc.
 
-The content of the csv file is very similar to the standard PyVOLCANS output:
+The content of the csv file is the same as the standard PyVOLCANS output:
 
 ```
-$ head -n 11 Hekla_top10analogues_Ts0200G0200M0200Sz0200St0200.csv
+$ cat Hekla_top10analogues_Ts0200G0200M0200Sz0200St0200.csv
+
 name,country,smithsonian_id,total_analogy
 Torfajokull,Iceland,372050,0.94168
 Bardarbunga,Iceland,373030,0.92141
@@ -186,7 +222,98 @@ Ecuador,Ecuador,353011,0.90161
 Marion Island,South Africa,234070,0.89296
 ```
 
-### EXAMPLE OF A PRIORI ANALOGUES?
+PyVOLCANS can also be used to investigate sets of analogue volcanoes that have
+been derived using other approaches different from PyVOLCANS, e.g. analogue
+volcanoes based on expert knowledge. Such analogue volcanoes might be called
+'a priori analogues' [Tierz et al., 2019](https://doi.org/10.1007/s00445-019-1336-3).
+PyVOLCANS offers the user the possibility of checking for the proportion (or
+percentage) of Holocene volcanoes in the GVP database that are 'better
+analogues' (i.e. have a higher value of total analogy with the target volcano),
+compared to each of the a priori analogues provided by the user.
+
+For example, if we choose Volcán de Fuego (Guatemala) and the following
+a priori analogues (please see Figure 6 in
+[Tierz et al., 2019](https://doi.org/10.1007/s00445-019-1336-3)): Villarrica,
+Llaima (Chile), Pacaya (Guatemala), Reventador, Tungurahua (Ecuador).
+
+```
+$ pyvolcans Fuego --apriori Villarrica Llaima Pacaya Reventador Tungurahua
+
+Top 10 analogue volcanoes for Fuego, Guatemala (342090):
+         name           country  smithsonian_id  total_analogy
+ Klyuchevskoy            Russia          300260       0.970910
+       Semeru         Indonesia          263300       0.963634
+       Osorno             Chile          358010       0.955407
+      Merbabu         Indonesia          263240       0.953673
+       Tacana  Mexico-Guatemala          341130       0.951295
+  Chikurachki            Russia          290360       0.951209
+       Pavlof     United States          312030       0.950073
+        Baker     United States          321010       0.949815
+   Acatenango         Guatemala          342080       0.949274
+   Shishaldin     United States          311360       0.948061
+
+
+According to PyVOLCANS, the following percentage of volcanoes in the GVP database
+are better analogues to Fuego than the 'a priori' analogues reported below:
+
+Villarrica (357120): 2%
+
+Llaima (357110): 2%
+
+Pacaya (342110): 8%
+
+Reventador (352010): 7%
+
+Tungurahua (352080): 7%
+```
+
+Please note that: (1) the percentages are calculated to the closest unit
+percentage, and (2) given the total number of Holocene volcanoes in the GVP
+database v.4.6.7 used by PyVOLCANS (N = 1439), 1% corresponds to 14 volcanoes,
+approximately.
+
+It is also critical to be aware that any value of total analogy calculated by
+PyVOLCANS, and therefore any percentage of 'better analogues', is not only
+dependent on the choice of target volcano and a priori analogues, but also,
+importantly, on the specific choice of weighting scheme used for each run of
+PyVOLCANS. Different weighting schemes may lead to different sets of top
+analogue volcanoes as well as to different percentages of 'better analogues'
+for any pair of target value-a priori analogue.
+
+Hence, using the equal-weight scheme for eruption size and style mentioned
+above (scheme B in [Tierz et al., 2019](https://doi.org/10.1007/s00445-019-1336-3))
+does modify the PyVOLCANS results in the example for Volcán de Fuego:
+
+```
+$ pyvolcans Fuego -Sz 1/2 -St 1/2 --apriori Villarrica Llaima Pacaya Reventador Tungurahua
+
+Top 10 analogue volcanoes for Fuego, Guatemala (342090):
+         name        country  smithsonian_id  total_analogy
+    Momotombo      Nicaragua          344090       0.985340
+        Pagan  United States          284170       0.982429
+       Pavlof  United States          312030       0.982149
+ Klyuchevskoy         Russia          300260       0.981609
+  Karangetang      Indonesia          267020       0.977516
+   Villarrica          Chile          357120       0.977199
+       Semeru      Indonesia          263300       0.976578
+     Lewotobi      Indonesia          264180       0.976012
+     Karymsky         Russia          300130       0.975861
+       Ambrym        Vanuatu          257040       0.974410
+
+
+According to PyVOLCANS, the following percentage of volcanoes in the GVP database
+are better analogues to Fuego than the 'a priori' analogues reported below:
+
+Villarrica (357120): 1%
+
+Llaima (357110): 2%
+
+Pacaya (342110): 2%
+
+Reventador (352010): 7%
+
+Tungurahua (352080): 26%
+```
 
 ## Development
 
@@ -224,3 +351,6 @@ Volcanology and Digital Capabilities.
 
 `PyVOLCANS` is distributed under the [LGPL v3.0 licence](LICENSE).
 Copyright: © BGS / UKRI 2021
+
+## Disclaimer
+
