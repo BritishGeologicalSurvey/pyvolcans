@@ -351,6 +351,3 @@ Volcanology and Digital Capabilities.
 
 `PyVOLCANS` is distributed under the [LGPL v3.0 licence](LICENSE).
 Copyright: © BGS / UKRI 2021
-
-## Disclaimer
-
