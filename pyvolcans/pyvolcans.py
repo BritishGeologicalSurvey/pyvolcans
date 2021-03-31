@@ -239,7 +239,7 @@ def parse_args():
                               "total analogy values, in the PyVOLCANS results")
                         )
     parser.add_argument("-V", "--version", action="version",
-                        help="Show PyVOLCANS package version",
+                        help="Print PyVOLCANS package version and exit",
                         version=__version__)
 
     args = parser.parse_args()
