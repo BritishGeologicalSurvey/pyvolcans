@@ -658,7 +658,6 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     """
 
     # convert volcano names into indices to access the weighted_analogy_matrix
-    volcano_idx = convert_to_idx(my_volcano)
     apriori_volcano_idx = convert_to_idx(apriori_volcano)
 
     # derive a vector with the analogy values for the target volcano
