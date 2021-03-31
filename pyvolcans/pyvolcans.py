@@ -7,13 +7,15 @@ Created on Mon Feb 17 12:13:20 2020
          Edinburgh, UK).
 """
 
-# Standard library
+# Main script used to run PyVOLCANS
+
+# standard packages
 import argparse
 import logging
 import sys
 from pathlib import Path
 
-# Our packages
+# our packages
 from pyvolcans.pyvolcans_func import (
     _frac_to_float,
     calculate_weighted_analogy_matrix,
@@ -60,13 +62,13 @@ def cli():
         after encountering this issue.
     """
 
-    # Setup logging
+    # setup logging
     formatter = logging.Formatter('PyVOLCANS: %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     logging.basicConfig(handlers=[handler], level=logging.INFO)
 
-    # getting the arguments
+    # get the arguments
     args = parse_args()
 
     # get volcano_name from volcano arg
@@ -75,14 +77,14 @@ def cli():
     except ValueError:
         volcano_input = args.volcano
     except PyvolcansError as exc:
-        # Print error message and quit program on error
+        # print error message and quit program on error
         logging.error(exc.args[0])
         sys.exit(1)
 
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    # defining some intermediate variables
+    # define some intermediate variables
     count = args.count
     try:
         arg_weights = {'tectonic_setting': _frac_to_float(args.tectonic_setting),
@@ -97,32 +99,33 @@ def cli():
     try:
         new_weights = set_weights_from_args(arg_weights)
     except PyvolcansError as exc:
-        # Print error message and quit program on error
+        # print error message and quit program on error
         logging.error(exc.args[0])
         sys.exit(1)
 
     my_apriori_volcanoes = args.apriori
     logging.debug("Supplied weights: %s", new_weights)
 
-    # Call PyVOLCANS
+    # call PyVOLCANS
     try:
-        # calculated_weighted_analogy_matrix
+        # main PyVOLCANS result for all volcanoes (and weighting scheme used)
         volcans_result = calculate_weighted_analogy_matrix(
             volcano_input, weights=new_weights)
 
-        # calling the get_analogies function to derive the final data
+        # final PyVOLCANS result (specific of the target volcano selected)
         [top_analogues,
          volcano_name] = get_analogies(volcano_input,
                                        volcans_result,
                                        count)
 
-        #checking for 'too many perfect analogues'
+        # check for 'too many perfect analogues' (see Tierz et al., 2019)
         try:
             check_for_perfect_analogues(result=top_analogues)
         except PyvolcansError as exc:
+            # do not quit the program in this situation
             logging.warning(exc.args[0])
 
-        #return the result
+        # return a formatted PyVOLCANS result
         result = output_result(verbose=args.verbose,
                                my_volcano=volcano_name,
                                result=top_analogues)
@@ -132,21 +135,23 @@ def cli():
         my_volcano_vnum = \
             volcans_result['smithsonian_id'].iloc[convert_to_idx(volcano_input)]
 
+        # print main PyVOLCANS result to stdout
         print(f"Top {count} analogue volcanoes for {volcano_name}, "
               f"{my_volcano_country} ({my_volcano_vnum}):")
         print(result)
 
-        #calling the function to open the GVP website
+        # call the function to open the GVP website for top analogue
         if args.website:
-            #obtaining top-analogue vnum (NB. target volcano has been
-            #                            'filtered out' of 'top_analogues')
+            # obtain top-analogue VNUM (or Smithsonian ID)
+            # NB. target volcano has been 'filtered out' of 'top_analogues'
             top_analogue_vnum = top_analogues['smithsonian_id'].iloc[0]
             try:
                 open_gvp_website(top_analogue_vnum)
             except PyvolcansError as exc:
+                # do not quit the program in this situation
                 logging.warning(exc.args[0])
 
-        #calling the function to write the top analogues to a csv file
+        # call the function to write the top analogues to a csv file
         if args.write_csv_file:
             volcano_name_clean = \
                 volcano_name.replace('\'', '').replace(',', '').replace('.', '')
@@ -165,8 +170,7 @@ def cli():
                                    top_analogues,
                                    to_file='csv',
                                    filename=output_filename)
-        # calling the get_many_analogy_percentiles function
-        # to print 'better analogues'
+        # call get_many_analogy_percentiles to print 'better analogues'
         if my_apriori_volcanoes is not None:
             try:
                 my_apriori_volcanoes = [int(x) for x in args.apriori]
@@ -179,7 +183,7 @@ def cli():
                                          my_apriori_volcanoes,
                                          volcans_result)
     except PyvolcansError as exc:
-        # Print error message and quit program on error
+        # print error message and quit program on error
         logging.error(exc.args[0])
         sys.exit(1)
 
