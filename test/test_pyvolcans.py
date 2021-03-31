@@ -6,12 +6,11 @@ Created on Fri May 15 12:49:55 2020
          (British Geological Survey, The Lyell Centre,
          Edinburgh, UK).
 """
+
 import pytest
-from unittest.mock import patch
 
 import numpy as np
 
-import pyvolcans
 from pyvolcans.pyvolcans_func import (
     fuzzy_matching,
     match_name,
@@ -25,15 +24,7 @@ from pyvolcans.pyvolcans_func import (
     PyvolcansError
 )
 
-from pyvolcans import (load_tectonic_analogy,
-                       load_geochemistry_analogy,
-                       load_eruption_size_analogy,
-                       load_eruption_style_analogy,
-                       load_morphology_analogy)
-
 # pylint: disable=missing-docstring
-
-
 
 def test_volcano_idx():
     idx = get_volcano_idx_from_name(volcano_name='Fuego')
@@ -70,7 +61,7 @@ def test_set_weights_from_args_error():
     with pytest.raises(PyvolcansError) as exc_info:
         set_weights_from_args(args_dict)
 
-    msg = ("Sum of weights (495.00005) is different from 1!"
+    msg = ("Sum of weights (495.000050000) is different from 1!"
            " Please revise your weighting scheme.")
 
     assert str(exc_info.value) == msg
@@ -193,6 +184,7 @@ def test_combined_analogy_matrix_no_eruption_size(weights, expected, mock_analog
             'total_analogy']
     assert matrix.astype(int) == expected
 
+
 @pytest.mark.parametrize("weights,expected",
                         [({'tectonic_setting':0.25,
                            'geochemistry': 0.25,
@@ -210,7 +202,6 @@ def test_combined_analogy_matrix_no_eruption_style(weights, expected, mock_analo
 
 def test_open_gvp_website(monkeypatch):
     # Arrange
-
     def always_false(my_web):
         # This function will replace webbrowser.open and always returns false
         # We have my_web as an argument so our function has the same inputs as
