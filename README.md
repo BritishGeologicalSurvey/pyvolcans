@@ -315,6 +315,14 @@ Reventador (352010): 7%
 Tungurahua (352080): 26%
 ```
 
+WARNING! Please note that, in the current version of PyVOLCANS, defining the
+set of a priori analogues as a mix of data types (e.g. str for volcano names
+and int for volcano number, VNUM (or Smithsonian ID)) does not provide the user
+with the expected data for the percentages of better analogues.
+
+PLEASE USE either a set of volcano names or a set of volcano numbers to define
+your set of a priori analogues when running PyVOLCANS. Many thanks.
+
 ## Development
 
 ### For developers
