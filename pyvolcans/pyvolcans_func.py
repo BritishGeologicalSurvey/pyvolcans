@@ -7,7 +7,7 @@ Created on Tue Mar  3 09:49:16 2020
          Edinburgh, UK).
 """
 
-# set of functions related to the implementation of PyVOLCANS
+# Set of functions related to the implementation of PyVOLCANS
 
 # standard packages
 import webbrowser
@@ -27,11 +27,11 @@ from pyvolcans import (load_tectonic_analogy,
 
 VOLCANO_NAMES = load_volcano_names()
 
-#dictionary of weights for the criteria
+# dictionary of weights for the volcanological criteria
 WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
            'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
 
-# loading all the data
+# load all the data from VOLCANS
 ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
                   'geochemistry': load_geochemistry_analogy(),
                   'morphology': load_morphology_analogy(),
@@ -41,8 +41,9 @@ ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
 
 
 def _frac_to_float(value):
-    """Converts a string of decimal or fractional number (e.g. '0.5' or '1/2')
-       into a floating-point representation.
+    """
+    Converts a string of decimal or fractional number (e.g. '0.5' or '1/2')
+    into a floating-point representation.
 
     Parameters
     ----------
@@ -62,7 +63,7 @@ def _frac_to_float(value):
         if the function is called using a string made up of characters.
     """
 
-    #check for lists because value is None if not specified
+    # check for lists because value is None if not specified
     if isinstance(value, list):
         if len(value) > 1:
             msg = ("Some criterion weights are duplicated! "
@@ -74,6 +75,7 @@ def _frac_to_float(value):
     if value is None:
         value_as_float = None
     else:
+        # criterion weight may be given as decimal or fraction
         if '/' in value:
             try:
                 numerator, denominator =  value.split('/')
@@ -92,9 +94,12 @@ def _frac_to_float(value):
     return value_as_float
 
 
-
 def fuzzy_matching(volcano_name, limit=10):
-    """Provides a list of volcanoes with names most similar to volcano_name.
+    """
+    Provides a list of volcanoes with names most similar to volcano_name.
+
+    The function serves to handle possible typos in the name provided for the
+    target volcano.
 
     Parameters
     ----------
@@ -112,17 +117,19 @@ def fuzzy_matching(volcano_name, limit=10):
     matches = process.extract(volcano_name, VOLCANO_NAMES[0], limit=limit,
                               scorer=fuzz.UQRatio)
     match_idx = [item[2] for item in matches]
-    volcano_info = VOLCANO_NAMES.iloc[match_idx].rename(columns={0:'name',
-                                                                 1:'country',
-                                                                 2:'smithsonian_id'})
+    volcano_info = \
+        VOLCANO_NAMES.iloc[match_idx].rename(columns={0:'name',
+                                                      1:'country',
+                                                      2:'smithsonian_id'})
     similar_volcano_names = volcano_info.to_string(index=False)
 
     return similar_volcano_names
 
 
 def get_volcano_idx_from_number(volcano_number):
-    """Derives the index of the volcano in the analogy matrices (VOLCANS)
-       from the volcano number (VNUM) in the GVP database (www.volcano.si.edu)
+    """
+    Derives the index of the volcano in the analogy matrices (VOLCANS) from the
+    volcano number (VNUM) in the GVP database (www.volcano.si.edu).
 
     Parameters
     ----------
@@ -151,8 +158,9 @@ def get_volcano_idx_from_number(volcano_number):
 
 
 def get_volcano_idx_from_name(volcano_name):
-    """Derives the index of the volcano in the analogy matrices (VOLCANS)
-       from the volcano name in the GVP database (www.volcano.si.edu)
+    """
+    Derives the index of the volcano in the analogy matrices (VOLCANS) from the
+    volcano name in the GVP database (www.volcano.si.edu).
 
     Parameters
     ----------
@@ -176,8 +184,9 @@ def get_volcano_idx_from_name(volcano_name):
 
 
 def get_volcano_name_from_idx(volcano_idx):
-    """Derives the the volcano name in the GVP database (www.volcano.si.edu)
-       from the index of the volcano in the analogy matrices (VOLCANS)
+    """
+    Derives the the volcano name in the GVP database (www.volcano.si.edu) from
+    the index of the volcano in the analogy matrices (VOLCANS).
 
     Parameters
     ----------
@@ -200,8 +209,9 @@ def get_volcano_name_from_idx(volcano_idx):
 
 
 def get_volcano_number_from_name(volcano_name):
-    """Derives the volcano number (VNUM) from the volcano name
-       in the GVP database (www.volcano.si.edu)
+    """
+    Derives the volcano number (VNUM) from the volcano name in the GVP database
+    (www.volcano.si.edu).
 
     Parameters
     ----------
@@ -224,8 +234,9 @@ def get_volcano_number_from_name(volcano_name):
 
 
 def convert_to_idx(my_volcano):
-    """Checks whether the volcano input is a string or not, and in either case,
-       derives the index of the volcano in the analogy matrices (VOLCANS)
+    """
+    Checks whether the volcano input is a string or not, and in either case,
+    derives the index of the volcano in the analogy matrices (VOLCANS).
 
     Parameters
     ----------
@@ -254,8 +265,9 @@ def convert_to_idx(my_volcano):
 
 
 def set_weights_from_args(args_dict):
-    """Transforms the set of weights, for volcanological criteria, introduced
-       by the user into a set of weights usable by PyVOLCANS.
+    """
+    Transforms the set of weights, for volcanological criteria, introduced by
+    the user into a set of weights usable by PyVOLCANS.
 
     Parameters
     ----------
@@ -285,12 +297,14 @@ def set_weights_from_args(args_dict):
         details). *Numerical precision asserting this equality is 1e-9.
     """
 
+    # check whether any criterion weight has been given by the user
     no_values_set = all(value is None for value in args_dict.values())
 
     if no_values_set:
         args_dict = dict.fromkeys(args_dict.keys(), 0.2)
         return args_dict
 
+    # check whether the sum of weights provided sums up to 1
     sum_of_weights = 0
     for key, value in args_dict.items():
         if value is None:
@@ -308,9 +322,10 @@ def set_weights_from_args(args_dict):
 
 def calculate_weighted_analogy_matrix(my_volcano, weights,
                                       analogies=ANALOGY_MATRIX):
-    """Derives a matrix of total and single-criterion analogy values between
-       the target volcano and any other volcano in the GVP database
-       (www.volcano.si.edu), using the weighting scheme selected by the user
+    """
+    Derives a matrix of total and single-criterion analogy values between the
+    target volcano and any other volcano in the GVP database
+    (www.volcano.si.edu), using the weighting scheme selected by the user.
 
     Parameters
     ----------
@@ -337,7 +352,8 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
 
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
-       
+
+    # calculate single-criterion analogy matrices for specific weighting scheme
     weighted_tectonic_analogy = \
         weights['tectonic_setting'] * analogies['tectonic_setting']
 
@@ -353,11 +369,12 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     weighted_eruption_style_analogy = \
         weights['eruption_style'] * analogies['eruption_style']
 
+    # calculate total analogy matrix for specific weighting scheme
     weighted_total_analogy_matrix = weighted_tectonic_analogy + \
         weighted_geochemistry_analogy + weighted_morphology_analogy + \
         weighted_eruption_size_analogy + weighted_eruption_style_analogy
 
-    #print(weighted_total_analogy_matrix.shape)
+    # arrange final result
     volcans_result = VOLCANO_NAMES.copy()
     volcans_result.columns = ['name', 'country', 'smithsonian_id']
     volcans_result['total_analogy'] = \
@@ -377,9 +394,10 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
-    """Derives a filtered Pandas dataframe, which contains the total and
-       single-criterion analogy values between the target volcano and a given
-       number of 'top' analogue volcanoes (specified by count)
+    """
+    Derives a filtered Pandas dataframe, which contains the total and single-
+    criterion analogy values between the target volcano and a given number of
+    'top' analogue volcanoes (specified by count).
 
     Parameters
     ----------
@@ -410,26 +428,28 @@ def get_analogies(my_volcano, volcans_result, count=10):
 
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
-    # calculate the <count> highest values of multi-criteria analogy
-    # getting the row corresponding to the target volcano ('my_volcano')
+    # get the row corresponding to the target volcano ('my_volcano')
     my_volcano_analogies = volcans_result['total_analogy']
-    # getting the indices corresponding to the highest values of analogy
+    # get the indices corresponding to the highest values of analogy
     # in descending order (highest analogy first)
-    top_idx = my_volcano_analogies.argsort().tail(count+1)[::-1] #TOP ANALOGUE IS LIKELY TO BE THE TARGET VOLCANO!
+    # NB. count+1 is used as the top analogue is likely
+    #     to be the target volcano itself
+    top_idx = my_volcano_analogies.argsort().tail(count+1)[::-1] 
     result = volcans_result.iloc[top_idx]
-    #'filtering out' the target volcano from the final result
+    # 'filter out' the target volcano from the final result
     my_volcano_boolean_indexes = result.index.isin([volcano_idx])
     filtered_result = result[~my_volcano_boolean_indexes]
-    # anywhere 'volcano_idx' came from, make it a str
+    # obtain volcano name from volcano_idx as my_volcano could be an int
     volcano_name = get_volcano_name_from_idx(volcano_idx)
 
     return filtered_result, volcano_name
 
 
 def check_for_perfect_analogues(result):
-    """Assesses whether all the calculated top analogue volcanoes share
-       the same value of total analogy, and raises a PyvolcansError exception
-       if that is the case
+    """
+    Assesses whether all the calculated top analogue volcanoes share the same
+    value of total analogy, and raises a PyvolcansError exception if that is
+    the case.
 
     Parameters
     ----------
@@ -463,9 +483,10 @@ def check_for_perfect_analogues(result):
 
 
 def open_gvp_website(top_analogue_vnum):
-    """Opens the GVP website for the top analogue volcano to the target volcano
-       identified by PyVOLCANS using the specific weighting scheme selected by
-       the user
+    """
+    Opens the GVP website for the top analogue volcano to the target volcano
+    identified by PyVOLCANS using the specific weighting scheme selected by
+    the user.
 
     Parameters
     ----------
@@ -483,7 +504,7 @@ def open_gvp_website(top_analogue_vnum):
     """
 
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
-              '&vtab=GeneralInfo'  # Getting to open the General Info tab
+              '&vtab=GeneralInfo'  # Open the General Info tab
     browser_opened = webbrowser.open(my_web)
 
     if not browser_opened:
@@ -492,8 +513,9 @@ def open_gvp_website(top_analogue_vnum):
 
 
 def output_result(verbose, my_volcano, result, to_file=None, filename=None):
-    """Prepares the final PyVOLCANS results to be written either to the
-       standard output or to a comma-separated-value (csv) file.
+    """
+    Prepares the final PyVOLCANS results to be written either to the standard
+    output or to a comma-separated-value (csv) file.
 
     Parameters
     ----------
@@ -543,10 +565,10 @@ def output_result(verbose, my_volcano, result, to_file=None, filename=None):
 
 
 def match_name(volcano_name):
-    """Attempts to match the volcano name provided by the user to an existing
-       volcano name in the GVP database (www.volcano.si.edu), and provides a
-       list of alternatives (via 'fuzzy_matching()') if a unique name cannot
-       be found
+    """
+    Attempts to match the volcano name provided by the user to an existing
+    volcano name in the GVP database (www.volcano.si.edu), and provides a list
+    of alternatives (via 'fuzzy_matching()') if a unique name cannot be found.
 
     Parameters
     ----------
@@ -573,13 +595,13 @@ def match_name(volcano_name):
     """
 
     matched_volcanoes = VOLCANO_NAMES.loc[VOLCANO_NAMES[0] == volcano_name]
-    # throw errors whether if volcano does not exist
-    # or there are 2+ identical names
+    # throw errors either if volcano name does not exist
     if len(matched_volcanoes) == 0:
         name_suggestions = fuzzy_matching(volcano_name)
         msg = (f"{volcano_name} not found! Did you mean:\n{name_suggestions}")
         raise PyvolcansError(msg)
 
+    # or if there are 2+ identical volcano names
     if len(matched_volcanoes) > 1:
         name_suggestions = fuzzy_matching(volcano_name)
         msg = (f"Volcano name {volcano_name} is not unique. "
@@ -591,12 +613,12 @@ def match_name(volcano_name):
 
 def get_analogy_percentile(my_volcano, apriori_volcano,
                            volcans_result):
-    """Takes the target volcano and another volcano (an 'a priori analogue'),
-       and calculates the percentile that the total analogy between the two
-       volcanoes represents within the whole distribution of total analogy
-       values between the target volcano and all the other volcanoes in the
-       GVP database is considered (please see Tierz et al., 2019, for more
-       details).
+    """
+    Takes the target volcano and another volcano (an 'a priori analogue'), and
+    calculates the percentile that the total analogy between the two volcanoes
+    represents within the whole distribution of total analogy values between
+    the target volcano and all the other volcanoes in the GVP database is
+    considered (please see Tierz et al., 2019, for more details).
 
     Parameters
     ----------
@@ -635,15 +657,13 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
         of total analogy values, and hence, of percentile values.
     """
 
-    # convert volcano names into inds to access the weighted_analogy_matrix
+    # convert volcano names into indices to access the weighted_analogy_matrix
     volcano_idx = convert_to_idx(my_volcano)
-    apriori_volcano_idx = convert_to_idx(apriori_volcano) 
-    
-    # derive a vector with the analogy values for the target volcano
+    apriori_volcano_idx = convert_to_idx(apriori_volcano)
 
     # derive a vector with the analogy values for the target volcano
     my_analogy_values = volcans_result['total_analogy']
-    # calculate percentiles from 0 to 100 (like in VOLCANS for now)
+    # calculate percentiles from 0 to 100 (same method as in VOLCANS currently)
     analogy_percentiles = np.percentile(my_analogy_values,
                                         np.linspace(0, 100, 101),
                                         interpolation='midpoint')
@@ -652,18 +672,18 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
     my_percentile = (np.abs(analogy_percentiles - \
                             my_analogy_values[apriori_volcano_idx])).argmin()
 
-    # Possible steps:
     return my_percentile
 
 def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
                                  volcans_result):
-    """Iteratively calls 'get_analogy_percentile()' function to derive a
-       dictionary of 'a priori analogues' with their corresponding value of
-       percentage of 'better analogues' (to the target volcano) that exist in
-       the GVP database (www.volcano.si.edu). NB. 'better analogue' means that
-       the particular volcano has a higher value of total analogy than the a
-       priori analogue, for the specific weighting scheme selected by the user
-       (please see Tierz et al., 2019, for more details)
+    """
+    Iteratively calls 'get_analogy_percentile()' function to derive a
+    dictionary of 'a priori analogues' with their corresponding value of
+    percentage of 'better analogues' (to the target volcano) that exist in
+    the GVP database (www.volcano.si.edu). NB. 'better analogue' means that
+    the particular volcano has a higher value of total analogy than the a
+    priori analogue, for the specific weighting scheme selected by the user
+    (please see Tierz et al., 2019, for more details)
 
     Parameters
     ----------
@@ -708,8 +728,8 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         examples of this).
     """
 
-    # check a priori volcanoes is a list
-
+    # create empty dictionaries for percentiles
+    # and percentage of better analogues
     percentile_dictionary = {}
     better_analogues_dictionary = {} # 100-percentile
 
@@ -720,7 +740,7 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         percentile_dictionary[volcano] = percentile
         better_analogues_dictionary[volcano] = 100 - percentile
 
-    # adding a 'printing functionality' to the function
+    # print the percentage of better analogues for each a priori analogue
     my_volcano_to_print = \
         VOLCANO_NAMES.loc[convert_to_idx(my_volcano)][0]
     print('\n\nAccording to PyVOLCANS, the following percentage of volcanoes in'
