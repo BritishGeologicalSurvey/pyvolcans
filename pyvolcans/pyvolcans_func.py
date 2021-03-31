@@ -69,8 +69,7 @@ def _frac_to_float(value):
             msg = ("Some criterion weights are duplicated! "
                    "Please revise your weighting scheme.")
             raise PyvolcansError(msg)
-        else:
-            value = value[0]
+        value = value[0]
 
     if value is None:
         value_as_float = None
