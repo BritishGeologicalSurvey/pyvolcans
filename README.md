@@ -34,6 +34,7 @@ more details on the VOLCANS method.
 ## Installation
 
 PyVOLCANS can be imported to a new environment as follows:
+
 ```
 pip install git+https://github.com/BritishGeologicalSurvey/pyvolcans.git
 ```
@@ -43,9 +44,20 @@ It is necessary to have Git installed and on the system path.
 This method adds `pyvolcans` to the virtual environment PATH so that it can be
 used from any directory.
 
+The installation process will include all required dependencies. If you have
+problems installing python-Levenshtein (common on Windows), and are using
+Anaconda Python, you can install it via:
+
+```
+conda install python-Levenshtein
+```
+
+Then re-run the `pip`  command.
+
 ## How to use PyVOLCANS
 
 Calling PyVOLCANS help gives details of command line options:
+
 ```
 $ pyvolcans --help
 
@@ -84,6 +96,7 @@ optional arguments:
 ### Default call to PyVOLCANS
 
 Calling PyVOLCANS with a volcano name returns the 10 top analogue volcanoes:
+
 ```
 $ pyvolcans Hekla
 
@@ -179,7 +192,9 @@ you might use for your records and/or to perform further analyses on the data.
 
 For example, typing:
 
-`$ pyvolcans Hekla --write_csv`
+```
+$ pyvolcans Hekla --write_csv
+```
 
 generates the same standard PyVOLCANS output as `$ pyvolcans Hekla`, but,
 in addition, it saves a file named:
