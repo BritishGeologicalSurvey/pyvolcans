@@ -278,7 +278,7 @@ dependent on the choice of target volcano and a priori analogues, but also,
 importantly, on the specific choice of weighting scheme used for each run of
 PyVOLCANS. Different weighting schemes may lead to different sets of top
 analogue volcanoes as well as to different percentages of 'better analogues'
-for any pair of target value-a priori analogue.
+for any pair of target volcano-a priori analogue.
 
 Hence, using the equal-weight scheme for eruption size and style mentioned
 above (scheme B in [Tierz et al., 2019](https://doi.org/10.1007/s00445-019-1336-3))
