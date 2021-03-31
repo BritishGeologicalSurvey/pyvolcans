@@ -71,16 +71,16 @@ def _frac_to_float(value):
             raise PyvolcansError(msg)
         else:
             value = value[0]
-       
+
     if value is None:
         value_as_float = None
     else:
         # criterion weight may be given as decimal or fraction
         if '/' in value:
             try:
-                numerator, denominator =  value.split('/')
+                numerator, denominator = value.split('/')
                 value_as_float = float(
-                        Fraction(numerator) / Fraction(denominator))
+                    Fraction(numerator) / Fraction(denominator))
             except (ValueError, ZeroDivisionError):
                 msg = f"Unable to convert given weight ({value}) to number"
                 raise PyvolcansError(msg)
@@ -434,7 +434,7 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # in descending order (highest analogy first)
     # NB. count+1 is used as the top analogue is likely
     #     to be the target volcano itself
-    top_idx = my_volcano_analogies.argsort().tail(count+1)[::-1] 
+    top_idx = my_volcano_analogies.argsort().tail(count+1)[::-1]
     result = volcans_result.iloc[top_idx]
     # 'filter out' the target volcano from the final result
     my_volcano_boolean_indexes = result.index.isin([volcano_idx])
@@ -471,7 +471,7 @@ def check_for_perfect_analogues(result):
         Tierz et al., 2019, for more details)
     """
 
-    maximum_analogy=result['total_analogy'].iloc[0]
+    maximum_analogy = result['total_analogy'].iloc[0]
     if result['total_analogy'].eq(maximum_analogy).all():
         msg = ("WARNING!!! "
                "All top analogue volcanoes have the same value "
@@ -745,7 +745,7 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     print('\n\nAccording to PyVOLCANS, the following percentage of volcanoes in'
           + f' the GVP database\nare better analogues to {my_volcano_to_print}'
           + ' than the \'a priori\' analogues reported below:\n')
-    
+
     for volcano, percentage in better_analogues_dictionary.items():
         if isinstance(volcano, int):
             volcano_idx_to_print = get_volcano_idx_from_number(volcano)
