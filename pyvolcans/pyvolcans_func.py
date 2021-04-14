@@ -384,17 +384,17 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     volcans_result = VOLCANO_NAMES.copy()
     volcans_result.columns = ['name', 'country', 'smithsonian_id']
     volcans_result['total_analogy'] = \
-        weighted_total_analogy_matrix[volcano_idx,]
+        weighted_total_analogy_matrix[volcano_idx, ]
     volcans_result['ATs'] = \
-        weighted_tectonic_analogy[volcano_idx,]
+        weighted_tectonic_analogy[volcano_idx, ]
     volcans_result['AG'] = \
-        weighted_geochemistry_analogy[volcano_idx,]
+        weighted_geochemistry_analogy[volcano_idx, ]
     volcans_result['AM'] = \
-        weighted_morphology_analogy[volcano_idx,]
+        weighted_morphology_analogy[volcano_idx, ]
     volcans_result['ASz'] = \
-        weighted_eruption_size_analogy[volcano_idx,]
+        weighted_eruption_size_analogy[volcano_idx, ]
     volcans_result['ASt'] = \
-        weighted_eruption_style_analogy[volcano_idx,]
+        weighted_eruption_style_analogy[volcano_idx, ]
 
     return volcans_result
 
@@ -510,7 +510,7 @@ def open_gvp_website(top_analogue_vnum):
     """
 
     my_web = f'https://volcano.si.edu/volcano.cfm?vn={top_analogue_vnum}' \
-              '&vtab=GeneralInfo'  # Open the General Info tab
+        '&vtab=GeneralInfo'  # Open the General Info tab
     browser_opened = webbrowser.open(my_web)
 
     if not browser_opened:
@@ -674,10 +674,11 @@ def get_analogy_percentile(my_volcano, apriori_volcano,
                                         interpolation='midpoint')
     # find the closest value to the analogy of the a priori volcano
     # NOTE that this value already represents the percentile (0-100)
-    my_percentile = (np.abs(analogy_percentiles - \
+    my_percentile = (np.abs(analogy_percentiles -
                             my_analogy_values[apriori_volcano_idx])).argmin()
 
     return my_percentile
+
 
 def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
                                  volcans_result):
@@ -736,7 +737,7 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     # create empty dictionaries for percentiles
     # and percentage of better analogues
     percentile_dictionary = {}
-    better_analogues_dictionary = {} # 100-percentile
+    better_analogues_dictionary = {}  # 100-percentile
 
     # loop over get_analogy_percentile
     for volcano in apriori_volcanoes_list:
@@ -762,7 +763,7 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
             name_to_print = volcano
 
         vnum_to_print = \
-                volcans_result['smithsonian_id'].iloc[volcano_idx_to_print]
+            volcans_result['smithsonian_id'].iloc[volcano_idx_to_print]
         print(f'{name_to_print} ({vnum_to_print}): {percentage}%\n')
 
     return percentile_dictionary, better_analogues_dictionary

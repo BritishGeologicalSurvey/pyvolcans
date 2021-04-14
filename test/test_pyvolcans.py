@@ -2,7 +2,7 @@
 """
 Created on Fri May 15 12:49:55 2020
 
-@author: Vyron Christodoulou, John A. Stevenson, Pablo Tierz  
+@author: Vyron Christodoulou, John A. Stevenson, Pablo Tierz
          (British Geological Survey, The Lyell Centre,
          Edinburgh, UK).
 """
@@ -25,6 +25,7 @@ from pyvolcans.pyvolcans_func import (
 )
 
 # pylint: disable=missing-docstring
+
 
 def test_volcano_idx():
     idx = get_volcano_idx_from_name(volcano_name='Fuego')
@@ -104,7 +105,7 @@ def test_volcano_idx_from_number():
 @pytest.mark.parametrize("name,expected", [('blah', 'not found'), ('Santa Isabel', 'not unique')])
 def test_match_name(name, expected):
     with pytest.raises(PyvolcansError) as excinfo:
-         matched = match_name(name)
+        match_name(name)
     assert expected in str(excinfo.value)
 
 
@@ -119,7 +120,7 @@ def mock_analogies():
                       'geochemistry': np.array([4000]),
                       'morphology': np.array([400]),
                       'eruption_size': np.array([40]),
-                      'eruption_style': np.array([4])}   
+                      'eruption_style': np.array([4])}
     return mock_analogies
 
 
@@ -150,7 +151,7 @@ def mock_analogies():
       'eruption_size': 0.25,
       'eruption_style': 0}, 11110)
    ])
-def test_combined_analogy_matrix_no_tectonic(weights, expected, mock_analogies): 
+def test_combined_analogy_matrix_no_tectonic(weights, expected, mock_analogies):
     pandas_df = calculate_weighted_analogy_matrix(
             'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
@@ -174,4 +175,5 @@ def test_open_gvp_website(monkeypatch):
         open_gvp_website(123456)
 
     # Assert
-    assert str(exc_info.value) == "No suitable browser to open https://volcano.si.edu/volcano.cfm?vn=123456&vtab=GeneralInfo"
+    msg = "No suitable browser to open https://volcano.si.edu/volcano.cfm?vn=123456&vtab=GeneralInfo"
+    assert str(exc_info.value) == msg

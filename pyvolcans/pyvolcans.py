@@ -206,31 +206,25 @@ def parse_args():
                         help="Provide one or more a priori analogue volcanoes",
                         default=None)
     parser.add_argument("-Ts", "--tectonic_setting", action='append',
-                        help=
-                        "Set tectonic setting weight (e.g. '0.2' or '1/5')",
+                        help="Set tectonic setting weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
     parser.add_argument("-G", "--rock_geochemistry", action='append',
-                        help=
-                        "Set rock geochemistry weight (e.g. '0.2' or '1/5')",
+                        help="Set rock geochemistry weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
     parser.add_argument("-M", "--morphology", action='append',
-                        help=
-                        "Set volcano morphology weight (e.g. '0.2' or '1/5')",
+                        help="Set volcano morphology weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
     parser.add_argument("-Sz", "--eruption_size", action='append',
-                        help=
-                        "Set eruption size weight (e.g. '0.2' or '1/5')",
+                        help="Set eruption size weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
     parser.add_argument("-St", "--eruption_style", action='append',
-                        help=
-                        "Set eruption style weight (e.g. '0.2' or '1/5')",
+                        help="Set eruption style weight (e.g. '0.2' or '1/5')",
                         default=None, type=str)
     parser.add_argument("--count",
                         help="Set the number of top analogue volcanoes",
                         default='10', type=int)
     parser.add_argument("-w", "--write_csv_file", action="store_true",
-                        help=
-                        "Write list of top analogue volcanoes as .csv file")
+                        help="Write list of top analogue volcanoes as .csv file")
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
     parser.add_argument("-v", "--verbose", action="store_true",
@@ -245,6 +239,7 @@ def parse_args():
     args = parser.parse_args()
 
     return args
+
 
 if __name__ == '__main__':
     cli()
