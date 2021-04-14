@@ -329,6 +329,15 @@ with the expected data for the percentages of better analogues.
 PLEASE USE either a set of volcano names or a set of volcano numbers to define
 your set of a priori analogues when running PyVOLCANS. Many thanks.
 
+## Analogy matrices
+
+In the original VOLCANS paper, the analogy matrices were calculated in Matlab.
+These initial releases of pyVOLCANS use these pre-calculated matrices.
+This was the quickest way of making VOLCANS results available to users.
+In a future release, we aim to include a Python version of the code that
+calculates the analogies based on volcano characterisics.
+This will make it the method more transparent.
+
 ## Development
 
 ### For developers
