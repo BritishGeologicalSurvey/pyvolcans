@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 """
+Set of functions related to the implementation of PyVOLCANS
+
 Created on Tue Mar  3 09:49:16 2020
 
 @author: Pablo Tierz, John A. Stevenson, Vyron Christodoulou
          (British Geological Survey, The Lyell Centre,
          Edinburgh, UK).
 """
-
-# Set of functions related to the implementation of PyVOLCANS
-
-# standard packages
+import warnings
 import webbrowser
 from fractions import Fraction
 
 # external packages
 import numpy as np
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
 
 from pyvolcans import (load_tectonic_analogy,
                        load_geochemistry_analogy,
@@ -24,6 +21,16 @@ from pyvolcans import (load_tectonic_analogy,
                        load_eruption_size_analogy,
                        load_eruption_style_analogy,
                        load_volcano_names)
+
+# fuzzywuzzy would like to use a sequence matcher provided by the
+# Python-Levenshtein package, but this has dependencies the require
+# compilation.  When it is not installed, it uses the matcher provided
+# by the standard library difflib and raises a warning.  In our case
+# it doesn't make much difference so we suppress the warning.
+with warnings.catch_warnings():
+    warnings.filterwarnings('ignore',
+                            message="Using slow pure-python SequenceMatcher.")
+    from fuzzywuzzy import fuzz, process
 
 VOLCANO_NAMES = load_volcano_names()
 
@@ -112,14 +119,14 @@ def fuzzy_matching(volcano_name, limit=10):
     similar_volcano_names : str
         List of volcanoes with similar names to the target volcano
     """
-
     matches = process.extract(volcano_name, VOLCANO_NAMES[0], limit=limit,
                               scorer=fuzz.UQRatio)
+
     match_idx = [item[2] for item in matches]
     volcano_info = \
-        VOLCANO_NAMES.iloc[match_idx].rename(columns={0:'name',
-                                                      1:'country',
-                                                      2:'smithsonian_id'})
+        VOLCANO_NAMES.iloc[match_idx].rename(columns={0: 'name',
+                                                      1: 'country',
+                                                      2: 'smithsonian_id'})
     similar_volcano_names = volcano_info.to_string(index=False)
 
     return similar_volcano_names

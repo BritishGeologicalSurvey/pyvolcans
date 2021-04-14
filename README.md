@@ -44,15 +44,6 @@ It is necessary to have Git installed and on the system path.
 This method adds `pyvolcans` to the virtual environment PATH so that it can be
 used from any directory.
 
-The installation process will include all required dependencies. If you have
-problems installing python-Levenshtein (common on Windows), and are using
-Anaconda Python, you can install it via:
-
-```
-conda install python-Levenshtein
-```
-
-Then re-run the `pip`  command.
 
 ## How to use PyVOLCANS
 
