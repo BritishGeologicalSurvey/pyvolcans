@@ -341,7 +341,7 @@ paper was published. These changes are the following:
 
 - Sinabung, Indonesia (261080): (1) lava flows and lahars from the 2013–2018
 eruption are included; and (2) the 2013–2018 eruption is updated to VEI 4
-(GVP, 2013, database version 4.7.4). Please see [Tierz et al. (2019)] (https://doi.org/10.1007/s00445-019-1336-3).
+(GVP, 2013, database version 4.7.4). Please see [Tierz et al. (2019)](https://doi.org/10.1007/s00445-019-1336-3).
 
 - Alutu, Ethiopia (221270): rock type 'Dacite' is removed from the GVP profile
 of Aluto volcano. Please see [Tierz et al., 2020](https://doi.org/10.1029/2020GC009219).
