@@ -38,7 +38,6 @@ setup(
         'numpy',
         'pandas',
         'pymatreader',
-        'python-Levenshtein',
         'scipy'
     ],
     extras_require={

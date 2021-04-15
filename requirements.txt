@@ -3,7 +3,6 @@ fuzzywuzzy
 numpy
 pandas
 pymatreader
-python-Levenshtein
 scipy
 
 # Development tools

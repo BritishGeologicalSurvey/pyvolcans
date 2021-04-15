@@ -31,6 +31,7 @@
     expert-derived analogue volcanoes. Please see Tierz et al. (2019) for more
     details on the VOLCANS method (https://doi.org/10.1007/s00445-019-1336-3).
 """
+# flake8: noqa
 
 from ._version import get_versions
 __version__ = get_versions()['version']
@@ -42,4 +43,3 @@ from pyvolcans.VOLCANS_mat_files.base import load_geochemistry_analogy
 from pyvolcans.VOLCANS_mat_files.base import load_morphology_analogy
 from pyvolcans.VOLCANS_mat_files.base import load_eruption_style_analogy
 from pyvolcans.VOLCANS_mat_files.base import load_eruption_size_analogy
-
