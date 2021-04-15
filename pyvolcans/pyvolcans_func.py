@@ -23,7 +23,7 @@ from pyvolcans import (load_tectonic_analogy,
                        load_volcano_names)
 
 # fuzzywuzzy would like to use a sequence matcher provided by the
-# Python-Levenshtein package, but this has dependencies the require
+# Python-Levenshtein package, but this has dependencies that require
 # compilation.  When it is not installed, it uses the matcher provided
 # by the standard library difflib and raises a warning.  In our case
 # it doesn't make much difference so we suppress the warning.
