@@ -14,6 +14,7 @@ import argparse
 import logging
 import sys
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 # our packages
 from pyvolcans.pyvolcans_func import (
@@ -26,7 +27,8 @@ from pyvolcans.pyvolcans_func import (
     open_gvp_website,
     output_result,
     check_for_perfect_analogues,
-    convert_to_idx
+    convert_to_idx,
+    plot_bar_apriori_analogues
 )
 
 from pyvolcans import __version__
@@ -179,9 +181,16 @@ def cli():
             except PyvolcansError as exc:
                 logging.error(exc.args[0])
                 sys.exit(1)
-            get_many_analogy_percentiles(volcano_input,
-                                         my_apriori_volcanoes,
-                                         volcans_result)
+            [my_percentiles, my_better_analogues] = \
+                get_many_analogy_percentiles(volcano_input,
+                                             my_apriori_volcanoes,
+                                             volcans_result)
+            plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
+                                       my_apriori_volcanoes, volcans_result,
+                                       my_better_analogues, save_figure=True)
+
+        # displaying all figures just before the end of the script
+        plt.show()
     except PyvolcansError as exc:
         # print error message and quit program on error
         logging.error(exc.args[0])

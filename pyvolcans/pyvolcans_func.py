@@ -12,6 +12,7 @@ Created on Tue Mar  3 09:49:16 2020
 # standard packages
 import webbrowser
 from fractions import Fraction
+import matplotlib.pyplot as plt
 
 # external packages
 import numpy as np
@@ -608,6 +609,70 @@ def match_name(volcano_name):
         raise PyvolcansError(msg)
 
     return matched_volcanoes
+
+
+def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
+                               my_apriori_analogues, volcans_result,
+                               better_analogues, save_figure=None):
+    """
+    Plots values of single-criterion and total analogy between the target
+    volcano and any a priori analogue provided by the user. It also plots
+    the percentage of 'better analogues' for each a priori analogue and,
+    optionally, it saves the figures.
+
+    Parameters
+    ----------
+    my_volcano_name : str
+        Name of volcano introduced by the user (i.e. target volcano).
+    my_volcano_vnum: int
+        Volcano number (VNUM) of volcano introduced by the user in the
+        GVP database (www.volcano.si.edu).
+    my_apriori_analogues:
+        List of a priori analogues as introduced by the user via the command
+        line.
+    volcans_result : Pandas dataframe
+        Total and single-criterion analogy values between the target volcano
+        and any volcano listed in the GVP database (v. 4.6.7).
+    better_analogues: dict
+        Dictionary containing the volcano name and percentage* of 'better
+        analogues' for all the a priori analogues provided by the user.
+        *Percentage is calculated as (100 - Percentile) and represents the
+        proportion of volcanoes in the GVP database that are classified as
+        'better analogues' (i.e. higher total analogy) by PyVOLCANS (please
+        see Tierz et al., 2019, and documentation of the function:
+        `get_many_analogy_percentiles()` for more details).
+    save_figure : bool, optional
+        Keyword argument that indicates whether the generated figures are to
+        be saved in the current working directory, as indicated by the optional
+        flag `--save_figure` chosen by the user when running PyVOLCANS.
+    """
+
+    # derive the indices for all a priori analogues
+    my_apriori_volcano_idx = [convert_to_idx(x) for x in my_apriori_analogues]
+
+    # slice volcans_result to derive a data frame with the a priori analogues
+    all_my_apriori_analogies = \
+    volcans_result.loc[my_apriori_volcano_idx,
+                       ['name','ATs','AG','AM','ASz','ASt']]
+
+    # plot single- and total-analogy values for all a priori analogues
+    all_my_apriori_analogies.plot.bar(x="name",
+                             y=["ATs","AG","AM","ASz","ASt"],
+                             stacked=True)
+    axes = plt.gca()
+    axes.set_ylim([0,1])
+    plt.title(f"A priori analogues: {my_volcano_name} ({my_volcano_vnum})",
+              y=1.15, pad=5)
+    plt.xlabel(None)
+    plt.ylabel('Total Analogy')
+    plt.legend(bbox_to_anchor=(0.9, 1.15), ncol=5)
+    plt.tight_layout() # ensuring labels/titles are displayed properly
+
+    if save_figure:
+        fig1 = plt.gcf()
+        fig1.savefig(
+                f"{my_volcano_name}_apriori_analogues_WeightingScheme.png",
+                dpi=600)
 
 
 def get_analogy_percentile(my_volcano, apriori_volcano,
