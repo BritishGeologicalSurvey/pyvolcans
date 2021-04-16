@@ -185,9 +185,13 @@ def cli():
                 get_many_analogy_percentiles(volcano_input,
                                              my_apriori_volcanoes,
                                              volcans_result)
-            plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
-                                       my_apriori_volcanoes, volcans_result,
-                                       my_better_analogues, save_figure=True)
+            # NB. This code is only run when 1+ 'a priori' analogues are given
+            if args.plot_apriori:
+                    plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
+                                               my_apriori_volcanoes,
+                                               volcans_result,
+                                               my_better_analogues,
+                                               save_figure=True)
 
         # displaying all figures just before the end of the script
         plt.show()
@@ -246,6 +250,12 @@ def parse_args():
                         help=("Print debug-level logging output, and include "
                               "single-criterion analogy values, besides the "
                               "total analogy values, in the PyVOLCANS results")
+                        )
+    parser.add_argument("-pa", "--plot_apriori", action="store_true",
+                        help=("Generate bar plots displaying the values of "
+                        "single-criterion and total analogy between the target"
+                        " volcano and any 'a priori' analogues chosen by the"
+                        " user.")
                         )
     parser.add_argument("-V", "--version", action="version",
                         help="Print PyVOLCANS package version and exit",
