@@ -36,7 +36,7 @@ more details on the VOLCANS method.
 PyVOLCANS can be imported to a new environment as follows:
 
 ```
-pip install git+https://github.com/BritishGeologicalSurvey/pyvolcans.git
+pip install pyvolcans
 ```
 
 It is necessary to have Git installed and on the system path.
