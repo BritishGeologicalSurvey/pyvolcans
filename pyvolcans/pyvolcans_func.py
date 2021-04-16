@@ -657,8 +657,9 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
 
     # plot single- and total-analogy values for all a priori analogues
     all_my_apriori_analogies.plot.bar(x="name",
-                             y=["ATs","AG","AM","ASz","ASt"],
-                             stacked=True)
+                                      y=["ATs","AG","AM","ASz","ASt"],
+                                      stacked=True)
+
     axes = plt.gca()
     axes.set_ylim([0,1])
     plt.title(f"A priori analogues: {my_volcano_name} ({my_volcano_vnum})",

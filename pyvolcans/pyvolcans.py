@@ -173,7 +173,8 @@ def cli():
                                    to_file='csv',
                                    filename=output_filename)
         # call get_many_analogy_percentiles to print 'better analogues'
-        if my_apriori_volcanoes is not None:
+        # NB. This code is not entered if my_apriori_volcanoes is empty or None
+        if bool(my_apriori_volcanoes):
             try:
                 my_apriori_volcanoes = [int(x) for x in args.apriori]
             except ValueError:
@@ -187,11 +188,11 @@ def cli():
                                              volcans_result)
             # NB. This code is only run when 1+ 'a priori' analogues are given
             if args.plot_apriori:
-                    plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
-                                               my_apriori_volcanoes,
-                                               volcans_result,
-                                               my_better_analogues,
-                                               save_figure=True)
+                plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
+                                           my_apriori_volcanoes,
+                                           volcans_result,
+                                           my_better_analogues,
+                                           save_figure=True)
 
         # displaying all figures just before the end of the script
         plt.show()
