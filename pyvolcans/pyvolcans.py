@@ -192,7 +192,7 @@ def cli():
                                            my_apriori_volcanoes,
                                            volcans_result,
                                            my_better_analogues,
-                                           save_figure=True)
+                                           save_figure=args.save_figures)
 
         # displaying all figures just before the end of the script
         plt.show()
@@ -258,6 +258,8 @@ def parse_args():
                         " volcano and any 'a priori' analogues chosen by the"
                         " user.")
                         )
+    parser.add_argument("-S", "--save_figures", action="store_true",
+                        help="Save all generated figures")
     parser.add_argument("-V", "--version", action="version",
                         help="Print PyVOLCANS package version and exit",
                         version=__version__)
