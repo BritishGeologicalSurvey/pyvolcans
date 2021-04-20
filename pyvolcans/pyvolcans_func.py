@@ -660,19 +660,36 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
                                       y=["ATs","AG","AM","ASz","ASt"],
                                       stacked=True)
 
-    axes = plt.gca()
-    axes.set_ylim([0,1])
+    fig1 = plt.gcf()
+    axes1 = plt.gca()
+    axes1.set_ylim([0,1])
     plt.title(f"A priori analogues: {my_volcano_name} ({my_volcano_vnum})",
               y=1.15, pad=5)
     plt.xlabel(None)
     plt.ylabel('Total Analogy')
-    plt.legend(bbox_to_anchor=(0.9, 1.15), ncol=5)
+    plt.legend(bbox_to_anchor=(0.9, 1.16), ncol=5)
+    plt.tight_layout() # ensuring labels/titles are displayed properly
+
+    # open new figure for the 'better analogues' bar plot
+    fig2 = plt.figure()
+    plt.bar(range(len(better_analogues)), list(better_analogues.values()),
+            align='center', color='blue', width=0.6)
+    plt.xticks(range(len(better_analogues)), list(better_analogues.keys()),
+               rotation='vertical')
+    axes2 = plt.gca()
+    axes2.set_ylim([0,50])
+    plt.title(f"\'Better analogues\': {my_volcano_name} ({my_volcano_vnum})",
+              y=1.02, pad=5)
+    plt.xlabel(None)
+    plt.ylabel('Percentage of better analogues')
     plt.tight_layout() # ensuring labels/titles are displayed properly
 
     if save_figure:
-        fig1 = plt.gcf()
         fig1.savefig(
                 f"{my_volcano_name}_apriori_analogues_WeightingScheme.png",
+                dpi=600)
+        fig2.savefig(
+                f"{my_volcano_name}_better_analogues_WeightingScheme.png",
                 dpi=600)
 
 
