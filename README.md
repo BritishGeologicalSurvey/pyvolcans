@@ -36,7 +36,7 @@ more details on the VOLCANS method.
 PyVOLCANS can be imported to a new environment as follows:
 
 ```
-pip install git+https://github.com/BritishGeologicalSurvey/pyvolcans.git
+pip install pyvolcans
 ```
 
 It is necessary to have Git installed and on the system path.
@@ -44,15 +44,6 @@ It is necessary to have Git installed and on the system path.
 This method adds `pyvolcans` to the virtual environment PATH so that it can be
 used from any directory.
 
-The installation process will include all required dependencies. If you have
-problems installing python-Levenshtein (common on Windows), and are using
-Anaconda Python, you can install it via:
-
-```
-conda install python-Levenshtein
-```
-
-Then re-run the `pip`  command.
 
 ## How to use PyVOLCANS
 
@@ -240,7 +231,7 @@ Marion Island,South Africa,234070,0.89296
 PyVOLCANS can also be used to investigate sets of analogue volcanoes that have
 been derived using other approaches different from PyVOLCANS, e.g. analogue
 volcanoes based on expert knowledge. Such analogue volcanoes might be called
-'a priori analogues' [Tierz et al., 2019](https://doi.org/10.1007/s00445-019-1336-3).
+'a priori analogues' ([Tierz et al., 2019](https://doi.org/10.1007/s00445-019-1336-3)).
 PyVOLCANS offers the user the possibility of checking for the proportion (or
 percentage) of Holocene volcanoes in the GVP database that are 'better
 analogues' (i.e. have a higher value of total analogy with the target volcano),
@@ -337,6 +328,36 @@ with the expected data for the percentages of better analogues.
 
 PLEASE USE either a set of volcano names or a set of volcano numbers to define
 your set of a priori analogues when running PyVOLCANS. Many thanks.
+
+## Analogy matrices
+
+In the original VOLCANS paper, the analogy matrices were calculated in Matlab.
+Please note that these matrices are based on data contained in the Volcanoes
+of the World database (GVP) v. 4.6.7 (Tierz et al., 2019).
+
+Please also note that a few minor modifications have been implemented on some
+of the matrices, as a result of research developed since the original VOLCANS
+paper was published. These changes are the following:
+
+- Sinabung, Indonesia (261080): (1) lava flows and lahars from the 2013–2018
+eruption are included; and (2) the 2013–2018 eruption is updated to VEI 4
+(GVP, 2013, database version 4.7.4). Please see [Tierz et al. (2019)](https://doi.org/10.1007/s00445-019-1336-3).
+
+- Alutu, Ethiopia (221270): rock type 'Dacite' is removed from the GVP profile
+of Aluto volcano. Please see [Tierz et al., 2020](https://doi.org/10.1029/2020GC009219).
+
+- Quetrupillán, Chile (357121): the following rock types are used instead of
+those in the GVP 4.6.7 profile: Major (Trachyte), Minor (Basalt, Basaltic
+andesite, Rhyolite). A crater diameter of 1.37 km (equivalent to the value
+of summit width in [Grosse et al., 2014](https://doi.org/10.1007/s00445-013-0784-4))
+is used for Quetrupillán. Please see [Simmons et al. (2020)](https://doi.org/10.30909/vol.03.01.115137)
+and Simmons (2020).
+
+The initial releases of PyVOLCANS make use these pre-calculated analogy
+matrices. This was the quickest way of making VOLCANS results available
+to users. In a future release, we aim to include a Python version of the
+code that calculates the analogies based on volcano characterisics.
+This will make the method more transparent.
 
 ## Development
 

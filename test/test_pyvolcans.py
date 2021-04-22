@@ -2,7 +2,7 @@
 """
 Created on Fri May 15 12:49:55 2020
 
-@author: Vyron Christodoulou, John A. Stevenson, Pablo Tierz  
+@author: Vyron Christodoulou, John A. Stevenson, Pablo Tierz
          (British Geological Survey, The Lyell Centre,
          Edinburgh, UK).
 """
@@ -26,6 +26,7 @@ from pyvolcans.pyvolcans_func import (
 
 # pylint: disable=missing-docstring
 
+
 def test_volcano_idx():
     idx = get_volcano_idx_from_name(volcano_name='Fuego')
     assert idx == 1071
@@ -38,12 +39,11 @@ def test_volcano_name():
 
 def test_fuzzy_matching():
     volc_matches = fuzzy_matching('West Eifel')
-    assert isinstance(volc_matches, str)
-    assert len(volc_matches) == 681
     assert 'West Eifel Volcanic Field' in volc_matches
-    volc_matches_limit = fuzzy_matching('West Eiffel', limit=2)
-    assert len(volc_matches_limit) == 161
-    assert 'West Eifel Volcanic Field' in volc_matches
+
+    # Test with limit
+    volc_matches_limit = fuzzy_matching('West Eiffel', limit=3)
+    assert 'West Eifel Volcanic Field' in volc_matches_limit
 
 
 def test_volcano_number():
@@ -105,7 +105,7 @@ def test_volcano_idx_from_number():
 @pytest.mark.parametrize("name,expected", [('blah', 'not found'), ('Santa Isabel', 'not unique')])
 def test_match_name(name, expected):
     with pytest.raises(PyvolcansError) as excinfo:
-         matched = match_name(name)
+        match_name(name)
     assert expected in str(excinfo.value)
 
 
@@ -120,78 +120,38 @@ def mock_analogies():
                       'geochemistry': np.array([4000]),
                       'morphology': np.array([400]),
                       'eruption_size': np.array([40]),
-                      'eruption_style': np.array([4])}   
+                      'eruption_style': np.array([4])}
     return mock_analogies
 
 
-@pytest.mark.parametrize("weights,expected",
-                        [({'tectonic_setting': 0,
-                         'geochemistry': 0.25,
-                         'morphology': 0.25,
-                         'eruption_size': 0.25,
-                         'eruption_style': 0.25}, 1111)])
-def test_combined_analogy_matrix_no_tectonic(weights, expected, mock_analogies): 
-    pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, mock_analogies)
-    matrix = pandas_df.loc[get_volcano_idx_from_name(
-            'West Eifel Volcanic Field'),
-            'total_analogy']
-    assert matrix.astype(int) == expected
-
-
-@pytest.mark.parametrize("weights,expected",
-                        [({'tectonic_setting': 0.25,
-                           'geochemistry': 0,
-                           'morphology': 0.25,
-                           'eruption_size': 0.25,
-                           'eruption_style': 0.25}, 10111)])
-def test_combined_analogy_matrix_no_geochemistry(weights, expected, mock_analogies):
-    pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, mock_analogies)
-    matrix = pandas_df.loc[get_volcano_idx_from_name(
-            'West Eifel Volcanic Field'),
-            'total_analogy']
-    assert matrix.astype(int) == expected
-
-
-@pytest.mark.parametrize("weights,expected", 
-                       [({'tectonic_setting':0.25,
-                          'geochemistry': 0.25,
-                          'morphology': 0,
-                          'eruption_size': 0.25,
-                          'eruption_style': 0.25}, 11011)])
-def test_combined_analogy_matrix_no_morphology(weights, expected, mock_analogies):
-    pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, mock_analogies)
-    matrix = pandas_df.loc[get_volcano_idx_from_name(
-            'West Eifel Volcanic Field'),
-            'total_analogy']
-    assert matrix.astype(int) == expected
-
-
-@pytest.mark.parametrize("weights,expected",
-                        [({'tectonic_setting':0.25,
-                           'geochemistry': 0.25,
-                           'morphology': 0.25,
-                           'eruption_size': 0,
-                           'eruption_style': 0.25}, 11101)])
-
-def test_combined_analogy_matrix_no_eruption_size(weights, expected, mock_analogies):
-    pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, mock_analogies)
-    matrix = pandas_df.loc[get_volcano_idx_from_name(
-            'West Eifel Volcanic Field'),
-            'total_analogy']
-    assert matrix.astype(int) == expected
-
-
-@pytest.mark.parametrize("weights,expected",
-                        [({'tectonic_setting':0.25,
-                           'geochemistry': 0.25,
-                           'morphology': 0.25,
-                           'eruption_size': 0.25,
-                           'eruption_style': 0}, 11110)])
-def test_combined_analogy_matrix_no_eruption_style(weights, expected, mock_analogies):
+@pytest.mark.parametrize("weights, expected", [
+    ({'tectonic_setting': 0,
+      'geochemistry': 0.25,
+      'morphology': 0.25,
+      'eruption_size': 0.25,
+      'eruption_style': 0.25}, 1111),
+    ({'tectonic_setting': 0.25,
+      'geochemistry': 0,
+      'morphology': 0.25,
+      'eruption_size': 0.25,
+      'eruption_style': 0.25}, 10111),
+    ({'tectonic_setting': 0.25,
+      'geochemistry': 0.25,
+      'morphology': 0,
+      'eruption_size': 0.25,
+      'eruption_style': 0.25}, 11011),
+    ({'tectonic_setting': 0.25,
+      'geochemistry': 0.25,
+      'morphology': 0.25,
+      'eruption_size': 0,
+      'eruption_style': 0.25}, 11101),
+    ({'tectonic_setting': 0.25,
+      'geochemistry': 0.25,
+      'morphology': 0.25,
+      'eruption_size': 0.25,
+      'eruption_style': 0}, 11110)
+   ])
+def test_combined_analogy_matrix_no_tectonic(weights, expected, mock_analogies):
     pandas_df = calculate_weighted_analogy_matrix(
             'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
@@ -215,4 +175,5 @@ def test_open_gvp_website(monkeypatch):
         open_gvp_website(123456)
 
     # Assert
-    assert str(exc_info.value) == "No suitable browser to open https://volcano.si.edu/volcano.cfm?vn=123456&vtab=GeneralInfo"
+    msg = "No suitable browser to open https://volcano.si.edu/volcano.cfm?vn=123456&vtab=GeneralInfo"
+    assert str(exc_info.value) == msg
