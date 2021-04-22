@@ -319,6 +319,35 @@ def set_weights_from_args(args_dict):
 
     return args_dict
 
+def get_formatted_weights_text(criteria_weights):
+    """
+    Derives a machine-readable string indicating the weighting scheme selected
+    by the user to run PyVOLCANS.
+
+    Parameters
+    ----------
+    criteria_weights : dict
+        Set of weights that are used to run PyVOLCANS (please see function
+        `set_weights_from_args()` for more details on how this variable is
+        generated.
+
+    Returns
+    -------
+    weights_text : str
+        Single string indicating the weighting scheme selected by the user.
+    """
+
+    Ts_text = "{:.3f}".format(criteria_weights['tectonic_setting']).replace('.', '')
+    G_text = "{:.3f}".format(criteria_weights['geochemistry']).replace('.', '')
+    M_text = "{:.3f}".format(criteria_weights['morphology']).replace('.', '')
+    Sz_text = "{:.3f}".format(criteria_weights['eruption_size']).replace('.', '')
+    St_text = "{:.3f}".format(criteria_weights['eruption_style']).replace('.', '')
+
+    weights_text = f'Ts{Ts_text}G{G_text}M{M_text}Sz{Sz_text}St{St_text}'
+
+    print(weights_text)
+
+    return weights_text
 
 def calculate_weighted_analogy_matrix(my_volcano, weights,
                                       analogies=ANALOGY_MATRIX):

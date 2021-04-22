@@ -28,7 +28,8 @@ from pyvolcans.pyvolcans_func import (
     output_result,
     check_for_perfect_analogues,
     convert_to_idx,
-    plot_bar_apriori_analogues
+    plot_bar_apriori_analogues,
+    get_formatted_weights_text
 )
 
 from pyvolcans import __version__
@@ -102,6 +103,7 @@ def cli():
 
     try:
         new_weights = set_weights_from_args(arg_weights)
+        new_weights_text = get_formatted_weights_text(new_weights)
     except PyvolcansError as exc:
         # print error message and quit program on error
         logging.error(exc.args[0])
@@ -161,14 +163,9 @@ def cli():
                 volcano_name.replace('\'', '').replace(',', '').replace('.', '')
             volcano_name_splitted = volcano_name_clean.split()
             volcano_name_joined = '_'.join(volcano_name_splitted)
-            Ts_text = "{:.3f}".format(new_weights['tectonic_setting']).replace('.', '')
-            G_text = "{:.3f}".format(new_weights['geochemistry']).replace('.', '')
-            M_text = "{:.3f}".format(new_weights['morphology']).replace('.', '')
-            Sz_text = "{:.3f}".format(new_weights['eruption_size']).replace('.', '')
-            St_text = "{:.3f}".format(new_weights['eruption_style']).replace('.', '')
             output_filename = Path.cwd() / \
                 f'{volcano_name_joined}_top{count}analogues_' \
-                f'Ts{Ts_text}G{G_text}M{M_text}Sz{Sz_text}St{St_text}.csv'
+                f'{new_weights_text}.csv'
             result = output_result(args.verbose,
                                    volcano_name,
                                    top_analogues,
