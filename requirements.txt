@@ -3,8 +3,8 @@ fuzzywuzzy
 numpy
 pandas
 pymatreader
-python-Levenshtein
 scipy
+matplotlib
 
 # Development tools
 flake8

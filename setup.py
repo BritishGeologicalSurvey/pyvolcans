@@ -38,8 +38,8 @@ setup(
         'numpy',
         'pandas',
         'pymatreader',
-        'python-Levenshtein',
-        'scipy'
+        'scipy',
+        'matplotlib'
     ],
     extras_require={
         'dev': ['flake8',
