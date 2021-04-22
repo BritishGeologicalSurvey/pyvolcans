@@ -345,8 +345,6 @@ def get_formatted_weights_text(criteria_weights):
 
     weights_text = f'Ts{Ts_text}G{G_text}M{M_text}Sz{Sz_text}St{St_text}'
 
-    print(weights_text)
-
     return weights_text
 
 def calculate_weighted_analogy_matrix(my_volcano, weights,
