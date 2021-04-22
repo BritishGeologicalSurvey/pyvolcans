@@ -642,7 +642,8 @@ def match_name(volcano_name):
 
 def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
                                my_apriori_analogues, volcans_result,
-                               better_analogues, save_figure=None):
+                               better_analogues, criteria_weights_text,
+                               save_figure=None):
     """
     Plots values of single-criterion and total analogy between the target
     volcano and any a priori analogue provided by the user. It also plots
@@ -715,10 +716,12 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
 
     if save_figure:
         fig1.savefig(
-                f"{my_volcano_name}_apriori_analogues_WeightingScheme.png",
+                (f"{my_volcano_name}_apriori_analogues_"
+                 f"{criteria_weights_text}.png"),
                 dpi=600)
         fig2.savefig(
-                f"{my_volcano_name}_better_analogues_WeightingScheme.png",
+                (f"{my_volcano_name}_better_analogues_"
+                 f"{criteria_weights_text}.png"),
                 dpi=600)
 
 

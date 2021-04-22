@@ -191,6 +191,7 @@ def cli():
                                            my_apriori_volcanoes,
                                            volcans_result,
                                            my_better_analogues,
+                                           new_weights_text,
                                            save_figure=args.save_figures)
 
         # displaying all figures just before the end of the script
