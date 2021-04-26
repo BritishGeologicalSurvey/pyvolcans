@@ -640,13 +640,11 @@ def match_name(volcano_name):
 
 def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
                                my_apriori_analogues, volcans_result,
-                               better_analogues, criteria_weights_text,
-                               save_figure=None):
+                               criteria_weights_text, save_figure=None):
     """
     Plots values of single-criterion and total analogy between the target
-    volcano and any a priori analogue provided by the user. It also plots
-    the percentage of 'better analogues' for each a priori analogue and,
-    optionally, it saves the figures.
+    volcano and any a priori analogue provided by the user. It optionally
+    saves the figure in png format (600 dpi resolution).
 
     Parameters
     ----------
@@ -661,14 +659,8 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     volcans_result : Pandas dataframe
         Total and single-criterion analogy values between the target volcano
         and any volcano listed in the GVP database (v. 4.6.7).
-    better_analogues: dict
-        Dictionary containing the volcano name and percentage* of 'better
-        analogues' for all the a priori analogues provided by the user.
-        *Percentage is calculated as (100 - Percentile) and represents the
-        proportion of volcanoes in the GVP database that are classified as
-        'better analogues' (i.e. higher total analogy) by PyVOLCANS (please
-        see Tierz et al., 2019, and documentation of the function:
-        `get_many_analogy_percentiles()` for more details).
+    criteria_weights_text : str
+        Single string indicating the weighting scheme selected by the user.
     save_figure : bool, optional
         Keyword argument that indicates whether the generated figures are to
         be saved in the current working directory, as indicated by the optional
@@ -677,8 +669,6 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     Returns
     -------
     my_apriori_analogues_plot : matplotlib.axes.Axes object
-        Instance returned mostly for testing purposes on the function.
-    my_better_analogues_plot : matplotlib.container.BarContainer object
         Instance returned mostly for testing purposes on the function.
     """
 
@@ -705,7 +695,53 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     plt.legend(bbox_to_anchor=(0.9, 1.16), ncol=5)
     plt.tight_layout() # ensuring labels/titles are displayed properly
 
-    # open new figure for the 'better analogues' bar plot
+    if save_figure:
+        fig1.savefig(
+                (f"{my_volcano_name}_apriori_analogues_"
+                 f"{criteria_weights_text}.png"),
+                dpi=600)
+
+    return my_apriori_analogues_plot
+
+
+def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
+                              better_analogues, criteria_weights_text,
+                              save_figure=None):
+    """
+    Plots the percentage of 'better analogues' (i.e. higher value of total
+    analogy with the target volcano) for each of the a priori analogues
+    provided by the user. It optionally saves the figure in png format
+    (600 dpi resolution).
+
+    Parameters
+    ----------
+    my_volcano_name : str
+        Name of volcano introduced by the user (i.e. target volcano).
+    my_volcano_vnum: int
+        Volcano number (VNUM) of volcano introduced by the user in the
+        GVP database (www.volcano.si.edu).
+    better_analogues: dict
+        Dictionary containing the volcano name and percentage* of 'better
+        analogues' for all the a priori analogues provided by the user.
+        *Percentage is calculated as (100 - Percentile) and represents the
+        proportion of volcanoes in the GVP database that are classified as
+        'better analogues' (i.e. higher total analogy) by PyVOLCANS (please
+        see Tierz et al., 2019, and documentation of the function:
+        `get_many_analogy_percentiles()` for more details).
+    criteria_weights_text : str
+        Single string indicating the weighting scheme selected by the user.
+    save_figure : bool, optional
+        Keyword argument that indicates whether the generated figures are to
+        be saved in the current working directory, as indicated by the optional
+        flag `--save_figure` chosen by the user when running PyVOLCANS.
+
+    Returns
+    -------
+    my_better_analogues_plot : matplotlib.container.BarContainer object
+        Instance returned mostly for testing purposes on the function.
+    """
+
+    # open figure for the 'better analogues' bar plot
     fig2 = plt.figure()
     my_better_analogues_plot = \
         plt.bar(range(len(better_analogues)), list(better_analogues.values()),
@@ -721,16 +757,13 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     plt.tight_layout() # ensuring labels/titles are displayed properly
 
     if save_figure:
-        fig1.savefig(
-                (f"{my_volcano_name}_apriori_analogues_"
-                 f"{criteria_weights_text}.png"),
-                dpi=600)
         fig2.savefig(
                 (f"{my_volcano_name}_better_analogues_"
                  f"{criteria_weights_text}.png"),
                 dpi=600)
 
-    return my_apriori_analogues_plot, my_better_analogues_plot
+    return my_better_analogues_plot
+
 
 def get_analogy_percentile(my_volcano, apriori_volcano,
                            volcans_result):
