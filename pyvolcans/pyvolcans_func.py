@@ -673,6 +673,13 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
         Keyword argument that indicates whether the generated figures are to
         be saved in the current working directory, as indicated by the optional
         flag `--save_figure` chosen by the user when running PyVOLCANS.
+
+    Returns
+    -------
+    my_apriori_analogues_plot : matplotlib.axes.Axes object
+        Instance returned mostly for testing purposes on the function.
+    my_better_analogues_plot : matplotlib.container.BarContainer object
+        Instance returned mostly for testing purposes on the function.
     """
 
     # derive the indices for all a priori analogues
@@ -680,17 +687,17 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
 
     # slice volcans_result to derive a data frame with the a priori analogues
     all_my_apriori_analogies = \
-    volcans_result.loc[my_apriori_volcano_idx,
-                       ['name','ATs','AG','AM','ASz','ASt']]
+        volcans_result.loc[my_apriori_volcano_idx,
+                          ['name','ATs','AG','AM','ASz','ASt']]
 
     # plot single- and total-analogy values for all a priori analogues
-    all_my_apriori_analogies.plot.bar(x="name",
-                                      y=["ATs","AG","AM","ASz","ASt"],
-                                      stacked=True)
+    my_apriori_analogues_plot = \
+        all_my_apriori_analogies.plot.bar(x="name",
+                                          y=["ATs","AG","AM","ASz","ASt"],
+                                          stacked=True)
 
     fig1 = plt.gcf()
-    axes1 = plt.gca()
-    axes1.set_ylim([0,1])
+    my_apriori_analogues_plot.set_ylim([0,1])
     plt.title(f"A priori analogues: {my_volcano_name} ({my_volcano_vnum})",
               y=1.15, pad=5)
     plt.xlabel(None)
@@ -700,8 +707,9 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
 
     # open new figure for the 'better analogues' bar plot
     fig2 = plt.figure()
-    plt.bar(range(len(better_analogues)), list(better_analogues.values()),
-            align='center', color='blue', width=0.6)
+    my_better_analogues_plot = \
+        plt.bar(range(len(better_analogues)), list(better_analogues.values()),
+                align='center', color='blue', width=0.6)
     plt.xticks(range(len(better_analogues)), list(better_analogues.keys()),
                rotation='vertical')
     axes2 = plt.gca()
@@ -722,6 +730,7 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
                  f"{criteria_weights_text}.png"),
                 dpi=600)
 
+    return my_apriori_analogues_plot, my_better_analogues_plot
 
 def get_analogy_percentile(my_volcano, apriori_volcano,
                            volcans_result):

@@ -187,12 +187,14 @@ def cli():
                                              volcans_result)
             # NB. This code is only run when 1+ 'a priori' analogues are given
             if args.plot_apriori:
-                plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
-                                           my_apriori_volcanoes,
-                                           volcans_result,
-                                           my_better_analogues,
-                                           new_weights_text,
-                                           save_figure=args.save_figures)
+                [apriori_analogues_plot_handler,
+                 better_analogues_plot_handler] = \
+                    plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
+                                               my_apriori_volcanoes,
+                                               volcans_result,
+                                               my_better_analogues,
+                                               new_weights_text,
+                                               save_figure=args.save_figures)
 
         # displaying all figures just before the end of the script
         plt.show()
