@@ -1,0 +1,35 @@
+name: Upload package to Pypi
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+   
+    - name: Checkout repository 
+      uses: actions/checkout@v2
+ 
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+
+    - name: Install dependencies
+      run: pip install build
+
+    - name: Build a binary wheel and a source tarball
+      run: >-
+        python -m
+        build
+        --sdist
+        --wheel
+        --outdir dist/
+        .
+    - name: Publish to Pypi
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+       user: __token__
+       password: ${{ secrets.PYPI_API_TOKEN }}
