@@ -20,6 +20,8 @@ from pyvolcans.pyvolcans_func import (
     get_volcano_idx_from_number,
     calculate_weighted_analogy_matrix,
     open_gvp_website,
+    plot_bar_apriori_analogues,
+    plot_bar_better_analogues,
     set_weights_from_args,
     PyvolcansError
 )
@@ -123,6 +125,21 @@ def mock_analogies():
                       'eruption_style': np.array([4])}
     return mock_analogies
 
+df = pd.DataFrame({'name': ['Hekla'], 'ATs': [0.1], 'AG': [0.064706], 'AM': [0.078947], 'ASz': [0.0], 'ASt': [0.163846]})
+def test_plot_bar_apriori_analogues(mock_analogies):
+    test =  calculate_weighted_analogy_matrix('West Eifel Volcanic Field', {'tectonic_setting': 0.2,
+      'geochemistry': 0.2,
+      'morphology': 0.2,
+      'eruption_size': 0.2,
+      'eruption_style': 0.2})
+    x = plot_bar_apriori_analogues('West Eifel Volcanic Field',
+                                   210010,
+                                   ['Hekla'],
+                                   test,
+                                  'Test_string')
+    print(x.reset_index(drop=True, inplace=True)) # TODO: Maybe it introduces errors?
+    from pandas._testing import assert_frame_equal
+    assert_frame_equal(x, df)
 
 @pytest.mark.parametrize("weights, expected", [
     ({'tectonic_setting': 0,
