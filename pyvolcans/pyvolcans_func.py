@@ -708,8 +708,7 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
                  f"{criteria_weights_text}.png"),
                 dpi=600)
 
-    return my_apriori_analogues_plot
-
+    return all_my_apriori_analogies
 
 def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
                               better_analogues, criteria_weights_text,
