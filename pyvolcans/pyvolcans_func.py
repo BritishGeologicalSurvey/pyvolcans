@@ -719,29 +719,22 @@ def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
     my_better_analogues_plot : matplotlib.container.BarContainer object
         Instance returned mostly for testing purposes on the function.
     """
-
     # open figure for the 'better analogues' bar plot
-    fig2 = plt.figure()
-    my_better_analogues_plot = \
-        plt.bar(range(len(better_analogues)), list(better_analogues.values()),
-                align='center', color='blue', width=0.6)
-    plt.xticks(range(len(better_analogues)), list(better_analogues.keys()),
-               rotation='vertical')
-    axes2 = plt.gca()
-    axes2.set_ylim([0,50])
-    plt.title(f"\'Better analogues\': {my_volcano_name} ({my_volcano_vnum})",
-              y=1.02, pad=5)
+    df_better_analogues = pd.DataFrame({'better_analogues':better_analogues.keys(),
+                                        'percentage': better_analogues.values()}).set_index('better_analogues')
+    df_better_analogues.plot.bar(legend=False,
+                                 ylabel='Percentage of better_analogues',
+                                 title=f"'Better analogues': {my_volcano_name} ({my_volcano_vnum})",
+                                 ylim=[0,50])
+    plt.tight_layout()
     plt.xlabel(None)
-    plt.ylabel('Percentage of better analogues')
-    plt.tight_layout() # ensuring labels/titles are displayed properly
-
     if save_figure:
-        fig2.savefig(
+        plt.savefig(
                 (f"{my_volcano_name}_better_analogues_"
                  f"{criteria_weights_text}.png"),
-                dpi=600)
+                 dpi=600)
 
-    return my_better_analogues_plot
+    return df_better_analogues
 
 
 def get_analogy_percentile(my_volcano, apriori_volcano,
