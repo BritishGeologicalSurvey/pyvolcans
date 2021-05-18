@@ -30,7 +30,6 @@ from pyvolcans.pyvolcans_func import (
     convert_to_idx,
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
-    get_formatted_weights_text
 )
 
 from pyvolcans import __version__
@@ -104,7 +103,8 @@ def cli():
 
     try:
         new_weights = set_weights_from_args(arg_weights)
-        new_weights_text = get_formatted_weights_text(new_weights)
+        formatted_text = 'Ts{:.3f}G{:.3f}MP{:.3f}Sz{:.3f}St{:.3f}'
+        new_weights_text = formatted_text.format(*new_weights.values()).replace('.','')
     except PyvolcansError as exc:
         # print error message and quit program on error
         logging.error(exc.args[0])
