@@ -10,7 +10,8 @@ Created on Fri May 15 12:49:55 2020
 import pytest
 
 import numpy as np
-
+import pandas as pd
+from pandas._testing import assert_frame_equal
 from pyvolcans.pyvolcans_func import (
     fuzzy_matching,
     match_name,
@@ -18,12 +19,14 @@ from pyvolcans.pyvolcans_func import (
     get_volcano_name_from_idx,
     get_volcano_number_from_name,
     get_volcano_idx_from_number,
+    get_many_analogy_percentiles,
     calculate_weighted_analogy_matrix,
     open_gvp_website,
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     set_weights_from_args,
-    PyvolcansError
+    PyvolcansError,
+    convert_to_idx
 )
 
 # pylint: disable=missing-docstring
@@ -125,21 +128,45 @@ def mock_analogies():
                       'eruption_style': np.array([4])}
     return mock_analogies
 
-df = pd.DataFrame({'name': ['Hekla'], 'ATs': [0.1], 'AG': [0.064706], 'AM': [0.078947], 'ASz': [0.0], 'ASt': [0.163846]})
-def test_plot_bar_apriori_analogues(mock_analogies):
-    test =  calculate_weighted_analogy_matrix('West Eifel Volcanic Field', {'tectonic_setting': 0.2,
-      'geochemistry': 0.2,
-      'morphology': 0.2,
-      'eruption_size': 0.2,
-      'eruption_style': 0.2})
-    x = plot_bar_apriori_analogues('West Eifel Volcanic Field',
+@pytest.fixture
+def mock_weights():
+    mock_weights = {'tectonic_setting': 0.2,
+                    'geochemistry': 0.2,
+                    'morphology': 0.2,
+                    'eruption_size': 0.2,
+                    'eruption_style': 0.2}
+    return mock_weights
+
+
+def test_plot_bar_apriori_analogues(mock_weights, mock_analogies):
+    pandas_df = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
+                                                  mock_weights,
+                                                  mock_analogies)
+    df_bar = plot_bar_apriori_analogues('West Eifel Volcanic Field',
                                    210010,
                                    ['Hekla'],
-                                   test,
+                                   pandas_df,
                                   'Test_string')
-    print(x.reset_index(drop=True, inplace=True)) # TODO: Maybe it introduces errors?
-    from pandas._testing import assert_frame_equal
-    assert_frame_equal(x, df)
+    df_expected = pd.DataFrame({'name': ['Hekla'], 'ATs': [8000.0], 'AG': [800.0], 'AM': [80.0], 'ASz':[8.0], 'ASt': [0.8]},
+                               index=[1362])
+    assert_frame_equal(df_bar, df_expected)
+
+
+def test_plot_bar_better_analogues(mock_weights, mock_analogies):
+    pandas_df = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
+                                                  mock_weights,
+                                                  mock_analogies)
+    _, better_analogues = get_many_analogy_percentiles('West Eifel Volcanic Field', ['Hekla'], pandas_df)
+
+    df_bar = plot_bar_better_analogues('West Eifel Volcanic Field',
+                                        210010,
+                                        better_analogues,
+                                        'Test_string')
+
+    df_expected = pd.DataFrame({'percentage': [100], 'better_analogues':['Hekla']})
+    df_expected.set_index('better_analogues', inplace=True)
+    assert_frame_equal(df_bar, df_expected)
+
 
 @pytest.mark.parametrize("weights, expected", [
     ({'tectonic_setting': 0,
