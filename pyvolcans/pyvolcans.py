@@ -103,7 +103,7 @@ def cli():
 
     try:
         new_weights = set_weights_from_args(arg_weights)
-        formatted_text = 'Ts{:.3f}G{:.3f}MP{:.3f}Sz{:.3f}St{:.3f}'
+        formatted_text = 'Ts{:.3f}G{:.3f}M{:.3f}Sz{:.3f}St{:.3f}'
         new_weights_text = formatted_text.format(*new_weights.values()).replace('.','')
     except PyvolcansError as exc:
         # print error message and quit program on error
