@@ -720,14 +720,20 @@ def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
         Instance returned mostly for testing purposes on the function.
     """
     # open figure for the 'better analogues' bar plot
-    df_better_analogues = pd.DataFrame({'better_analogues':better_analogues.keys(),
-                                        'percentage': better_analogues.values()}).set_index('better_analogues')
-    df_better_analogues.plot.bar(legend=False,
-                                 ylabel='Percentage of better_analogues',
-                                 title=f"'Better analogues': {my_volcano_name} ({my_volcano_vnum})",
+    # dict to pandas df based on:
+    # https://stackoverflow.com/questions/18837262/convert-python-dict-into-a-dataframe
+    df_better_analogues = pd.DataFrame(better_analogues.items(),
+                                       columns=['apriori_analogue',
+                                                'percentage_better'])
+
+    df_better_analogues.plot.bar(x="apriori_analogue",
+                                 y="percentage_better",
+                                 legend=False,
+                                 title=f"Better analogues: {my_volcano_name} ({my_volcano_vnum})",
                                  ylim=[0,50])
-    plt.tight_layout()
     plt.xlabel(None)
+    plt.ylabel('Percentage of better analogues')
+    plt.tight_layout()
     if save_figure:
         plt.savefig(
                 (f"{my_volcano_name}_better_analogues_"
