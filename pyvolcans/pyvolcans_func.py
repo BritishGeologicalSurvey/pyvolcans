@@ -648,8 +648,10 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
 
     Returns
     -------
-    my_apriori_analogues_plot : matplotlib.axes.Axes object
-        Instance returned mostly for testing purposes on the function.
+    all_my_apriori_analogies : Pandas dataframe
+        Single-criterion analogy values between the target volcano and all the
+        a priori analogues selected by the user. Returned basically for testing
+        purposes on the function.
     """
 
     # derive the indices for all a priori analogues
@@ -716,8 +718,10 @@ def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
 
     Returns
     -------
-    my_better_analogues_plot : matplotlib.container.BarContainer object
-        Instance returned mostly for testing purposes on the function.
+    df_better_analogues : Pandas dataframe
+        Values of percentage of 'better analogues' than each of the a priori
+        analogues selected, for the specific target volcano. Returned basically
+        for testing purposes on the function.
     """
     # open figure for the 'better analogues' bar plot
     # dict to pandas df based on:
