@@ -6,12 +6,11 @@ Created on Fri May 15 12:49:55 2020
          (British Geological Survey, The Lyell Centre,
          Edinburgh, UK).
 """
-
 import pytest
 
 import numpy as np
 import pandas as pd
-from pandas._testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 from pyvolcans.pyvolcans_func import (
     fuzzy_matching,
     match_name,
@@ -25,8 +24,7 @@ from pyvolcans.pyvolcans_func import (
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     set_weights_from_args,
-    PyvolcansError,
-    convert_to_idx
+    PyvolcansError
 )
 
 # pylint: disable=missing-docstring
@@ -143,12 +141,13 @@ def test_plot_bar_apriori_analogues(mock_weights, mock_analogies):
                                                   mock_weights,
                                                   mock_analogies)
     df_bar = plot_bar_apriori_analogues('West Eifel Volcanic Field',
-                                   210010,
-                                   ['Hekla'],
-                                   pandas_df,
-                                  'Test_string')
-    df_expected = pd.DataFrame({'name': ['Hekla'], 'ATs': [8000.0], 'AG': [800.0], 'AM': [80.0], 'ASz':[8.0], 'ASt': [0.8]},
-                               index=[1362])
+                                        210010,
+                                        ['Hekla'],
+                                        pandas_df,
+                                        'Test_string')
+    df_expected = pd.DataFrame({'name': ['Hekla'], 'ATs': [8000.0],
+                                'AG': [800.0], 'AM': [80.0], 'ASz':[8.0],
+                                'ASt': [0.8]}, index=[1362])
     assert_frame_equal(df_bar, df_expected)
 
 
@@ -156,15 +155,17 @@ def test_plot_bar_better_analogues(mock_weights, mock_analogies):
     pandas_df = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
                                                   mock_weights,
                                                   mock_analogies)
-    _, better_analogues = get_many_analogy_percentiles('West Eifel Volcanic Field', ['Hekla'], pandas_df)
+    _, better_analogues = \
+        get_many_analogy_percentiles('West Eifel Volcanic Field', ['Hekla'],
+                                     pandas_df)
 
     df_bar = plot_bar_better_analogues('West Eifel Volcanic Field',
-                                        210010,
-                                        better_analogues,
-                                        'Test_string')
+                                       210010,
+                                       better_analogues,
+                                       'Test_string')
 
-    df_expected = pd.DataFrame({'percentage': [100], 'better_analogues':['Hekla']})
-    df_expected.set_index('better_analogues', inplace=True)
+    df_expected = pd.DataFrame({'apriori_analogue':['Hekla'],
+                                'percentage_better': [100]})
     assert_frame_equal(df_bar, df_expected)
 
 
@@ -193,14 +194,12 @@ def test_plot_bar_better_analogues(mock_weights, mock_analogies):
       'geochemistry': 0.25,
       'morphology': 0.25,
       'eruption_size': 0.25,
-      'eruption_style': 0}, 11110)
-   ])
+      'eruption_style': 0}, 11110)])
 def test_combined_analogy_matrix_no_tectonic(weights, expected, mock_analogies):
     pandas_df = calculate_weighted_analogy_matrix(
-            'West Eifel Volcanic Field', weights, mock_analogies)
+        'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
-            'West Eifel Volcanic Field'),
-            'total_analogy']
+        'West Eifel Volcanic Field'), 'total_analogy']
     assert matrix.astype(int) == expected
 
 
