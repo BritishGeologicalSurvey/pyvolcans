@@ -298,6 +298,10 @@ def set_weights_from_args(args_dict):
     Raises
     ------
     PyvolcansError
+        If any of the criterion weights provided is a negative value*, as this
+        is incompatible with the VOLCANS method. *Please note that a value of
+        `-0` is accepted by the program.
+
         If the sum of weights provided by the user is different from one*, so
         the total analogy computed by PyVOLCANS is not a weighted average of
         the single-criterion analogies (see Tierz et al., 2019, for more
@@ -316,6 +320,11 @@ def set_weights_from_args(args_dict):
     for key, value in args_dict.items():
         if value is None:
             args_dict[key] = 0
+        # check whether any of the criterion weights is negative
+        elif value < 0:
+            msg = ("Some criterion weights are negative values! "
+                   "Please revise your weighting scheme.")
+            raise PyvolcansError(msg)
         else:
             sum_of_weights += value
 
