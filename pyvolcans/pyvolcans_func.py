@@ -365,7 +365,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         particular run of PyVOLCANS. A different weighting scheme can generate
         an entirely different set of total analogy values.
 
-    my_volcano_data_dictionary: dict
+    my_volcano_data_dictionary : dict
         Dictionary containing information on whether there is volcanological
         data available (dict_value = 1), or there is not (dict_value = 0); for
         each of the volcanological criteria used by PyVOLCANS, considering the
@@ -422,7 +422,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     volcans_result['ASt'] = \
         weighted_eruption_style_analogy[volcano_idx, ]
 
-    return volcans_result
+    return volcans_result, my_volcano_data_dictionary
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
@@ -511,6 +511,50 @@ def check_for_perfect_analogues(result):
                "data deficiencies and/or the use of a simplified "
                "weighting scheme (see Tierz et al., 2019, for more "
                "details).\n")
+        raise PyvolcansError(msg)
+
+
+def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
+    """
+    Assesses whether some volcanological criteria do not have any data for the
+    specific target volcano chosen by the user, raising a PyvolcansError
+    exception if this is the case, informing the user which are these criteria.
+
+    Parameters
+    ----------
+    my_volcano_name : str
+        Target volcano selected by the user, as volcano name.
+    my_volcano_data: dict
+        Dictionary containing information on whether there is volcanological
+        data available (dict_value = 1), or there is not (dict_value = 0); for
+        each of the volcanological criteria used by PyVOLCANS, considering the
+        specific target volcano chosen by the user to run the program.
+
+    Raises
+    -------
+    PyvolcansError
+        If one or more volcanological criteria have no data available for the
+        selected target volcano.
+    """
+
+    # based on:
+    # https://thispointer.com/python-how-to-find-keys-by-value-in-dictionary
+    my_list_keys = list()
+    my_list_items = my_volcano_data.items()
+    for item in my_list_items:
+        if item[1] == 0:
+            my_list_keys.append(item[0])
+
+    # check whether the list is not empty (in other words, there are some
+    # volcanological criteria without data)
+    if my_list_keys:
+        nodata_criteria_text = ', '.join(my_list_keys)
+        msg = ("WARNING!!! "
+               "The following volcanological criteria do not have "
+               "any data available for the selected target volcano "
+               f"({my_volcano_name}): {nodata_criteria_text}. Please "
+               "consider excluding these criteria from your weighting scheme "
+               "(i.e. setting their weights to zero).")
         raise PyvolcansError(msg)
 
 

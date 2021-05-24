@@ -26,6 +26,7 @@ from pyvolcans.pyvolcans_func import (
     set_weights_from_args,
     open_gvp_website,
     output_result,
+    check_for_criteria_without_data,
     check_for_perfect_analogues,
     convert_to_idx,
     plot_bar_apriori_analogues,
@@ -114,14 +115,22 @@ def cli():
     # call PyVOLCANS
     try:
         # main PyVOLCANS result for all volcanoes (and weighting scheme used)
-        volcans_result = calculate_weighted_analogy_matrix(
-            volcano_input, weights=new_weights)
+        volcans_result, my_volcano_data = \
+            calculate_weighted_analogy_matrix(volcano_input,
+                                              weights=new_weights)
 
         # final PyVOLCANS result (specific of the target volcano selected)
         [top_analogues,
          volcano_name] = get_analogies(volcano_input,
                                        volcans_result,
                                        count)
+
+        # check for volcanological criteria without data for target volcano
+        try:
+            check_for_criteria_without_data(my_volcano_data, volcano_name)
+        except PyvolcansError as exc:
+            # do not quit the program in this situation
+            logging.warning(exc.args[0])
 
         # check for 'too many perfect analogues' (see Tierz et al., 2019)
         try:
@@ -141,7 +150,7 @@ def cli():
             volcans_result['smithsonian_id'].iloc[convert_to_idx(volcano_input)]
 
         # print main PyVOLCANS result to stdout
-        print(f"Top {count} analogue volcanoes for {volcano_name}, "
+        print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
               f"{my_volcano_country} ({my_volcano_vnum}):")
         print(result)
 
