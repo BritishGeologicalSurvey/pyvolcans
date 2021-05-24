@@ -364,10 +364,26 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         weights (or weighting scheme) that is chosen by the user for each
         particular run of PyVOLCANS. A different weighting scheme can generate
         an entirely different set of total analogy values.
+
+    my_volcano_data_dictionary: dict
+        Dictionary containing information on whether there is volcanological
+        data available (dict_value = 1), or there is not (dict_value = 0); for
+        each of the volcanological criteria used by PyVOLCANS, considering the
+        specific target volcano chosen by the user to run the program.
     """
 
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
+
+    # check for volcanological criteria without data for the target volcano
+    my_volcano_data_dictionary = {} # empty dictionary
+    # NB. If the single-criterion analogy of the target volcano with itself is
+    # equal to zero, then there is no data available for that particular
+    # volcanological criterion
+    for criterion in analogies.keys():
+        single_analogies = analogies[criterion]
+        my_volcano_data_dictionary[criterion] = \
+            single_analogies[volcano_idx, volcano_idx]
 
     # calculate single-criterion analogy matrices for specific weighting scheme
     weighted_tectonic_analogy = \
