@@ -137,7 +137,7 @@ def mock_weights():
 
 
 def test_plot_bar_apriori_analogues(mock_weights, mock_analogies):
-    pandas_df = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
+    pandas_df, _ = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
                                                   mock_weights,
                                                   mock_analogies)
     df_bar = plot_bar_apriori_analogues('West Eifel Volcanic Field',
@@ -152,7 +152,7 @@ def test_plot_bar_apriori_analogues(mock_weights, mock_analogies):
 
 
 def test_plot_bar_better_analogues(mock_weights, mock_analogies):
-    pandas_df = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
+    pandas_df, _ = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
                                                   mock_weights,
                                                   mock_analogies)
     _, better_analogues = \
@@ -196,7 +196,7 @@ def test_plot_bar_better_analogues(mock_weights, mock_analogies):
       'eruption_size': 0.25,
       'eruption_style': 0}, 11110)])
 def test_combined_analogy_matrix_no_tectonic(weights, expected, mock_analogies):
-    pandas_df = calculate_weighted_analogy_matrix(
+    pandas_df, _ = calculate_weighted_analogy_matrix(
         'West Eifel Volcanic Field', weights, mock_analogies)
     matrix = pandas_df.loc[get_volcano_idx_from_name(
         'West Eifel Volcanic Field'), 'total_analogy']
