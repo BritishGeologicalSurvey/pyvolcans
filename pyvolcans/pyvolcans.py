@@ -103,7 +103,7 @@ def cli():
     try:
         new_weights = set_weights_from_args(arg_weights)
         formatted_text = 'Ts{:.3f}G{:.3f}M{:.3f}Sz{:.3f}St{:.3f}'
-        new_weights_text = formatted_text.format(*new_weights.values()).replace('.','')
+        new_weights_text = formatted_text.format(*new_weights.values()).replace('.', '')
     except PyvolcansError as exc:
         # print error message and quit program on error
         logging.error(exc.args[0])
@@ -196,14 +196,14 @@ def cli():
             # NB. This code is only run when 1+ 'a priori' analogues are given
             if args.plot_apriori:
                 plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
-                                               my_apriori_volcanoes,
-                                               volcans_result,
-                                               new_weights_text,
-                                               save_figure=args.save_figures)
+                                           my_apriori_volcanoes,
+                                           volcans_result,
+                                           new_weights_text,
+                                           save_figure=args.save_figures)
                 plot_bar_better_analogues(volcano_name, my_volcano_vnum,
-                                              my_better_analogues,
-                                              new_weights_text,
-                                              save_figure=args.save_figures)
+                                          my_better_analogues,
+                                          new_weights_text,
+                                          save_figure=args.save_figures)
 
         # displaying all figures just before the end of the script
         plt.show()
