@@ -3,7 +3,7 @@ fuzzywuzzy
 numpy
 pandas
 pymatreader
-scipy
+matplotlib
 
 # Development tools
 flake8

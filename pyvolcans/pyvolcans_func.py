@@ -12,7 +12,8 @@ import warnings
 import webbrowser
 from fractions import Fraction
 
-# external packages
+import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 
 from pyvolcans import (load_tectonic_analogy,
@@ -297,6 +298,10 @@ def set_weights_from_args(args_dict):
     Raises
     ------
     PyvolcansError
+        If any of the criterion weights provided is a negative value*, as this
+        is incompatible with the VOLCANS method. *Please note that a value of
+        `-0` is accepted by the program.
+
         If the sum of weights provided by the user is different from one*, so
         the total analogy computed by PyVOLCANS is not a weighted average of
         the single-criterion analogies (see Tierz et al., 2019, for more
@@ -315,6 +320,11 @@ def set_weights_from_args(args_dict):
     for key, value in args_dict.items():
         if value is None:
             args_dict[key] = 0
+        # check whether any of the criterion weights is negative
+        elif value < 0:
+            msg = ("Some criterion weights are negative values! "
+                   "Please revise your weighting scheme.")
+            raise PyvolcansError(msg)
         else:
             sum_of_weights += value
 
@@ -354,10 +364,30 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         weights (or weighting scheme) that is chosen by the user for each
         particular run of PyVOLCANS. A different weighting scheme can generate
         an entirely different set of total analogy values.
+
+    my_volcano_data_dictionary : dict
+        Dictionary containing information on whether there is volcanological
+        data available (dict_value = 1), or there is not (dict_value = 0); for
+        each of the volcanological criteria used by PyVOLCANS, considering the
+        specific target volcano chosen by the user to run the program.
     """
 
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
+
+    # check for volcanological criteria without data for the target volcano
+    my_volcano_data_dictionary = {} # empty dictionary
+    # NB. If the single-criterion analogy of the target volcano with itself is
+    # equal to zero, then there is no data available for that particular
+    # volcanological criterion
+    for criterion in analogies.keys():
+        single_analogies = analogies[criterion]
+        my_volcano_single_analogies = single_analogies[volcano_idx]
+        # to make tests pass (my_volcano_single_analogies becomes an int32
+        # when implementing some of the tests)
+        if isinstance(my_volcano_single_analogies, np.ndarray):
+            my_volcano_data_dictionary[criterion] = \
+                my_volcano_single_analogies[volcano_idx]
 
     # calculate single-criterion analogy matrices for specific weighting scheme
     weighted_tectonic_analogy = \
@@ -396,7 +426,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     volcans_result['ASt'] = \
         weighted_eruption_style_analogy[volcano_idx, ]
 
-    return volcans_result
+    return volcans_result, my_volcano_data_dictionary
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
@@ -485,6 +515,50 @@ def check_for_perfect_analogues(result):
                "data deficiencies and/or the use of a simplified "
                "weighting scheme (see Tierz et al., 2019, for more "
                "details).\n")
+        raise PyvolcansError(msg)
+
+
+def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
+    """
+    Assesses whether some volcanological criteria do not have any data for the
+    specific target volcano chosen by the user, raising a PyvolcansError
+    exception if this is the case, informing the user which are these criteria.
+
+    Parameters
+    ----------
+    my_volcano_name : str
+        Target volcano selected by the user, as volcano name.
+    my_volcano_data: dict
+        Dictionary containing information on whether there is volcanological
+        data available (dict_value = 1), or there is not (dict_value = 0); for
+        each of the volcanological criteria used by PyVOLCANS, considering the
+        specific target volcano chosen by the user to run the program.
+
+    Raises
+    -------
+    PyvolcansError
+        If one or more volcanological criteria have no data available for the
+        selected target volcano.
+    """
+
+    # based on:
+    # https://thispointer.com/python-how-to-find-keys-by-value-in-dictionary
+    my_list_keys = list()
+    my_list_items = my_volcano_data.items()
+    for item in my_list_items:
+        if item[1] == 0:
+            my_list_keys.append(item[0])
+
+    # check whether the list is not empty (in other words, there are some
+    # volcanological criteria without data)
+    if my_list_keys:
+        nodata_criteria_text = ', '.join(my_list_keys)
+        msg = ("WARNING!!! "
+               "The following volcanological criteria do not have "
+               "any data available for the selected target volcano "
+               f"({my_volcano_name}): {nodata_criteria_text}. Please "
+               "consider excluding these criteria from your weighting scheme "
+               "(i.e. setting their weights to zero).")
         raise PyvolcansError(msg)
 
 
@@ -615,6 +689,135 @@ def match_name(volcano_name):
         raise PyvolcansError(msg)
 
     return matched_volcanoes
+
+
+def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
+                               my_apriori_analogues, volcans_result,
+                               criteria_weights_text, save_figure=None):
+    """
+    Plots values of single-criterion and total analogy between the target
+    volcano and any a priori analogue provided by the user. It optionally
+    saves the figure in png format (600 dpi resolution).
+
+    Parameters
+    ----------
+    my_volcano_name : str
+        Name of volcano introduced by the user (i.e. target volcano).
+    my_volcano_vnum: int
+        Volcano number (VNUM) of volcano introduced by the user in the
+        GVP database (www.volcano.si.edu).
+    my_apriori_analogues:
+        List of a priori analogues as introduced by the user via the command
+        line.
+    volcans_result : Pandas dataframe
+        Total and single-criterion analogy values between the target volcano
+        and any volcano listed in the GVP database (v. 4.6.7).
+    criteria_weights_text : str
+        Single string indicating the weighting scheme selected by the user.
+    save_figure : bool, optional
+        Keyword argument that indicates whether the generated figures are to
+        be saved in the current working directory, as indicated by the optional
+        flag `--save_figure` chosen by the user when running PyVOLCANS.
+
+    Returns
+    -------
+    all_my_apriori_analogies : Pandas dataframe
+        Single-criterion analogy values between the target volcano and all the
+        a priori analogues selected by the user. Returned basically for testing
+        purposes on the function.
+    """
+
+    # derive the indices for all a priori analogues
+    my_apriori_volcano_idx = [convert_to_idx(x) for x in my_apriori_analogues]
+
+    # slice volcans_result to derive a data frame with the a priori analogues
+    all_my_apriori_analogies = \
+        volcans_result.loc[my_apriori_volcano_idx,
+                          ['name','ATs','AG','AM','ASz','ASt']]
+
+    # plot single- and total-analogy values for all a priori analogues
+    my_apriori_analogues_plot = \
+        all_my_apriori_analogies.plot.bar(x="name",
+                                          y=["ATs","AG","AM","ASz","ASt"],
+                                          stacked=True)
+
+    fig1 = plt.gcf()
+    my_apriori_analogues_plot.set_ylim([0,1])
+    plt.title(f"A priori analogues: {my_volcano_name} ({my_volcano_vnum})",
+              y=1.15, pad=5)
+    plt.xlabel(None)
+    plt.ylabel('Total Analogy')
+    plt.legend(bbox_to_anchor=(0.9, 1.16), ncol=5)
+    plt.tight_layout() # ensuring labels/titles are displayed properly
+
+    if save_figure:
+        fig1.savefig(
+                (f"{my_volcano_name}_apriori_analogues_"
+                 f"{criteria_weights_text}.png"),
+                dpi=600)
+
+    return all_my_apriori_analogies
+
+def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
+                              better_analogues, criteria_weights_text,
+                              save_figure=None):
+    """
+    Plots the percentage of 'better analogues' (i.e. higher value of total
+    analogy with the target volcano) for each of the a priori analogues
+    provided by the user. It optionally saves the figure in png format
+    (600 dpi resolution).
+
+    Parameters
+    ----------
+    my_volcano_name : str
+        Name of volcano introduced by the user (i.e. target volcano).
+    my_volcano_vnum: int
+        Volcano number (VNUM) of volcano introduced by the user in the
+        GVP database (www.volcano.si.edu).
+    better_analogues: dict
+        Dictionary containing the volcano name and percentage* of 'better
+        analogues' for all the a priori analogues provided by the user.
+        *Percentage is calculated as (100 - Percentile) and represents the
+        proportion of volcanoes in the GVP database that are classified as
+        'better analogues' (i.e. higher total analogy) by PyVOLCANS (please
+        see Tierz et al., 2019, and documentation of the function:
+        `get_many_analogy_percentiles()` for more details).
+    criteria_weights_text : str
+        Single string indicating the weighting scheme selected by the user.
+    save_figure : bool, optional
+        Keyword argument that indicates whether the generated figures are to
+        be saved in the current working directory, as indicated by the optional
+        flag `--save_figure` chosen by the user when running PyVOLCANS.
+
+    Returns
+    -------
+    df_better_analogues : Pandas dataframe
+        Values of percentage of 'better analogues' than each of the a priori
+        analogues selected, for the specific target volcano. Returned basically
+        for testing purposes on the function.
+    """
+    # open figure for the 'better analogues' bar plot
+    # dict to pandas df based on:
+    # https://stackoverflow.com/questions/18837262/convert-python-dict-into-a-dataframe
+    df_better_analogues = pd.DataFrame(better_analogues.items(),
+                                       columns=['apriori_analogue',
+                                                'percentage_better'])
+
+    df_better_analogues.plot.bar(x="apriori_analogue",
+                                 y="percentage_better",
+                                 legend=False,
+                                 title=f"Better analogues: {my_volcano_name} ({my_volcano_vnum})",
+                                 ylim=[0,50])
+    plt.xlabel(None)
+    plt.ylabel('Percentage of better analogues')
+    plt.tight_layout()
+    if save_figure:
+        plt.savefig(
+                (f"{my_volcano_name}_better_analogues_"
+                 f"{criteria_weights_text}.png"),
+                 dpi=600)
+
+    return df_better_analogues
 
 
 def get_analogy_percentile(my_volcano, apriori_volcano,

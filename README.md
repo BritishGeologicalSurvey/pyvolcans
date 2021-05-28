@@ -344,14 +344,16 @@ eruption are included; and (2) the 2013–2018 eruption is updated to VEI 4
 (GVP, 2013, database version 4.7.4). Please see [Tierz et al. (2019)](https://doi.org/10.1007/s00445-019-1336-3).
 
 - Alutu, Ethiopia (221270): rock type 'Dacite' is removed from the GVP profile
-of Aluto volcano. Please see [Tierz et al., 2020](https://doi.org/10.1029/2020GC009219).
+of Aluto volcano. Please see [Tierz et al. (2020)](https://doi.org/10.1029/2020GC009219).
 
 - Quetrupillán, Chile (357121): the following rock types are used instead of
 those in the GVP 4.6.7 profile: Major (Trachyte), Minor (Basalt, Basaltic
 andesite, Rhyolite). A crater diameter of 1.37 km (equivalent to the value
 of summit width in [Grosse et al., 2014](https://doi.org/10.1007/s00445-013-0784-4))
 is used for Quetrupillán. Please see [Simmons et al. (2020)](https://doi.org/10.30909/vol.03.01.115137)
-and Simmons (2020).
+and Simmons (2020) [_The Quetrupillán Volcanic Complex, Chile:
+Holocene volcanism, magmatic plumbing system, and future hazards_, PhD Thesis,
+University of Edinburgh].
 
 The initial releases of PyVOLCANS make use these pre-calculated analogy
 matrices. This was the quickest way of making VOLCANS results available
@@ -379,7 +381,7 @@ The `[dev]` part installs packages required for development e.g. `pytest`.
 Run tests with:
 
 ```bash
-pytest -vs test
+pytest -v test
 ```
 
 ### Maintainers

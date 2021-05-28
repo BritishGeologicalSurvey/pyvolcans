@@ -14,6 +14,7 @@ import argparse
 import logging
 import sys
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 # our packages
 from pyvolcans.pyvolcans_func import (
@@ -25,8 +26,11 @@ from pyvolcans.pyvolcans_func import (
     set_weights_from_args,
     open_gvp_website,
     output_result,
+    check_for_criteria_without_data,
     check_for_perfect_analogues,
-    convert_to_idx
+    convert_to_idx,
+    plot_bar_apriori_analogues,
+    plot_bar_better_analogues,
 )
 
 from pyvolcans import __version__
@@ -98,6 +102,8 @@ def cli():
 
     try:
         new_weights = set_weights_from_args(arg_weights)
+        formatted_text = 'Ts{:.3f}G{:.3f}M{:.3f}Sz{:.3f}St{:.3f}'
+        new_weights_text = formatted_text.format(*new_weights.values()).replace('.', '')
     except PyvolcansError as exc:
         # print error message and quit program on error
         logging.error(exc.args[0])
@@ -109,14 +115,22 @@ def cli():
     # call PyVOLCANS
     try:
         # main PyVOLCANS result for all volcanoes (and weighting scheme used)
-        volcans_result = calculate_weighted_analogy_matrix(
-            volcano_input, weights=new_weights)
+        volcans_result, my_volcano_data = \
+            calculate_weighted_analogy_matrix(volcano_input,
+                                              weights=new_weights)
 
         # final PyVOLCANS result (specific of the target volcano selected)
         [top_analogues,
          volcano_name] = get_analogies(volcano_input,
                                        volcans_result,
                                        count)
+
+        # check for volcanological criteria without data for target volcano
+        try:
+            check_for_criteria_without_data(my_volcano_data, volcano_name)
+        except PyvolcansError as exc:
+            # do not quit the program in this situation
+            logging.warning(exc.args[0])
 
         # check for 'too many perfect analogues' (see Tierz et al., 2019)
         try:
@@ -136,7 +150,7 @@ def cli():
             volcans_result['smithsonian_id'].iloc[convert_to_idx(volcano_input)]
 
         # print main PyVOLCANS result to stdout
-        print(f"Top {count} analogue volcanoes for {volcano_name}, "
+        print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
               f"{my_volcano_country} ({my_volcano_vnum}):")
         print(result)
 
@@ -157,21 +171,17 @@ def cli():
                 volcano_name.replace('\'', '').replace(',', '').replace('.', '')
             volcano_name_splitted = volcano_name_clean.split()
             volcano_name_joined = '_'.join(volcano_name_splitted)
-            Ts_text = "{:.3f}".format(new_weights['tectonic_setting']).replace('.', '')
-            G_text = "{:.3f}".format(new_weights['geochemistry']).replace('.', '')
-            M_text = "{:.3f}".format(new_weights['morphology']).replace('.', '')
-            Sz_text = "{:.3f}".format(new_weights['eruption_size']).replace('.', '')
-            St_text = "{:.3f}".format(new_weights['eruption_style']).replace('.', '')
             output_filename = Path.cwd() / \
                 f'{volcano_name_joined}_top{count}analogues_' \
-                f'Ts{Ts_text}G{G_text}M{M_text}Sz{Sz_text}St{St_text}.csv'
+                f'{new_weights_text}.csv'
             result = output_result(args.verbose,
                                    volcano_name,
                                    top_analogues,
                                    to_file='csv',
                                    filename=output_filename)
         # call get_many_analogy_percentiles to print 'better analogues'
-        if my_apriori_volcanoes is not None:
+        # NB. This code is not entered if my_apriori_volcanoes is empty or None
+        if bool(my_apriori_volcanoes):
             try:
                 my_apriori_volcanoes = [int(x) for x in args.apriori]
             except ValueError:
@@ -179,9 +189,24 @@ def cli():
             except PyvolcansError as exc:
                 logging.error(exc.args[0])
                 sys.exit(1)
-            get_many_analogy_percentiles(volcano_input,
-                                         my_apriori_volcanoes,
-                                         volcans_result)
+            [my_percentiles, my_better_analogues] = \
+                get_many_analogy_percentiles(volcano_input,
+                                             my_apriori_volcanoes,
+                                             volcans_result)
+            # NB. This code is only run when 1+ 'a priori' analogues are given
+            if args.plot_apriori:
+                plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
+                                           my_apriori_volcanoes,
+                                           volcans_result,
+                                           new_weights_text,
+                                           save_figure=args.save_figures)
+                plot_bar_better_analogues(volcano_name, my_volcano_vnum,
+                                          my_better_analogues,
+                                          new_weights_text,
+                                          save_figure=args.save_figures)
+
+        # displaying all figures just before the end of the script
+        plt.show()
     except PyvolcansError as exc:
         # print error message and quit program on error
         logging.error(exc.args[0])
@@ -232,6 +257,14 @@ def parse_args():
                               "single-criterion analogy values, besides the "
                               "total analogy values, in the PyVOLCANS results")
                         )
+    parser.add_argument("-pa", "--plot_apriori", action="store_true",
+                        help=("Generate bar plots displaying the values of "
+                        "single-criterion and total analogy between the target"
+                        " volcano and any 'a priori' analogues chosen by the"
+                        " user.")
+                        )
+    parser.add_argument("-S", "--save_figures", action="store_true",
+                        help="Save all generated figures")
     parser.add_argument("-V", "--version", action="version",
                         help="Print PyVOLCANS package version and exit",
                         version=__version__)
