@@ -87,6 +87,8 @@ def cli():
 
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
+        # raise logging level of matplotlib to avoid unnecessary messages
+        logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
     # define some intermediate variables
     count = args.count
