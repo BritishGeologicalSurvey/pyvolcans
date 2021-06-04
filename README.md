@@ -55,7 +55,7 @@ $ pyvolcans --help
 usage: pyvolcans [-h] [--apriori [APRIORI [APRIORI ...]]]
                  [-Ts TECTONIC_SETTING] [-G ROCK_GEOCHEMISTRY] [-M MORPHOLOGY]
                  [-Sz ERUPTION_SIZE] [-St ERUPTION_STYLE] [--count COUNT] [-w]
-                 [-W] [-v] [-V]
+                 [-W] [-v] [-pa] [-S] [-V]
                  volcano
 
 positional arguments:
@@ -81,7 +81,11 @@ optional arguments:
   -v, --verbose         Print debug-level logging output, and include single-
                         criterion analogy values, besides the total analogy
                         values, in the PyVOLCANS results
-  -V, --version         Show PyVOLCANS package version
+  -pa, --plot_apriori   Generate bar plots displaying the values of single-
+                        criterion and total analogy between the target volcano
+                        and any 'a priori' analogues chosen by the user.
+  -S, --save_figures    Save all generated figures
+  -V, --version         Print PyVOLCANS package version and exit
 ```
 
 ### Default call to PyVOLCANS
@@ -328,6 +332,26 @@ with the expected data for the percentages of better analogues.
 
 PLEASE USE either a set of volcano names or a set of volcano numbers to define
 your set of a priori analogues when running PyVOLCANS. Many thanks.
+
+#### Plotting capabilities
+
+From release `v1.1.0` onwards, users can also visualise: (1) the single-criterion
+and total (multi-criteria) analogy values between the target volcano and any _a priori_
+analogue volcano selected by the user, and (2) the percentage of _better analogues_
+(than each of the _a priori_ analogues) available in the whole GVP database, for the
+specific target volcano chosen.
+
+These results are provided as bar plots when the user selects the optional flag
+`--plot_apriori` (or `-pa`):
+
+```
+$ pyvolcans Fuego --apriori Villarrica Llaima Pacaya Reventador Tungurahua --plot_apriori
+```
+
+If the user wants to save the generated figures (.png format, 600 dpi resolution),
+the optional flag `--save_figures` (or `-S`) should be selected, together with the
+`--plot_apriori` (or `-pa`) flag.
+
 
 ## Analogy matrices
 
