@@ -3,3 +3,4 @@ __pycache__
 pyvolcans.egg-info
 dist
 *csv
+paper/paper.pdf
