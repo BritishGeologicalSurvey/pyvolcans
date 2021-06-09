@@ -50,7 +50,7 @@ Data and insights from the well-studied volcano can be used to provide estimates
 # Statement of need
 
 `PyVOLCANS` (Python VOLCano ANalogues Search) is an open-source tool that addresses the need for an objective, data-driven method for selection of analogue volcanoes.
-It is based on the results of VOLCANS [@Tierz:2019], a first-of-its-kind method to quantify the analogy (or similarity) between volcanic systems, based on an structured combination of five volcanological criteria: tectonic setting, rock geochemistry, volcano morphology, eruption size, and eruption style.
+It is based on the results of VOLCANS [@Tierz:2019], a first-of-its-kind method to quantify the analogy (or similarity) between volcanic systems, based on a structured combination of five volcanological criteria: tectonic setting, rock geochemistry, volcano morphology, eruption size, and eruption style.
 `PyVOLCANS` provides a command-line interface to make the results from the VOLCANS study easily accessible to a wide audience.
 `PyVOLCANS` is a versatile tool for volcano scientists, with potential applications ranging from investigating commonalities between volcanic systems [@Cashman:2014] to supporting probabilistic volcanic hazard assessment at local, regional and global scales.
 It can also be used as a tool for [teaching and scientific outreach](https://twitter.com/Xeno_lith/status/1384416032526266369?s=20).
