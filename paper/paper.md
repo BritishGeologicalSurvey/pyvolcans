@@ -10,7 +10,7 @@ authors:
   - name: Pablo Tierz^[Corresponding author]
     orcid: 0000-0001-8889-9900
     affiliation: 1
-  - name: Vyron Christodoulou^[Now at The Data Lab, University of Edinburgh, Edinburgh, UK]
+  - name: Vyron Christodoulou^[Now at The Data Lab, The Bayes Centre, Edinburgh, UK]
     orcid: 0000-0003-3835-3891
     affiliation: 1
   - name: John A. Stevenson
