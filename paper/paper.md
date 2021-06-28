@@ -30,12 +30,12 @@ bibliography: paper.bib
 There are over 1,400 volcanoes on Earth that have either erupted or shown signs of volcanic activity (e.g. fumaroles or hot springs) in, approximately, the last 12,000 years.
 Of these, around 40-50 are erupting at any given time [@Siebert:2010; @GVP:2013].
 Volcanoes provide a range of economic benefits, such as fertile soils, geothermal energy or valuable mineralizations and attract fascination and create a sense of belonging among visitors and local populations.
-However, volcanic systems can also generate hazardous phenomena, threatening local inhabitants, tourists and infrastructure at distances of up to tens or hundreds of kilometres.
+However, volcanic systems can also generate hazardous phenomena, which may threaten local inhabitants, tourists and infrastructure at distances of up to tens or hundreds of kilometres.
 
 In order to understand and quantify volcanic hazard, volcano scientists are faced with many questions.
 How often do eruptions occur?
 How big are they?
-What style of eruption is possible (e.g. producing mainly pyroclastic flows and/or volcanic ash clouds)?
+What style of eruption is possible (e.g. mainly explosive or effusive)?
 From where on the volcano is eruptive activity sourced?
 What areas around the volcanic system may be impacted?
 Are there any warning signals?
@@ -72,9 +72,9 @@ We hope that the release of `PyVOLCANS` will encourage studies based on data-dri
 
 # Acknowledgements
 
-The research leading to these results has been mainly supported by the Innovation Flexible Fund of the British Geological Survey, NC grant NEE7147S.
+The research leading to these results has been mainly supported by the UK National Capability Funding (Innovation Flexible Fund programme).
 We would like to warmly thank Eliza Calder for all her work during the development of the VOLCANS method, and Sarah Ogburn for being one of the first people who _convinced_ us that we should develop an open-access application of VOLCANS, sooner rather than later.
-Declan Valters is thanked for support with Python programming.
+Declan Valters is thanked for support with Python programming, and Fabio Dioguardi for his internal review. 
 Moreover, we would like to sincerely thank a number of colleagues with whom we shared very insightful conversations about analogue volcanoes and/or PyVOLCANS: Chris Newhall, Isla Simmons, Adriano Pimentel, Julia Crummy, Gezahegn Yirgu, Charlotte Vye-Brown, Lara Smale, Karen Fontijn, Ben Clarke, Susanna Jenkins, Elly Tennant, Pierre Barbillon, Elaine Spiller, Philippa White, Teresa Ubide, Sebastián García, Victoria Olivera, Jeremy Pesicek, Vanesa Burgos Delgado, Eitnat Lev, Jonty Rougier, Willy Aspinall, Paolo Papale, Monse Cascante and Thomas Giachetti.
 
 # References
