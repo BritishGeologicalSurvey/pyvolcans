@@ -2,6 +2,7 @@
 
 > PyVOLCANS: A Python package to flexibly explore similarities and differences between volcanic systems
 
+The main goal of PyVOLCANS is to help alleviate data-scarcity issues in volcanology, and contribute to developments in a range of topics, including (but not limited to): quantitative volcanic hazard assessment at local to global scales, investigation of magmatic and volcanic processes, and even teaching and scientific outreach. We hope that future users of PyVOLCANS will include any volcano scientist or enthusiast with an interest in exploring the similarities and differences between volcanic systems worldwide. Please visit our [wiki pages](https://github.com/BritishGeologicalSurvey/pyvolcans/wiki) for more information.
 
 ## Installation instructions
 
@@ -15,34 +16,9 @@ This method adds `pyvolcans` to the virtual environment PATH so that it can be
 used from any directory.
 
 
-## Example usage
+## API documentation and example usage
 
-Calling PyVOLCANS with a volcano name returns the 10 top analogue volcanoes:
-
-```
-$ pyvolcans Hekla
-
-Top 10 analogue volcanoes for Hekla, Iceland (372070):
-              name       country  smithsonian_id  total_analogy
-       Torfajokull       Iceland          372050       0.941676
-       Bardarbunga       Iceland          373030       0.921407
-      Prestahnukur       Iceland          371070       0.919877
-        Langjokull       Iceland          371080       0.915929
-           Hengill       Iceland          371050       0.911855
- Brennisteinsfjoll       Iceland          371040       0.907751
-        Kverkfjoll       Iceland          373050       0.906833
-       Fremrinamar       Iceland          373070       0.905074
-           Ecuador       Ecuador          353011       0.901611
-     Marion Island  South Africa          234070       0.892960
-```
-
-See the [wiki](https://github.com/BritishGeologicalSurvey/pyvolcans/wiki) for more details and example output for different commands.
-
-
-## API documentation
-
-Users interact with PyVOLCANS via the command-line tool.
-The `--help` command describes the possible options.
+Users interact with PyVOLCANS via the command-line tool. The `--help` command describes the possible options.
 
 ```
 $ pyvolcans --help
@@ -82,6 +58,29 @@ optional arguments:
   -S, --save_figures    Save all generated figures
   -V, --version         Print PyVOLCANS package version and exit
 ```
+
+Calling PyVOLCANS with a volcano name returns the 10 top analogue volcanoes:
+
+```
+$ pyvolcans Hekla
+
+Top 10 analogue volcanoes for Hekla, Iceland (372070):
+              name       country  smithsonian_id  total_analogy
+       Torfajokull       Iceland          372050       0.941676
+       Bardarbunga       Iceland          373030       0.921407
+      Prestahnukur       Iceland          371070       0.919877
+        Langjokull       Iceland          371080       0.915929
+           Hengill       Iceland          371050       0.911855
+ Brennisteinsfjoll       Iceland          371040       0.907751
+        Kverkfjoll       Iceland          373050       0.906833
+       Fremrinamar       Iceland          373070       0.905074
+           Ecuador       Ecuador          353011       0.901611
+     Marion Island  South Africa          234070       0.892960
+```
+
+A comprehensive description of the purpose, input arguments and output variables for each of the functions and methods used by `pyvolcans` can be found in the [source scripts](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/main/pyvolcans).
+
+Please also visit our [wiki pages](https://github.com/BritishGeologicalSurvey/pyvolcans/wiki) to find out more details on the usage of PyVOLCANS, as well as several example outputs for different commands.
 
 
 ## Community
