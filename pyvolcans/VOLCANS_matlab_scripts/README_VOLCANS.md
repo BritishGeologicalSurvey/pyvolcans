@@ -13,10 +13,10 @@ of the `PyVOLCANS` code.
 
 In the following, we provide: (1) a brief summary of the general process developed to generate the analogy matrices (for more details,
 please see [Tierz et al., 2019](https://doi.org/10.1007/s00445-019-1336-3)); (2) overall descriptions of the main purpose of each of the
-Matlab (`.m`) files available in the current folder; and (3) overall descriptions of the data contained in each of the csv files available
-in folder `../VOLCANS_csv_files`. Detailed specifications of the numbering adopted for categorical variables, as well as the units
+Matlab (`.m`) files available in the [current folder](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/matlab-scripts/pyvolcans/VOLCANS_matlab_scripts); and (3) overall descriptions of the data contained in each of the csv files available
+in folder [../VOLCANS_csv_files](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/matlab-scripts/pyvolcans/VOLCANS_csv_files). Detailed specifications of the numbering adopted for categorical variables, as well as the units
 in which numerical variables are displayed (unless this is described in the header row of the csv files) are provided in
-`../VOLCANS_csv_files/VOLCANS_code_numbers`.
+[../VOLCANS_csv_files/VOLCANS_code_numbers](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOLCANS_code_numbers).
 
 
 ## Volcano analogy
@@ -44,7 +44,7 @@ and [Table 2](https://link.springer.com/article/10.1007/s00445-019-1336-3/tables
 
 ## Matlab scripts
 
-The following Matlab scripts have the purpose of calculating volcano analogy matrices that contain the single-criterion volcano analogy values
+The following [Matlab scripts](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/matlab-scripts/pyvolcans/VOLCANS_matlab_scripts) have the purpose of calculating volcano analogy matrices that contain the single-criterion volcano analogy values
 for each of the possible combinations of two volcanoes in the GVP database. All the analogy matrices are N x N, where N (= 1439) is the total number of
 volcanic systems listed in the GVP v4.6.7 database used in [Tierz et al. (2019)](https://doi.org/10.1007/s00445-019-1336-3).
 Please also note that any single-criterion analogy between volcanoes X and Y, e.g. rock geochemistry (AG<sub>XY</sub>), is symmetric.
@@ -52,54 +52,52 @@ That is: AG<sub>XY</sub> = AG<sub>YX</sub>.
 
 ### get_final_AT_allcross.m
 
-It calculates the final single-criterion analogy matrix for tectonic setting. It requires to load the file `ATmatrices.mat`, which is derived
-from the script `votw_analysis.m`.
+It calculates the final single-criterion analogy matrix for tectonic setting. It requires to load the file [ATmatrices.mat](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_mat_files/data_mats/ATmatrices.mat), which is derived
+from the script [votw_analysis.m](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_matlab_scripts/votw_analysis.m).
 
 ### get_final_AG_allcross.m
 
-It calculates the final single-criterion analogy matrix for rock geochemistry. It requires to load the file `AGmatrices_ALU_QUET.mat`, which is
-derived from the script `votw_analysis.m`.
+It calculates the final single-criterion analogy matrix for rock geochemistry. It requires to load the file [AGmatrices_ALU_QUET.mat](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_mat_files/data_mats/AGmatrices_ALU_QUET.mat), which is
+derived from the script [votw_analysis.m](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_matlab_scripts/votw_analysis.m).
 
 ### get_final_AM_allcross.m
 
-It calculates the final single-criterion analogy matrix for volcano morphology. It requires to load the file `AMmatrices_QUET.mat`, which is
-derived from the script `morphology_processing.m`
+It calculates the final single-criterion analogy matrix for volcano morphology. It requires to load the file [AMmatrices_QUET.mat](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_mat_files/data_mats/AMmatrices_QUET.mat), which is
+derived from the script [morphology_processing.m](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_matlab_scripts/morphology_processing.m).
 
 ### get_final_ASz_allcross.m
 
-It calculates the final single-criterion analogy matrix for eruption size. It requires to load the file `ASzmatrices_SINA.mat`, which is
-derived from the script `eruption_size_processing.m`.
+It calculates the final single-criterion analogy matrix for eruption size. It requires to load the file [ASzmatrices_SINA.mat](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_mat_files/data_mats/ASzmatrices_SINA.mat), which is
+derived from the script [eruption_size_processing.m](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_matlab_scripts/eruption_size_processing.m).
 
 ### get_final_ASt_allcross.m
 
-It calculates the final single-criterion analogy matrix for eruption style. It requires to load the file `AStmatrices_SINA.mat`, which is
-derived from the script `eruption_style_processing.m`.
+It calculates the final single-criterion analogy matrix for eruption style. It requires to load the file [AStmatrices_SINA.mat](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_mat_files/data_mats/AStmatrices_SINA.mat), which is
+derived from the script [eruption_style_processing.m](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_matlab_scripts/eruption_style_processing.m).
 
 ### votw_analysis.m
 
-It performs a preliminary analysis of the volcano data in the GVP database (v4.6.7), and derives the data required to calculate the single-criterion analogy matrices for
-tectonic setting and rock geochemistry. It requires to import the data in the file: `VOTW467_8May18_volcano_data.csv` to carry out the aforementioned tasks.
-Please see below for a brief description of the csv files.
+It performs a preliminary analysis of the volcano data in the GVP database (v4.6.7), and derives the data required to calculate the single-criterion analogy matrices for tectonic setting and rock geochemistry. It requires to import the data in the file: [VOTW467_8May18_volcano_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_volcano_data.csv) to carry out the aforementioned tasks. Please see below for a brief description of the csv files.
 
 ### morphology_processing.m
 
 It performs a preliminary analysis of the morphology databases used by VOLCANS:
 [Pike and Clow (1981)](https://www.researchgate.net/publication/259487495_Revised_classification_of_terrestrial_volcanoes_and_catalog_of_topographic_dimensions_with_new_results_on_edifice_volume)
 and [Grosse et al. (2014)](https://doi.org/10.1007/s00445-013-0784-4), and derives the data required to calculate the single-criterion analogy matrix for volcano morphology.
-It requires to import the data in the files: `PC81_GR2014_data.csv`, and `VOTW467_8May18_volcano_data.csv` to carry out the aforementioned tasks.
+It requires to import the data in the files: [PC81_GR2014_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/PC81_GR2014_data.csv), and [VOTW467_8May18_volcano_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_volcano_data.csv) to carry out the aforementioned tasks.
 Please see below for a brief description of the csv files.
 
 ### eruption_size_processing.m
 
 It derives the data required to calculate the single-criterion analogy matrix for eruption size. It requires to import the data in the files:
-`VOTW467_8May18_eruption_data.csv`, `VOTW467_8May18_volcano_data.csv`, and `MeadMagill2014_June2018.csv` to carry out the aforementioned task.
+[VOTW467_8May18_eruption_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_eruption_data.csv), [VOTW467_8May18_volcano_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_volcano_data.csv), and [MeadMagill2014_June2018.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/MeadMagill2014_June2018.csv) to carry out the aforementioned task.
 Please see below for a brief description of the csv files, and [Methods](https://link.springer.com/article/10.1007/s00445-019-1336-3#Sec6) in Tierz et al. (2019)
 for more details on the procedure applied in `VOLCANS` to account for under-recording of eruptions.
 
 ### eruption_style_processing.m
 
 It derives the data required to calculate the single-criterion analogy matrix for eruption style. It requires to import the data in the files:
-`VOTW467_8May18_event_data.csv`, `VOTW467_8May18_eruption_data.csv`, and `VOTW467_8May18_volcano_data.csv` to carry out the aforementioned task.
+[VOTW467_8May18_event_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_event_data.csv), [VOTW467_8May18_eruption_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_eruption_data.csv), and [VOTW467_8May18_volcano_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_volcano_data.csv) to carry out the aforementioned task.
 Please see below for a brief description of the csv files.
 
 ## Data (csv) files
@@ -118,8 +116,7 @@ NB. It corresponds with [ESM3](https://static-content.springer.com/esm/art%3A10.
 
 ### VOTW467_8May18_event_data.csv
 
-It contains the list of ''eruptive events'' during Holocene eruptions at volcanoes in the GVP database (v4.6.7), together with their grouping according to different hazardous
-phenomena: the latter required to calculate the analogy in eruption style (please see [Methods](https://link.springer.com/article/10.1007/s00445-019-1336-3#Sec6) in Tierz et al., 2019,
+It contains the list of ''eruptive events'' during Holocene eruptions at volcanoes in the GVP database (v4.6.7), together with their grouping according to different hazardous phenomena: the latter required to calculate the analogy in eruption style (please see [Methods](https://link.springer.com/article/10.1007/s00445-019-1336-3#Sec6) in Tierz et al., 2019,
 for more details).
 NB. It corresponds with [ESM4](https://static-content.springer.com/esm/art%3A10.1007%2Fs00445-019-1336-3/MediaObjects/445_2019_1336_MOESM4_ESM.csv) in Tierz et al. (2019). 
 
