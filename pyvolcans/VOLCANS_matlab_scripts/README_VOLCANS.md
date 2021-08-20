@@ -84,8 +84,8 @@ Please see below for a brief description of the csv files.
 ### morphology_processing.m
 
 It performs a preliminary analysis of the morphology databases used by VOLCANS:
-[Pike and Clow, 1981](https://www.researchgate.net/publication/259487495_Revised_classification_of_terrestrial_volcanoes_and_catalog_of_topographic_dimensions_with_new_results_on_edifice_volume)
-and [Grosse et al., 2014](https://doi.org/10.1007/s00445-013-0784-4), and derives the data required to calculate the single-criterion analogy matrix for volcano morphology.
+[Pike and Clow (1981)](https://www.researchgate.net/publication/259487495_Revised_classification_of_terrestrial_volcanoes_and_catalog_of_topographic_dimensions_with_new_results_on_edifice_volume)
+and [Grosse et al. (2014)](https://doi.org/10.1007/s00445-013-0784-4), and derives the data required to calculate the single-criterion analogy matrix for volcano morphology.
 It requires to import the data in the files: `PC81_GR2014_data.csv`, and `VOTW467_8May18_volcano_data.csv` to carry out the aforementioned tasks.
 Please see below for a brief description of the csv files.
 
