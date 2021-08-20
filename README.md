@@ -128,5 +128,5 @@ Volcanology and Digital Capabilities.
 
 ## Licence
 
-`PyVOLCANS` is distributed under the [LGPL v3.0 licence](LICENSE).
+`PyVOLCANS` and the associated `VOLCANS` Matlab scripts are distributed under the [LGPL v3.0 licence](LICENSE).
 Copyright: © BGS / UKRI 2021
