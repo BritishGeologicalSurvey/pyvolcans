@@ -1,18 +1,17 @@
 # VOLCANS: code numbering
 
 This README file details the code numbering adopted in the different csv files inside the folder:
-`../../VOLCANS_csv_files`. This numbering was adopted to ease the calculations performed by the Matlab
-scripts that compose the VOLCANS method.
+[../../VOLCANS_csv_files](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/matlab-scripts/pyvolcans/VOLCANS_csv_files).
+This numbering was adopted to ease the calculations performed by the Matlab scripts that compose the VOLCANS method.
 
 Please note that, in some cases, the code numbering can be directly checked on `.xls` files located inside
-the current folder (please see descriptions below). When this is not available, a legend is provided in this
-file, showing the correspondence between categorical variables and code numbering (please see next sub-sections).
+the [current folder](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOLCANS_code_numbers) (please see descriptions below). When this is not available, a legend is provided in this file, showing the correspondence between categorical variables and code numbering (please see next sub-sections).
 
 Please also note that the `NO DATA` value used across all data files is `-9999`.
 
 ## VOTW467_8May18_volcano_data.csv
 
-Code numbering for all the categorical variables can be found in the file `VOTW467_8May18_Holocene_list_textdata_portable.xls`
+Code numbering for all the categorical variables can be found in the file [VOTW467_8May18_Holocene_list_textdata_portable.xls](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOLCANS_code_numbers/VOTW467_8May18_Holocene_list_textdata_portable.xls)
 (the variable displaying the code number in the spreadsheet is given between brackets):
 
 Country (country#), Region (reg#), Subregion (subreg#), Primary Volcano Type (volctype#), Activity Evidence (procdate1),
@@ -26,15 +25,15 @@ the GVP database assigns to each volcanic system listed in the database.
 2. The variables ''Major Rock 1-5'' and ''Minor Rock 1-5'' use the same code numbering as the variable ''Dominant Rock Type''.
 
 3. The variable ''Last Known Eruption'' is given in years from current era, with negative values expressing dates before
-current era (BCE). The same convention is applicable to variables ''Start Year'' in file `VOTW467_8May18_eruption_data.csv`,
-''Eruption Start Year'' in file `VOTW467_8May18_event_data.csv`, and ''Date of completeness'' in `MeadMagill2014_June2018.csv`.
+current era (BCE). The same convention is applicable to variables ''Start Year'' in file [VOTW467_8May18_eruption_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_eruption_data.csv),
+''Eruption Start Year'' in file [VOTW467_8May18_event_data.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOTW467_8May18_event_data.csv), and ''Date of completeness'' in [MeadMagill2014_June2018.csv](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/MeadMagill2014_June2018.csv).
 
-4. The variables ''Latitude'' and ''Longitude'' (also included in the file `VOTW467_8May18_Eruption_list_textdata_portable.xls`)
+4. The variables ''Latitude'' and ''Longitude'' (also included in the file [VOTW467_8May18_Eruption_list_textdata_portable.xls](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOLCANS_code_numbers/VOTW467_8May18_Eruption_list_textdata_portable.xls))
 correspond to the approximate spatial location of the volcanic system, and are expressed in decimal degrees.
 
 ## VOTW467_8May18_eruption_data.csv
 
-Code numbering for the categorical variable ''VEI Modifier'' can be found in the file `VOTW467_8May18_Eruption_list_textdata_portable.xls`
+Code numbering for the categorical variable ''VEI Modifier'' can be found in the file [VOTW467_8May18_Eruption_list_textdata_portable.xls](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOLCANS_code_numbers/VOTW467_8May18_Eruption_list_textdata_portable.xls)
 (please see column ''VEImod#'').
 
 For the variable ''Eruption Category'', the following code numbering is applied:
@@ -45,7 +44,7 @@ For the variable ''Eruption Category'', the following code numbering is applied:
 
 ## VOTW467_8May18_event_data.csv
 
-Code numbering for the categorical variable ''Event Type'' can be found in the file `VOTW467_8May18_Event_list_textdata_portable.xls`
+Code numbering for the categorical variable ''Event Type'' can be found in the file [VOTW467_8May18_Event_list_textdata_portable.xls](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOLCANS_code_numbers/VOTW467_8May18_Event_list_textdata_portable.xls)
 (please see column ''event#'').
 
 For the variable ''group#'', the following code numbering is applied (please also see [Tierz et al., 2019](https://doi.org/10.1007/s00445-019-1336-3)):
@@ -69,7 +68,7 @@ For the variable ''group#'', the following code numbering is applied (please als
 ## MeadMagill2014_June2018.csv
 
 Code numbering for the categorical variable ''Region/Country code'' corresponds with the values in column ''Name''.
-These values are the same as those found in file `VOTW467_8May18_Holocene_list_textdata_portable.xls`, for variables
+These values are the same as those found in file [VOTW467_8May18_Holocene_list_textdata_portable.xls](https://github.com/BritishGeologicalSurvey/pyvolcans/blob/matlab-scripts/pyvolcans/VOLCANS_csv_files/VOLCANS_code_numbers/VOTW467_8May18_Holocene_list_textdata_portable.xls), for variables
 ''Region (reg#)'' and ''Country (country#)''. The variable ''Region/Country'' denotes whether a given entry corresponds
 with a region (0) or a country (1).
 
