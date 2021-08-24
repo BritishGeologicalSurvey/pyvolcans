@@ -1,0 +1,39 @@
+"Name","Region/Country","Region/Country code","Date of completeness"
+"Africa and Red Sea",0,1,1820
+"Alaska",0,2,1784
+"Antarctica",0,3,1893
+"Atlantic Ocean",0,4,1988
+"Canada and Western USA",0,5,1841
+"Hawaii and Pacific Ocean",0,6,1820
+"Iceland and Arctic Ocean",0,7,1702
+"Indonesia",0,8,1770
+"Japan, Taiwan, Marianas",0,9,1542
+"Kamchatka and Mainland Asia",0,10,1737
+"Kuril Islands",0,11,1760
+"Mediterranean and W Asia",0,12,1682
+"Melanesia and Australia",0,13,1855
+"México and Central America",0,14,1517
+"Middle East and Indian Ocean",0,15,1750
+"New Zealand to Fiji",0,16,1836
+"Philippines and SE Asia",0,17,1808
+"South America",0,18,1737
+"West Indies",0,19,1965
+"Chile",1,13,1737
+"Colombia",1,19,1822
+"Costa Rica",1,22,1821
+"Ecuador",1,27,1725
+"El Salvador",1,28,1766
+"France",1,39,1748
+"Guatemala",1,44,1565
+"Iceland",1,47,1702
+"Indonesia",1,49,1770
+"Italy",1,51,1682
+"Japan",1,52,1542
+"Mexico",1,57,1869
+"New Zealand",1,61,1836
+"Nicaragua",1,62,1849
+"Papua New Guinea",1,67,1872
+"Philippines",1,69,1822
+"Russia",1,71,1737
+"United States",1,92,1784
+"Vanuatu",1,93,1856
