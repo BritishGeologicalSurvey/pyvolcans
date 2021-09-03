@@ -4,3 +4,5 @@ include pyvolcans/VOLCANS_mat_files/analogy_mats/*allvolcs*.mat
 include pyvolcans/VOLCANS_mat_files/data_mats/*.mat
 include pyvolcans/VOLCANS_mat_files/VOTW_prepared_data/volc_names.csv
 include pyvolcans/VOLCANS_mat_files/base.py
+graft VOLCANS_matlab_scripts
+graft VOLCANS_csv_files
