@@ -121,7 +121,7 @@ def fuzzy_matching(volcano_name, limit=10):
         List of volcanoes with similar names to the target volcano
     """
     matches = process.extract(volcano_name, VOLCANO_NAMES[0], limit=limit,
-                              scorer=fuzz.UQRatio)
+                              scorer=fuzz.token_sort_ratio)
 
     match_idx = [item[2] for item in matches]
     volcano_info = \
