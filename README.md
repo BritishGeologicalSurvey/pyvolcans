@@ -78,7 +78,64 @@ Top 10 analogue volcanoes for Hekla, Iceland (372070):
      Marion Island  South Africa          234070       0.892960
 ```
 
-A comprehensive description of the purpose, input arguments and output variables for each of the functions and methods used by `pyvolcans` can be found in the [source scripts](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/main/pyvolcans).
+Please note that some volcano names are composed of more than one word, such as Rincón de la Vieja (Costa Rica) or St. Helens (USA). In these cases, please wrap around the volcano name using quotation marks. For example:
+
+```
+$ pyvolcans "Rincon de la Vieja"
+
+Top 10 analogue volcanoes for Rincon de la Vieja, Costa Rica (345020):
+           name     country  smithsonian_id  total_analogy
+    Sorikmarapi   Indonesia          261120       0.965415
+         Zaozan       Japan          283190       0.963941
+         Mahawu   Indonesia          266110       0.959122
+ Akita-Yakeyama       Japan          283260       0.958577
+         Lascar       Chile          355100       0.956498
+     Miravalles  Costa Rica          345030       0.955624
+     Hakkodasan       Japan          283280       0.955043
+           Poas  Costa Rica          345040       0.954254
+     Midagahara       Japan          283080       0.952637
+       Maruyama       Japan          285061       0.951902
+```
+
+Please also note that some naming conventions used in the [Holocene Volcano List](https://volcano.si.edu/list_volcano_holocene.cfm) of the Global Volcanism Program (GVP) include the sorting of some words in the volcano name, separated by commas. For example: "Fournaise, Piton de la" (France), "Sawad, Harra Es-" (Yemen) or "Bravo, Cerro" (Colombia). One of the functionalities of PyVOLCANS is to provide a list of volcano-name suggestions, if the volcano name introduced by the user contains a typo and/or is arranged in a different word order. Please see the following command example:
+
+```
+$ pyvolcans "Nevados de Chillan"
+
+PyVOLCANS: Nevados de Chillan not found! Did you mean:
+                 name          country  smithsonian_id
+  Chillan, Nevados de            Chile          357070
+     Chachani, Nevado             Peru          354007
+    Huila, Nevado del         Colombia          351050
+      Casiri, Nevados             Peru          354060
+    Cuernos de Negros      Philippines          272010
+   Carrán-Los Venados            Chile          357140
+      Chaine des Puys           France          210020
+     Ruiz, Nevado del         Colombia          351020
+             Red Hill    United States          327812
+ Incahuasi, Nevado de  Chile-Argentina          355125
+```
+
+```
+$ pyvolcans "Chillan, Nevados de"
+
+Top 10 analogue volcanoes for Chillan, Nevados de, Chile (357070):
+                name          country  smithsonian_id  total_analogy
+          Guallatiri            Chile          355020       0.972271
+ San Pedro-San Pablo            Chile          355070       0.970770
+            San Jose  Chile-Argentina          357020       0.968865
+             Galeras         Colombia          351080       0.966499
+         Peuet Sague        Indonesia          261030       0.965005
+         Zhupanovsky           Russia          300120       0.964308
+             Bulusan      Philippines          273010       0.963809
+          Chiginagak    United States          312110       0.963711
+          Villarrica            Chile          357120       0.961412
+            Cotopaxi          Ecuador          352050       0.960387
+```
+
+Finally, please be aware of possible synonyms and subfeatures of the volcanic systems listed in the [Holocene Volcano List](https://volcano.si.edu/list_volcano_holocene.cfm) of GVP. For example, "[Fagradalsfjall](https://volcano.si.edu/volcano.cfm?vn=371030&vtab=Subfeatures)" for "[Krýsuvík-Trölladyngja](https://volcano.si.edu/volcano.cfm?vn=371030&vtab=GeneralInfo)" (Iceland) or "[Sakurajima](https://volcano.si.edu/volcano.cfm?vn=282080&vtab=Subfeatures)" for "[Aira](https://volcano.si.edu/volcano.cfm?vn=282080&vtab=GeneralInfo)" (Japan). In these situations, we recommend PyVOLCANS users perform a simple Google Search using: "Fagradalsfjall GVP" or "Sakurajima GVP". In general, the first search result should point to the GVP website of the volcanic system of interest. Users can then use that volcano name to run their volcano analogues searches via `pyvolcans`.
+
+For a comprehensive description of the purpose, input arguments and output variables for each of the functions and methods used by `pyvolcans`, please follow the link to the [source scripts](https://github.com/BritishGeologicalSurvey/pyvolcans/tree/main/pyvolcans).
 
 Please also visit our [wiki pages](https://github.com/BritishGeologicalSurvey/pyvolcans/wiki) to find out more details on the usage of PyVOLCANS, as well as several example outputs for different commands.
 
