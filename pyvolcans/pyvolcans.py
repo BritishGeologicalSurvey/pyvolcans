@@ -26,7 +26,6 @@ from pyvolcans.pyvolcans_func import (
     set_weights_from_args,
     open_gvp_website,
     output_result,
-    check_for_criteria_without_data,
     check_for_perfect_analogues,
     convert_to_idx,
     plot_bar_apriori_analogues,
@@ -117,7 +116,7 @@ def cli():
     # call PyVOLCANS
     try:
         # main PyVOLCANS result for all volcanoes (and weighting scheme used)
-        volcans_result, my_volcano_data = \
+        volcans_result = \
             calculate_weighted_analogy_matrix(volcano_input,
                                               weights=new_weights)
 

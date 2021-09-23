@@ -434,7 +434,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     volcans_result['ASt'] = \
         weighted_eruption_style_analogy[volcano_idx, ]
 
-    return volcans_result, my_volcano_data_dictionary
+    return volcans_result
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
