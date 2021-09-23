@@ -127,13 +127,6 @@ def cli():
                                        volcans_result,
                                        count)
 
-        # check for volcanological criteria without data for target volcano
-        try:
-            check_for_criteria_without_data(my_volcano_data, volcano_name)
-        except PyvolcansError as exc:
-            # do not quit the program in this situation
-            logging.warning(exc.args[0])
-
         # check for 'too many perfect analogues' (see Tierz et al., 2019)
         try:
             check_for_perfect_analogues(result=top_analogues)

@@ -9,6 +9,7 @@ Created on Tue Mar  3 09:49:16 2020
          Edinburgh, UK).
 """
 import warnings
+import logging
 import webbrowser
 from fractions import Fraction
 
@@ -388,6 +389,13 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         if isinstance(my_volcano_single_analogies, np.ndarray):
             my_volcano_data_dictionary[criterion] = \
                 my_volcano_single_analogies[volcano_idx]
+
+    # check for volcanological criteria without data for target volcano
+    try:
+        check_for_criteria_without_data(my_volcano_data_dictionary, my_volcano)
+    except PyvolcansError as exc:
+        # do not quit the program in this situation
+        logging.warning(exc.args[0])
 
     # calculate single-criterion analogy matrices for specific weighting scheme
     weighted_tectonic_analogy = \
