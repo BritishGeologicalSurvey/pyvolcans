@@ -9,6 +9,7 @@ Created on Tue Mar  3 09:49:16 2020
          Edinburgh, UK).
 """
 import warnings
+import logging
 import webbrowser
 from fractions import Fraction
 
@@ -364,12 +365,6 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         weights (or weighting scheme) that is chosen by the user for each
         particular run of PyVOLCANS. A different weighting scheme can generate
         an entirely different set of total analogy values.
-
-    my_volcano_data_dictionary : dict
-        Dictionary containing information on whether there is volcanological
-        data available (dict_value = 1), or there is not (dict_value = 0); for
-        each of the volcanological criteria used by PyVOLCANS, considering the
-        specific target volcano chosen by the user to run the program.
     """
 
     # get the index for my_volcano
@@ -388,6 +383,9 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         if isinstance(my_volcano_single_analogies, np.ndarray):
             my_volcano_data_dictionary[criterion] = \
                 my_volcano_single_analogies[volcano_idx]
+
+    # check for volcanological criteria without data for target volcano
+    check_for_criteria_without_data(my_volcano_data_dictionary, my_volcano)
 
     # calculate single-criterion analogy matrices for specific weighting scheme
     weighted_tectonic_analogy = \
@@ -426,7 +424,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     volcans_result['ASt'] = \
         weighted_eruption_style_analogy[volcano_idx, ]
 
-    return volcans_result, my_volcano_data_dictionary
+    return volcans_result
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
@@ -480,6 +478,22 @@ def get_analogies(my_volcano, volcans_result, count=10):
 
     return filtered_result, volcano_name
 
+def format_warning_message(message):
+    """
+    Takes a warning message and prints it in an appropriately formatted way.
+
+    Parameters
+    ----------
+    message: str
+        Warning message to be displayed after formatting.
+    """
+
+    formatted_warning = \
+            warnings.formatwarning(message, UserWarning,
+                                   filename=None, lineno=None)
+    formatted_warning_split = formatted_warning.split(':')
+    print(f'PyVOLCANS: {formatted_warning_split[-1]}')
+
 
 def check_for_perfect_analogues(result):
     """
@@ -493,18 +507,6 @@ def check_for_perfect_analogues(result):
         Sub-set of results from the Pandas dataframe volcans_result,
         thus only including the data for the top analogue volcanoes
         to the target volcano.
-
-    Raises
-    -------
-    PyvolcansError
-        If all the top analogue volcanoes have the same value of total analogy.
-        This observation may be related to issues with the data available for
-        the target volcano (and/or analogue volcanoes), but can also be
-        indicative of the fact that the weighting scheme selected is too
-        simplified, or not informative enough (e.g. a single-criterion search
-        of volcanoes on subduction zones under continental crust will yield
-        hundreds of volcanoes that share that same characteristic. Please see
-        Tierz et al., 2019, for more details)
     """
 
     maximum_analogy = result['total_analogy'].iloc[0]
@@ -515,7 +517,7 @@ def check_for_perfect_analogues(result):
                "data deficiencies and/or the use of a simplified "
                "weighting scheme (see Tierz et al., 2019, for more "
                "details).\n")
-        raise PyvolcansError(msg)
+        format_warning_message(msg)
 
 
 def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
@@ -533,12 +535,6 @@ def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
         data available (dict_value = 1), or there is not (dict_value = 0); for
         each of the volcanological criteria used by PyVOLCANS, considering the
         specific target volcano chosen by the user to run the program.
-
-    Raises
-    -------
-    PyvolcansError
-        If one or more volcanological criteria have no data available for the
-        selected target volcano.
     """
 
     # based on:
@@ -556,10 +552,10 @@ def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
         msg = ("WARNING!!! "
                "The following volcanological criteria do not have "
                "any data available for the selected target volcano "
-               f"({my_volcano_name}): {nodata_criteria_text}. Please "
+               f"({my_volcano_name}) --> {nodata_criteria_text}. Please "
                "consider excluding these criteria from your weighting scheme "
                "(i.e. setting their weights to zero).")
-        raise PyvolcansError(msg)
+        format_warning_message(msg)
 
 
 def open_gvp_website(top_analogue_vnum):
