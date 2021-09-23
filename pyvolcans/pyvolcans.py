@@ -127,11 +127,7 @@ def cli():
                                        count)
 
         # check for 'too many perfect analogues' (see Tierz et al., 2019)
-        try:
-            check_for_perfect_analogues(result=top_analogues)
-        except PyvolcansError as exc:
-            # do not quit the program in this situation
-            logging.warning(exc.args[0])
+        check_for_perfect_analogues(result=top_analogues)
 
         # return a formatted PyVOLCANS result
         result = output_result(verbose=args.verbose,

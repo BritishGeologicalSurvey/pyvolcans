@@ -513,7 +513,7 @@ def check_for_perfect_analogues(result):
                "data deficiencies and/or the use of a simplified "
                "weighting scheme (see Tierz et al., 2019, for more "
                "details).\n")
-        raise PyvolcansError(msg)
+        warnings.warn(msg)
 
 
 def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
