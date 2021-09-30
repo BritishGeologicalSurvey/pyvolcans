@@ -540,10 +540,9 @@ def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
     # based on:
     # https://thispointer.com/python-how-to-find-keys-by-value-in-dictionary
     my_list_keys = list()
-    my_list_items = my_volcano_data.items()
-    for item in my_list_items:
-        if item[1] == 0:
-            my_list_keys.append(item[0])
+    for key, value in my_volcano_data.items():
+          if value == 0:
+             my_list_keys.append(key)
 
     # check whether the list is not empty (in other words, there are some
     # volcanological criteria without data)
