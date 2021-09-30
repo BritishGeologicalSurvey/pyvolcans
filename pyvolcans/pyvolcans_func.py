@@ -385,7 +385,9 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
                 my_volcano_single_analogies[volcano_idx]
 
     # check for volcanological criteria without data for target volcano
-    check_for_criteria_without_data(my_volcano_data_dictionary, my_volcano)
+    check_for_criteria_without_data(my_volcano_data_dictionary,
+                                    my_volcano,
+                                    weights)
 
     # calculate single-criterion analogy matrices for specific weighting scheme
     weighted_tectonic_analogy = \
@@ -520,7 +522,7 @@ def check_for_perfect_analogues(result):
         format_warning_message(msg)
 
 
-def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
+def check_for_criteria_without_data(my_volcano_data, my_volcano_name, weights):
     """
     Assesses whether some volcanological criteria do not have any data for the
     specific target volcano chosen by the user, raising a PyvolcansError
@@ -535,21 +537,21 @@ def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
         data available (dict_value = 1), or there is not (dict_value = 0); for
         each of the volcanological criteria used by PyVOLCANS, considering the
         specific target volcano chosen by the user to run the program.
+    weights : dict
+        Set of weights (weighting scheme) selected by the user to run PyVOLCANS
     """
 
-    # based on:
-    # https://thispointer.com/python-how-to-find-keys-by-value-in-dictionary
     my_list_keys = list()
     for key, value in my_volcano_data.items():
-          if value == 0:
-             my_list_keys.append(key)
+          if value == 0 and weights[key] > 0:
+                 my_list_keys.append(key)
 
     # check whether the list is not empty (in other words, there are some
     # volcanological criteria without data)
     if my_list_keys:
         nodata_criteria_text = ', '.join(my_list_keys)
         msg = ("WARNING!!! "
-               "The following volcanological criteria do not have "
+               "The following selected criteria do not have "
                "any data available for the selected target volcano "
                f"({my_volcano_name}) --> {nodata_criteria_text}. Please "
                "consider excluding these criteria from your weighting scheme "
