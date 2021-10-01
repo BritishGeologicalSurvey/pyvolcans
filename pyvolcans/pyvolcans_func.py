@@ -542,9 +542,9 @@ def check_for_criteria_without_data(my_volcano_data, my_volcano_name, weights):
     """
     my_flag_list = [ '-Ts', '-G', '-M', '-Sz', '-St']
     my_list_keys = list()
-    for (key, value), idx in zip(my_volcano_data.items(), my_flag_list):
+    for (key, value), flag in zip(my_volcano_data.items(), my_flag_list):
         if value == 0 and weights[key] > 0:
-            my_list_keys.append(f'{key} ({idx})')
+            my_list_keys.append(f'{key} ({flag})')
 
     # check whether the list is not empty (in other words, there are some
     # volcanological criteria without data)
