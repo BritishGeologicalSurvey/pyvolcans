@@ -9,7 +9,6 @@ Created on Tue Mar  3 09:49:16 2020
          Edinburgh, UK).
 """
 import warnings
-import logging
 import webbrowser
 from fractions import Fraction
 
@@ -384,7 +383,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     volcano_idx = convert_to_idx(my_volcano)
 
     # check for volcanological criteria without data for the target volcano
-    my_volcano_data_dictionary = {} # empty dictionary
+    my_volcano_data_dictionary = {}
     # NB. If the single-criterion analogy of the target volcano with itself is
     # equal to zero, then there is no data available for that particular
     # volcanological criterion
@@ -725,22 +724,22 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     # slice volcans_result to derive a data frame with the a priori analogues
     all_my_apriori_analogies = \
         volcans_result.loc[my_apriori_volcano_idx,
-                          ['name','ATs','AG','AM','ASz','ASt']]
+                           ['name', 'ATs', 'AG', 'AM', 'ASz', 'ASt']]
 
     # plot single- and total-analogy values for all a priori analogues
     my_apriori_analogues_plot = \
         all_my_apriori_analogies.plot.bar(x="name",
-                                          y=["ATs","AG","AM","ASz","ASt"],
+                                          y=["ATs", "AG", "AM", "ASz", "ASt"],
                                           stacked=True)
 
     fig1 = plt.gcf()
-    my_apriori_analogues_plot.set_ylim([0,1])
+    my_apriori_analogues_plot.set_ylim([0, 1])
     plt.title(f"A priori analogues: {my_volcano_name} ({my_volcano_vnum})",
               y=1.15, pad=5)
     plt.xlabel(None)
     plt.ylabel('Total Analogy')
     plt.legend(bbox_to_anchor=(0.9, 1.16), ncol=5)
-    plt.tight_layout() # ensuring labels/titles are displayed properly
+    plt.tight_layout()  # ensuring labels/titles are displayed properly
 
     if save_figure:
         fig1.savefig(
@@ -749,6 +748,7 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
                 dpi=600)
 
     return all_my_apriori_analogies
+
 
 def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
                               better_analogues, criteria_weights_text,
@@ -799,15 +799,13 @@ def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
                                  y="percentage_better",
                                  legend=False,
                                  title=f"Better analogues: {my_volcano_name} ({my_volcano_vnum})",
-                                 ylim=[0,50])
+                                 ylim=[0, 50])
     plt.xlabel(None)
     plt.ylabel('Percentage of better analogues')
     plt.tight_layout()
     if save_figure:
-        plt.savefig(
-                (f"{my_volcano_name}_better_analogues_"
-                 f"{criteria_weights_text}.png"),
-                 dpi=600)
+        filename = (f"{my_volcano_name}_better_analogues_{criteria_weights_text}.png")
+        plt.savefig(filename, dpi=600)
 
     return df_better_analogues
 
