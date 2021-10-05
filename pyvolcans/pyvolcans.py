@@ -26,7 +26,7 @@ from pyvolcans.pyvolcans_func import (
     set_weights_from_args,
     open_gvp_website,
     output_result,
-    check_for_perfect_analogues,
+    warn_on_perfect_analogues,
     convert_to_idx,
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
@@ -127,7 +127,7 @@ def cli():
                                        count)
 
         # check for 'too many perfect analogues' (see Tierz et al., 2019)
-        check_for_perfect_analogues(result=top_analogues)
+        warn_on_perfect_analogues(result=top_analogues)
 
         # return a formatted PyVOLCANS result
         result = output_result(verbose=args.verbose,
