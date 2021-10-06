@@ -34,11 +34,11 @@ setup(
     packages=["pyvolcans"],
     include_package_data=True,
     install_requires=[
-        'fuzzywuzzy',
         'numpy',
         'pandas',
         'pymatreader',
         'matplotlib',
+        'thefuzz'
     ],
     extras_require={
         'dev': ['flake8',
