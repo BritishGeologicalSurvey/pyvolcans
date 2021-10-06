@@ -26,8 +26,7 @@ from pyvolcans.pyvolcans_func import (
     set_weights_from_args,
     open_gvp_website,
     output_result,
-    check_for_criteria_without_data,
-    check_for_perfect_analogues,
+    warn_on_perfect_analogues,
     convert_to_idx,
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
@@ -117,7 +116,7 @@ def cli():
     # call PyVOLCANS
     try:
         # main PyVOLCANS result for all volcanoes (and weighting scheme used)
-        volcans_result, my_volcano_data = \
+        volcans_result = \
             calculate_weighted_analogy_matrix(volcano_input,
                                               weights=new_weights)
 
@@ -127,19 +126,8 @@ def cli():
                                        volcans_result,
                                        count)
 
-        # check for volcanological criteria without data for target volcano
-        try:
-            check_for_criteria_without_data(my_volcano_data, volcano_name)
-        except PyvolcansError as exc:
-            # do not quit the program in this situation
-            logging.warning(exc.args[0])
-
         # check for 'too many perfect analogues' (see Tierz et al., 2019)
-        try:
-            check_for_perfect_analogues(result=top_analogues)
-        except PyvolcansError as exc:
-            # do not quit the program in this situation
-            logging.warning(exc.args[0])
+        warn_on_perfect_analogues(result=top_analogues)
 
         # return a formatted PyVOLCANS result
         result = output_result(verbose=args.verbose,

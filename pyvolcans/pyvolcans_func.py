@@ -23,6 +23,19 @@ from pyvolcans import (load_tectonic_analogy,
                        load_eruption_style_analogy,
                        load_volcano_names)
 
+
+# Define custom message formatter for warnings
+def _format_pyvolcans_warning(message, *args, **kwargs):
+    """
+    Format warnings into PyVOLCANS style, discarding all but the
+    message.
+    """
+    return f"\nUserWarning (PyVOLCANS): {message}\n"
+
+
+# Replace built-in warning format function
+warnings.formatwarning = _format_pyvolcans_warning
+
 # fuzzywuzzy would like to use a sequence matcher provided by the
 # Python-Levenshtein package, but this has dependencies that require
 # compilation.  When it is not installed, it uses the matcher provided
@@ -364,19 +377,13 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         weights (or weighting scheme) that is chosen by the user for each
         particular run of PyVOLCANS. A different weighting scheme can generate
         an entirely different set of total analogy values.
-
-    my_volcano_data_dictionary : dict
-        Dictionary containing information on whether there is volcanological
-        data available (dict_value = 1), or there is not (dict_value = 0); for
-        each of the volcanological criteria used by PyVOLCANS, considering the
-        specific target volcano chosen by the user to run the program.
     """
 
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
 
     # check for volcanological criteria without data for the target volcano
-    my_volcano_data_dictionary = {} # empty dictionary
+    my_volcano_data_dictionary = {}
     # NB. If the single-criterion analogy of the target volcano with itself is
     # equal to zero, then there is no data available for that particular
     # volcanological criterion
@@ -388,6 +395,11 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         if isinstance(my_volcano_single_analogies, np.ndarray):
             my_volcano_data_dictionary[criterion] = \
                 my_volcano_single_analogies[volcano_idx]
+
+    # check for volcanological criteria without data for target volcano
+    warn_on_criteria_without_data(my_volcano_data_dictionary,
+                                  my_volcano,
+                                  weights)
 
     # calculate single-criterion analogy matrices for specific weighting scheme
     weighted_tectonic_analogy = \
@@ -426,7 +438,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     volcans_result['ASt'] = \
         weighted_eruption_style_analogy[volcano_idx, ]
 
-    return volcans_result, my_volcano_data_dictionary
+    return volcans_result
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
@@ -481,10 +493,10 @@ def get_analogies(my_volcano, volcans_result, count=10):
     return filtered_result, volcano_name
 
 
-def check_for_perfect_analogues(result):
+def warn_on_perfect_analogues(result):
     """
     Assesses whether all the calculated top analogue volcanoes share the same
-    value of total analogy, and raises a PyvolcansError exception if that is
+    value of total analogy, and raises UserWarning if that is
     the case.
 
     Parameters
@@ -493,36 +505,23 @@ def check_for_perfect_analogues(result):
         Sub-set of results from the Pandas dataframe volcans_result,
         thus only including the data for the top analogue volcanoes
         to the target volcano.
-
-    Raises
-    -------
-    PyvolcansError
-        If all the top analogue volcanoes have the same value of total analogy.
-        This observation may be related to issues with the data available for
-        the target volcano (and/or analogue volcanoes), but can also be
-        indicative of the fact that the weighting scheme selected is too
-        simplified, or not informative enough (e.g. a single-criterion search
-        of volcanoes on subduction zones under continental crust will yield
-        hundreds of volcanoes that share that same characteristic. Please see
-        Tierz et al., 2019, for more details)
     """
 
     maximum_analogy = result['total_analogy'].iloc[0]
     if result['total_analogy'].eq(maximum_analogy).all():
-        msg = ("WARNING!!! "
-               "All top analogue volcanoes have the same value "
+        msg = ("All top analogue volcanoes have the same value "
                "of total analogy. Please be aware of possible "
                "data deficiencies and/or the use of a simplified "
                "weighting scheme (see Tierz et al., 2019, for more "
-               "details).\n")
-        raise PyvolcansError(msg)
+               "details).")
+        warnings.warn(msg)
 
 
-def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
+def warn_on_criteria_without_data(my_volcano_data, my_volcano_name, weights):
     """
     Assesses whether some volcanological criteria do not have any data for the
-    specific target volcano chosen by the user, raising a PyvolcansError
-    exception if this is the case, informing the user which are these criteria.
+    specific target volcano chosen by the user, raising a UserWarning
+    if this is the case, informing the user which are these criteria.
 
     Parameters
     ----------
@@ -533,33 +532,25 @@ def check_for_criteria_without_data(my_volcano_data, my_volcano_name):
         data available (dict_value = 1), or there is not (dict_value = 0); for
         each of the volcanological criteria used by PyVOLCANS, considering the
         specific target volcano chosen by the user to run the program.
-
-    Raises
-    -------
-    PyvolcansError
-        If one or more volcanological criteria have no data available for the
-        selected target volcano.
+    weights : dict
+        Set of weights (weighting scheme) selected by the user to run PyVOLCANS
     """
-
-    # based on:
-    # https://thispointer.com/python-how-to-find-keys-by-value-in-dictionary
+    my_flag_list = ['-Ts', '-G', '-M', '-Sz', '-St']
     my_list_keys = list()
-    my_list_items = my_volcano_data.items()
-    for item in my_list_items:
-        if item[1] == 0:
-            my_list_keys.append(item[0])
+    for (key, value), flag in zip(my_volcano_data.items(), my_flag_list):
+        if value == 0 and weights[key] > 0:
+            my_list_keys.append(f'{key} ({flag})')
 
     # check whether the list is not empty (in other words, there are some
     # volcanological criteria without data)
     if my_list_keys:
         nodata_criteria_text = ', '.join(my_list_keys)
-        msg = ("WARNING!!! "
-               "The following volcanological criteria do not have "
+        msg = ("The following selected criteria do not have "
                "any data available for the selected target volcano "
-               f"({my_volcano_name}): {nodata_criteria_text}. Please "
+               f"({my_volcano_name}) --> {nodata_criteria_text}. Please "
                "consider excluding these criteria from your weighting scheme "
                "(i.e. setting their weights to zero).")
-        raise PyvolcansError(msg)
+        warnings.warn(msg)
 
 
 def open_gvp_website(top_analogue_vnum):
@@ -733,22 +724,22 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     # slice volcans_result to derive a data frame with the a priori analogues
     all_my_apriori_analogies = \
         volcans_result.loc[my_apriori_volcano_idx,
-                          ['name','ATs','AG','AM','ASz','ASt']]
+                           ['name', 'ATs', 'AG', 'AM', 'ASz', 'ASt']]
 
     # plot single- and total-analogy values for all a priori analogues
     my_apriori_analogues_plot = \
         all_my_apriori_analogies.plot.bar(x="name",
-                                          y=["ATs","AG","AM","ASz","ASt"],
+                                          y=["ATs", "AG", "AM", "ASz", "ASt"],
                                           stacked=True)
 
     fig1 = plt.gcf()
-    my_apriori_analogues_plot.set_ylim([0,1])
+    my_apriori_analogues_plot.set_ylim([0, 1])
     plt.title(f"A priori analogues: {my_volcano_name} ({my_volcano_vnum})",
               y=1.15, pad=5)
     plt.xlabel(None)
     plt.ylabel('Total Analogy')
     plt.legend(bbox_to_anchor=(0.9, 1.16), ncol=5)
-    plt.tight_layout() # ensuring labels/titles are displayed properly
+    plt.tight_layout()  # ensuring labels/titles are displayed properly
 
     if save_figure:
         fig1.savefig(
@@ -757,6 +748,7 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
                 dpi=600)
 
     return all_my_apriori_analogies
+
 
 def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
                               better_analogues, criteria_weights_text,
@@ -807,15 +799,13 @@ def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
                                  y="percentage_better",
                                  legend=False,
                                  title=f"Better analogues: {my_volcano_name} ({my_volcano_vnum})",
-                                 ylim=[0,50])
+                                 ylim=[0, 50])
     plt.xlabel(None)
     plt.ylabel('Percentage of better analogues')
     plt.tight_layout()
     if save_figure:
-        plt.savefig(
-                (f"{my_volcano_name}_better_analogues_"
-                 f"{criteria_weights_text}.png"),
-                 dpi=600)
+        filename = (f"{my_volcano_name}_better_analogues_{criteria_weights_text}.png")
+        plt.savefig(filename, dpi=600)
 
     return df_better_analogues
 
