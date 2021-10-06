@@ -30,7 +30,7 @@ def _format_pyvolcans_warning(message, *args, **kwargs):
     Format warnings into PyVOLCANS style, discarding all but the
     message.
     """
-    return f"UserWarning (PyVOLCANS): {message}\n"
+    return f"\nUserWarning (PyVOLCANS): {message}\n"
 
 
 # Replace built-in warning format function
@@ -513,7 +513,7 @@ def warn_on_perfect_analogues(result):
                "of total analogy. Please be aware of possible "
                "data deficiencies and/or the use of a simplified "
                "weighting scheme (see Tierz et al., 2019, for more "
-               "details).\n")
+               "details).")
         warnings.warn(msg)
 
 
