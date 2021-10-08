@@ -36,7 +36,7 @@ def _format_pyvolcans_warning(message, *args, **kwargs):
 # Replace built-in warning format function
 warnings.formatwarning = _format_pyvolcans_warning
 
-# fuzzywuzzy would like to use a sequence matcher provided by the
+# thefuzz would like to use a sequence matcher provided by the
 # Python-Levenshtein package, but this has dependencies that require
 # compilation.  When it is not installed, it uses the matcher provided
 # by the standard library difflib and raises a warning.  In our case
@@ -44,7 +44,7 @@ warnings.formatwarning = _format_pyvolcans_warning
 with warnings.catch_warnings():
     warnings.filterwarnings('ignore',
                             message="Using slow pure-python SequenceMatcher.")
-    from fuzzywuzzy import fuzz, process
+    from thefuzz import fuzz, process
 
 VOLCANO_NAMES = load_volcano_names()
 

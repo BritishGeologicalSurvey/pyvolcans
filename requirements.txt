@@ -1,9 +1,9 @@
 # Required for pyvolcans
-fuzzywuzzy
 numpy
 pandas
 pymatreader
 matplotlib
+thefuzz
 
 # Development tools
 flake8
