@@ -21,7 +21,12 @@ from pyvolcans import (load_tectonic_analogy,
                        load_morphology_analogy,
                        load_eruption_size_analogy,
                        load_eruption_style_analogy,
-                       load_volcano_names)
+                       load_volcano_names,
+                       load_tectonic_data,
+                       load_geochemistry_data,
+                       load_morphology_data,
+                       load_eruption_size_data,
+                       load_eruption_style_data)
 
 
 # Define custom message formatter for warnings
@@ -52,7 +57,7 @@ VOLCANO_NAMES = load_volcano_names()
 WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
            'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
 
-# load all the data from VOLCANS
+# load all the analogy data from VOLCANS
 ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
                   'geochemistry': load_geochemistry_analogy(),
                   'morphology': load_morphology_analogy(),
@@ -60,6 +65,12 @@ ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
                   'eruption_style': load_eruption_style_analogy()
                   }
 
+# load the underlying volcano data
+VOLCANO_DATA = {'tectonic_setting': load_tectonic_data(),
+                'geochemistry': load_geochemistry_data(),
+                'morphology': load_morphology_data(),
+                'eruption_size': load_eruption_size_data(),
+                'eruption_style': load_eruption_style_data()}
 
 def _frac_to_float(value):
     """
@@ -381,6 +392,13 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
 
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
+
+    # TEST: PRINT VOLCANO DATA
+    print(f'Target volcano ({my_volcano}) has the following ID profile:\n')
+    for criterion in VOLCANO_DATA.keys():
+        criterion_data = VOLCANO_DATA[criterion]
+        my_volcano_criterion_data = criterion_data[volcano_idx]
+        print(f'{criterion}: {my_volcano_criterion_data}\n')
 
     # check for volcanological criteria without data for the target volcano
     my_volcano_data_dictionary = {}
