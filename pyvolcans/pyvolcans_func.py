@@ -393,13 +393,6 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
 
-    # TEST: PRINT VOLCANO DATA
-    print(f'Target volcano ({my_volcano}) has the following ID profile:\n')
-    for criterion in VOLCANO_DATA.keys():
-        criterion_data = VOLCANO_DATA[criterion]
-        my_volcano_criterion_data = criterion_data[volcano_idx]
-        print(f'{criterion}: {my_volcano_criterion_data}\n')
-
     # check for volcanological criteria without data for the target volcano
     my_volcano_data_dictionary = {}
     # NB. If the single-criterion analogy of the target volcano with itself is
@@ -455,6 +448,28 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
         weighted_eruption_size_analogy[volcano_idx, ]
     volcans_result['ASt'] = \
         weighted_eruption_style_analogy[volcano_idx, ]
+
+    # TEST: PRINT VOLCANO DATA
+    my_criteria_details = ['', 'Rock type proportions [F-P-T-Y-Z-X-B-A-D-R]',
+                           '', 'P(VEI | eruption)[≤2-3-4-5-6-7-8]',
+                           'Percentage of eruptions with phenomena'
+                           ' [LF-BT-PH-WSF-TSU-PDC-DST-CF]']
+    my_volcano_country_test = \
+        volcans_result['country'].iloc[volcano_idx]
+    my_volcano_vnum_test = \
+        volcans_result['smithsonian_id'].iloc[volcano_idx]
+    print(f'ID profile for {my_volcano}, {my_volcano_country_test} '
+          f'({my_volcano_vnum_test}):')
+
+    for (criterion, detail) in zip(VOLCANO_DATA.keys(), my_criteria_details):
+        criterion_data = VOLCANO_DATA[criterion]
+        my_volcano_criterion_data = criterion_data[volcano_idx]
+        with np.printoptions(precision=3, suppress=True):
+            if criterion == 'morphology':
+                print(f'{criterion}: {detail}: {my_volcano_criterion_data:.3f}\n')
+            else:
+                print(f'{criterion}: {detail}: {my_volcano_criterion_data}\n')
+
 
     return volcans_result
 
