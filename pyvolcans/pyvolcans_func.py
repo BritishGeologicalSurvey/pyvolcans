@@ -483,13 +483,33 @@ def output_volcano_data(my_volcano, to_file=None, filename=None):
                            'Percentage of eruptions with phenomena'
                            ' [LF-BT-PH-WSF-TSU-PDC-DST-CF]']
 
+    # tectonic setting information
+    my_tectonic_setting_dict = {'Rift Oceanic Crust': 0,
+                                'Intraplate Oceanic Crust': 0.125,
+                                'Rift Intermediate Crust': 0.250,
+                                'Intraplate Intermediate Crust': 0.375,
+                                'Rift Continental Crust': 0.500,
+                                'Intraplate Continental Crust': 0.625,
+                                'Subduction Zone Oceanic Crust': 0.750,
+                                'Subduction Zone Intermediate Crust': 0.875,
+                                'Subduction Zone Continental Crust': 1.000}
+
     # print volcano data
     for (criterion, detail) in zip(VOLCANO_DATA.keys(), my_criteria_details):
         criterion_data = VOLCANO_DATA[criterion]
         my_volcano_criterion_data = criterion_data[volcano_idx]
         with np.printoptions(precision=3, suppress=True):
-            if criterion == 'morphology':
-                print(f'{criterion}: {detail}: {my_volcano_criterion_data:.3f}\n')
+            if criterion == 'tectonic_setting':
+                my_key_list = list(my_tectonic_setting_dict.keys())
+                my_val_list = list(my_tectonic_setting_dict.values())
+                position = my_val_list.index(my_volcano_criterion_data)
+                my_tectonic_setting_key = my_key_list[position]
+                print(f'{criterion}: {detail}: '
+                      f'{my_volcano_criterion_data:.3f} '
+                      f'({my_tectonic_setting_key})\n')
+            elif criterion == 'morphology':
+                print(f'{criterion}: {detail}: '
+                      f'{my_volcano_criterion_data:.3f}\n')
             else:
                 print(f'{criterion}: {detail}: {my_volcano_criterion_data}\n')
 
