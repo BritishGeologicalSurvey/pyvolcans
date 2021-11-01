@@ -30,6 +30,7 @@ from pyvolcans.pyvolcans_func import (
     convert_to_idx,
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
+    output_volcano_data,
 )
 
 from pyvolcans import __version__
@@ -138,6 +139,12 @@ def cli():
             volcans_result['country'].iloc[convert_to_idx(volcano_input)]
         my_volcano_vnum = \
             volcans_result['smithsonian_id'].iloc[convert_to_idx(volcano_input)]
+
+        # print volcano data (ID profile) for target volcano if verbose=true
+        if args.verbose:
+            print(f'\nID profile for {volcano_name}, {my_volcano_country} '
+                  f'({my_volcano_vnum}):')
+            output_volcano_data(volcano_input)
 
         # print main PyVOLCANS result to stdout
         print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
