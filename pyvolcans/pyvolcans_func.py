@@ -460,7 +460,8 @@ def output_volcano_data(my_volcano, to_file=None, filename=None):
     Parameters
     ----------
     my_volcano : str or int
-        Target volcano selected by the user, as volcano name or volcano number
+        Volcano identifier, as volcano name or volcano number, for the volcanic
+        system from which the ID profile (volcano data) will be output
     to_file : str, optional
         Keyword argument that indicates whether the volcano data have to be
         written onto a csv file (to_file='csv') or not (Default, to_file=None)
@@ -468,10 +469,13 @@ def output_volcano_data(my_volcano, to_file=None, filename=None):
         Keyword argument that indicates the filename to use for the optional
         csv file containing the volcano data. Default filename=None.
         Note that, if 'filename' is specified but 'to_file=None', the variable
-        'filename' is not used.
+        'filename' is not used
 
     Returns
     -------
+    all_volcano_data : Pandas dataframe
+        Dataframe containing the data for all the volcanological criteria
+        (i.e. the ID profile) for the volcano used to run the function
     """
 
     # get the index for my_volcano
@@ -534,6 +538,37 @@ def output_volcano_data(my_volcano, to_file=None, filename=None):
                             linewidth = 200)
         all_volcano_data.to_csv(filename, header=False)
         np.set_printoptions() # reset print options
+
+    return all_volcano_data
+
+
+def output_many_volcanoes_data(top_analogues_list, filename):
+    """
+    Iteratively calls `output_volcano_data()` to print the ID profiles for the
+    top analogue volcanoes (specified by `--count`) into a single comma-
+    separated-value (csv) file.
+
+    Parameters
+    ----------
+    top_analogues_list : list
+        List of top analogue volcanoes for the specific target volcano, and the
+        weighting scheme selected by the user
+    filename : str
+        Indicates the filename to use in order to write the csv file containing
+        the ID profiles (volcano data) for all the top analogue volcanoes.
+    """
+
+    my_temp_df = []
+
+    for volcano in top_analogues_list:
+        my_temp_df.append(output_volcano_data(volcano))
+
+    all_analogues_data = pd.concat(my_temp_df)
+
+    np.set_printoptions(formatter = {'float': '{: 0.5f}'.format},
+                        linewidth = 200)
+    all_analogues_data.to_csv(filename, header=False)
+    np.set_printoptions() # reset print options
 
 
 def get_analogies(my_volcano, volcans_result, count=10):

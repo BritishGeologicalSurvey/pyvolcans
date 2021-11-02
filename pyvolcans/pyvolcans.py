@@ -12,7 +12,7 @@ Created on Mon Feb 17 12:13:20 2020
 # standard packages
 import argparse
 import logging
-import sys
+import sys, io
 from pathlib import Path
 import matplotlib.pyplot as plt
 
@@ -31,6 +31,7 @@ from pyvolcans.pyvolcans_func import (
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     output_volcano_data,
+    output_many_volcanoes_data,
 )
 
 from pyvolcans import __version__
@@ -156,6 +157,25 @@ def cli():
                                     filename=output_filename)
             else:
                 output_volcano_data(volcano_input)
+
+            # call `output_many_volcanoes_data()`
+            top_analogues_list = top_analogues['name'].to_list()
+            # generating filename
+            volcano_name_clean = \
+            volcano_name.replace('\'', '').replace(',', '').replace('.', '')
+            volcano_name_splitted = volcano_name_clean.split()
+            volcano_name_joined = '_'.join(volcano_name_splitted)
+            output_filename_analogues = Path.cwd() / \
+                f'{volcano_name_joined}_top{count}analogues_' \
+                f'{new_weights_text}_IDprofiles.csv'
+            # deactivating printing momentarily
+            stdouttext_trap = io.StringIO()
+            sys.stdout = stdouttext_trap
+            # print analogue-volcanoes ID profiles to csv
+            output_many_volcanoes_data(top_analogues_list,
+                                       output_filename_analogues)
+            # reactivating printing
+            sys.stdout = sys.__stdout__
 
         # print main PyVOLCANS result to stdout
         print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
