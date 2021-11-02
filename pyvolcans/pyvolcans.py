@@ -32,6 +32,7 @@ from pyvolcans.pyvolcans_func import (
     plot_bar_better_analogues,
     output_volcano_data,
     output_many_volcanoes_data,
+    format_volcano_name,
 )
 
 from pyvolcans import __version__
@@ -146,10 +147,7 @@ def cli():
             print(f'\nID profile for {volcano_name}, {my_volcano_country} '
                   f'({my_volcano_vnum}):')
             if args.output_volcano_data:
-                volcano_name_clean = \
-                volcano_name.replace('\'', '').replace(',', '').replace('.', '')
-                volcano_name_splitted = volcano_name_clean.split()
-                volcano_name_joined = '_'.join(volcano_name_splitted)
+                volcano_name_joined = format_volcano_name(volcano_name)
                 output_filename = Path.cwd() / \
                     f'{volcano_name_joined}_IDprofile.csv'
                 output_volcano_data(volcano_input,
@@ -162,10 +160,7 @@ def cli():
                 # call `output_many_volcanoes_data()`
                 top_analogues_list = top_analogues['name'].to_list()
                 # generating filename
-                volcano_name_clean = \
-                volcano_name.replace('\'', '').replace(',', '').replace('.', '')
-                volcano_name_splitted = volcano_name_clean.split()
-                volcano_name_joined = '_'.join(volcano_name_splitted)
+                volcano_name_joined = format_volcano_name(volcano_name)
                 output_filename_analogues = Path.cwd() / \
                     f'{volcano_name_joined}_top{count}analogues_' \
                     f'{new_weights_text}_IDprofiles.csv'
@@ -196,10 +191,7 @@ def cli():
 
         # call the function to write the top analogues to a csv file
         if args.write_csv_file:
-            volcano_name_clean = \
-                volcano_name.replace('\'', '').replace(',', '').replace('.', '')
-            volcano_name_splitted = volcano_name_clean.split()
-            volcano_name_joined = '_'.join(volcano_name_splitted)
+            volcano_name_joined = format_volcano_name(volcano_name)
             output_filename = Path.cwd() / \
                 f'{volcano_name_joined}_top{count}analogues_' \
                 f'{new_weights_text}.csv'

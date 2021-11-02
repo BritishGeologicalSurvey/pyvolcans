@@ -125,6 +125,30 @@ def _frac_to_float(value):
     return value_as_float
 
 
+def format_volcano_name(volcano_name):
+    """
+    Takes a volcano name and formats it to be used in several output filenames.
+
+    Parameters
+    ----------
+    volcano_name : str
+        Name of volcano introduced by the user (i.e. target volcano)
+
+    Returns
+    -------
+    volcano_name_joined : str
+        Formatted volcano name, without special characters (commas, points,
+        etc.) and joined by underscore signs.
+    """
+
+    volcano_name_clean = \
+        volcano_name.replace('\'', '').replace(',', '').replace('.', '')
+    volcano_name_splitted = volcano_name_clean.split()
+    volcano_name_joined = '_'.join(volcano_name_splitted)
+
+    return volcano_name_joined
+
+
 def fuzzy_matching(volcano_name, limit=10):
     """
     Provides a list of volcanoes with names most similar to volcano_name.
@@ -872,10 +896,10 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     plt.tight_layout()  # ensuring labels/titles are displayed properly
 
     if save_figure:
-        fig1.savefig(
-                (f"{my_volcano_name}_apriori_analogues_"
-                 f"{criteria_weights_text}.png"),
-                dpi=600)
+        volcano_name_joined = format_volcano_name(my_volcano_name)
+        filename = (f"{volcano_name_joined}_apriori_analogues_"
+                    f"{criteria_weights_text}.png")
+        fig1.savefig(filename, dpi=600)
 
     return all_my_apriori_analogies
 
@@ -934,7 +958,9 @@ def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
     plt.ylabel('Percentage of better analogues')
     plt.tight_layout()
     if save_figure:
-        filename = (f"{my_volcano_name}_better_analogues_{criteria_weights_text}.png")
+        volcano_name_joined = format_volcano_name(my_volcano_name)
+        filename = (f"{volcano_name_joined}_better_analogues_"
+                    f"{criteria_weights_text}.png")
         plt.savefig(filename, dpi=600)
 
     return df_better_analogues
