@@ -144,7 +144,18 @@ def cli():
         if args.verbose:
             print(f'\nID profile for {volcano_name}, {my_volcano_country} '
                   f'({my_volcano_vnum}):')
-            output_volcano_data(volcano_input)
+            if args.output_volcano_data:
+                volcano_name_clean = \
+                volcano_name.replace('\'', '').replace(',', '').replace('.', '')
+                volcano_name_splitted = volcano_name_clean.split()
+                volcano_name_joined = '_'.join(volcano_name_splitted)
+                output_filename = Path.cwd() / \
+                    f'{volcano_name_joined}_IDprofile.csv'
+                output_volcano_data(volcano_input,
+                                    to_file='csv',
+                                    filename=output_filename)
+            else:
+                output_volcano_data(volcano_input)
 
         # print main PyVOLCANS result to stdout
         print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
@@ -247,10 +258,15 @@ def parse_args():
                         default='10', type=int)
     parser.add_argument("-w", "--write_csv_file", action="store_true",
                         help="Write list of top analogue volcanoes as .csv file")
+    parser.add_argument("-ovd", "--output_volcano_data", action="store_true",
+                        help=("Output volcano data (ID profile) for the "
+                              "selected target volcano in a .csv file")
+                        )
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
     parser.add_argument("-v", "--verbose", action="store_true",
-                        help=("Print debug-level logging output, and include "
+                        help=("Print debug-level logging output, ID profile "
+                              " for the selected target volcano, and include "
                               "single-criterion analogy values, besides the "
                               "total analogy values, in the PyVOLCANS results")
                         )
