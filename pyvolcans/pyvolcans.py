@@ -158,24 +158,25 @@ def cli():
             else:
                 output_volcano_data(volcano_input)
 
-            # call `output_many_volcanoes_data()`
-            top_analogues_list = top_analogues['name'].to_list()
-            # generating filename
-            volcano_name_clean = \
-            volcano_name.replace('\'', '').replace(',', '').replace('.', '')
-            volcano_name_splitted = volcano_name_clean.split()
-            volcano_name_joined = '_'.join(volcano_name_splitted)
-            output_filename_analogues = Path.cwd() / \
-                f'{volcano_name_joined}_top{count}analogues_' \
-                f'{new_weights_text}_IDprofiles.csv'
-            # deactivating printing momentarily
-            stdouttext_trap = io.StringIO()
-            sys.stdout = stdouttext_trap
-            # print analogue-volcanoes ID profiles to csv
-            output_many_volcanoes_data(top_analogues_list,
-                                       output_filename_analogues)
-            # reactivating printing
-            sys.stdout = sys.__stdout__
+            if args.output_analogues_data:
+                # call `output_many_volcanoes_data()`
+                top_analogues_list = top_analogues['name'].to_list()
+                # generating filename
+                volcano_name_clean = \
+                volcano_name.replace('\'', '').replace(',', '').replace('.', '')
+                volcano_name_splitted = volcano_name_clean.split()
+                volcano_name_joined = '_'.join(volcano_name_splitted)
+                output_filename_analogues = Path.cwd() / \
+                    f'{volcano_name_joined}_top{count}analogues_' \
+                    f'{new_weights_text}_IDprofiles.csv'
+                # deactivating printing momentarily
+                stdouttext_trap = io.StringIO()
+                sys.stdout = stdouttext_trap
+                # print analogue-volcanoes ID profiles to csv
+                output_many_volcanoes_data(top_analogues_list,
+                                           output_filename_analogues)
+                # reactivating printing
+                sys.stdout = sys.__stdout__
 
         # print main PyVOLCANS result to stdout
         print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
@@ -281,6 +282,12 @@ def parse_args():
     parser.add_argument("-ovd", "--output_volcano_data", action="store_true",
                         help=("Output volcano data (ID profile) for the "
                               "selected target volcano in a .csv file")
+                        )
+    parser.add_argument("-oad", "--output_analogues_data", action="store_true",
+                        help=("Output volcano data (ID profile) for all the "
+                              "top analogue volcanoes, for the selected "
+                              "target volcano and weighting scheme, in a "
+                              ".csv file")
                         )
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
