@@ -494,10 +494,19 @@ def output_volcano_data(my_volcano, to_file=None, filename=None):
                                 'Subduction Zone Intermediate Crust': 0.875,
                                 'Subduction Zone Continental Crust': 1.000}
 
+    # create a list to append volcano data to
+    volcano_data_list = []
+
+    # create a Pandas df with the basic volcano info
+    volcano_info=VOLCANO_NAMES.iloc[volcano_idx]
+    volcano_info.index = ['name', 'country', 'smithsonian_id']
+
     # print volcano data
     for (criterion, detail) in zip(VOLCANO_DATA.keys(), my_criteria_details):
         criterion_data = VOLCANO_DATA[criterion]
         my_volcano_criterion_data = criterion_data[volcano_idx]
+        volcano_data_list.append(
+                [np.around(np.array(my_volcano_criterion_data), 5)])
         with np.printoptions(precision=3, suppress=True):
             if criterion == 'tectonic_setting':
                 my_key_list = list(my_tectonic_setting_dict.keys())
@@ -513,9 +522,18 @@ def output_volcano_data(my_volcano, to_file=None, filename=None):
             else:
                 print(f'{criterion}: {detail}: {my_volcano_criterion_data}\n')
 
-#    if to_file == 'csv':
-#        result.to_csv(filename, sep=',', float_format='%.5f',
-#                      header=True, index=False, columns=my_columns)
+    # transform list with all-criteria data into pandas df
+    criteria_data_df = pd.DataFrame(volcano_data_list,
+                                    index = VOLCANO_DATA.keys())
+    # create final pandas df
+    all_volcano_data = pd.concat([volcano_info, criteria_data_df])
+
+    # output the Pandas dataframe into a csv file (if desired)
+    if to_file == 'csv':
+        np.set_printoptions(formatter = {'float': '{: 0.5f}'.format},
+                            linewidth = 200)
+        all_volcano_data.to_csv(filename, header=False)
+        np.set_printoptions() # reset print options
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
