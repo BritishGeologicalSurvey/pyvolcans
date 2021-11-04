@@ -476,7 +476,7 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     return volcans_result
 
 
-def output_volcano_data(my_volcano, data=VOLCANO_DATA,
+def output_volcano_data(my_volcano, data=VOLCANO_DATA, names=VOLCANO_NAMES,
                         to_file=None, filename=None):
     """
     Prepares data for a given volcano (my_volcano) to be written either to the
@@ -527,7 +527,7 @@ def output_volcano_data(my_volcano, data=VOLCANO_DATA,
     volcano_data_list = []
 
     # create a Pandas df with the basic volcano info
-    volcano_info=VOLCANO_NAMES.iloc[volcano_idx]
+    volcano_info=names.iloc[volcano_idx]
     volcano_info.index = ['name', 'country', 'smithsonian_id']
 
     # print volcano data
