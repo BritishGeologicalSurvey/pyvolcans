@@ -476,7 +476,8 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     return volcans_result
 
 
-def output_volcano_data(my_volcano, to_file=None, filename=None):
+def output_volcano_data(my_volcano, data=VOLCANO_DATA,
+                        to_file=None, filename=None):
     """
     Prepares data for a given volcano (my_volcano) to be written either to the
     standard output or to a comma-separated-value (csv) file.
@@ -530,8 +531,8 @@ def output_volcano_data(my_volcano, to_file=None, filename=None):
     volcano_info.index = ['name', 'country', 'smithsonian_id']
 
     # print volcano data
-    for (criterion, detail) in zip(VOLCANO_DATA.keys(), my_criteria_details):
-        criterion_data = VOLCANO_DATA[criterion]
+    for (criterion, detail) in zip(data.keys(), my_criteria_details):
+        criterion_data = data[criterion]
         my_volcano_criterion_data = criterion_data[volcano_idx]
         volcano_data_list.append(
                 [np.around(np.array(my_volcano_criterion_data), 5)])
@@ -552,7 +553,7 @@ def output_volcano_data(my_volcano, to_file=None, filename=None):
 
     # transform list with all-criteria data into pandas df
     criteria_data_df = pd.DataFrame(volcano_data_list,
-                                    index = VOLCANO_DATA.keys())
+                                    index = data.keys())
     # create final pandas df
     all_volcano_data = pd.concat([volcano_info, criteria_data_df])
 
