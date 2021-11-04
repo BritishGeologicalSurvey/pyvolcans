@@ -22,9 +22,11 @@ from pyvolcans.pyvolcans_func import (
     get_many_analogy_percentiles,
     calculate_weighted_analogy_matrix,
     open_gvp_website,
+    output_volcano_data,
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     set_weights_from_args,
+    VOLCANO_NAMES,
     PyvolcansError
 )
 
@@ -140,6 +142,45 @@ def mock_weights():
                     'eruption_size': 0.2,
                     'eruption_style': 0.2}
     return mock_weights
+
+@pytest.fixture
+def mock_volcano_data():
+    """
+    Create mocked volcano data for each volcanological criterion.
+    Note: The matrix is only one item long so tests must use 'West Eifel
+    Volcanic Field' because it is first on the list.
+    """
+
+    # NB. For tectonic_setting, we actually use the true value, just to avoid
+    # throwing an error when accessing `my_tectonic_setting_dict` inside
+    # `output_volcano_data()`
+    mock_volcano_data = \
+        {'tectonic_setting': np.array([0.5]),
+         'geochemistry': np.array([[8, 8, 8, 8, 8, 8, 8, 8, 8, 8]]),
+         'morphology': np.array([9]),
+         'eruption_size': np.array([[10, 10, 10, 10, 10, 10, 10]]),
+         'eruption_style': np.array([[11, 11, 11, 11, 11, 11, 11, 11]])}
+    return mock_volcano_data
+
+
+def test_output_volcano_data(mock_volcano_data):
+    # Arrange & Act
+    my_id_profile = output_volcano_data('West Eifel Volcanic Field',
+                                        data = mock_volcano_data,
+                                        names = VOLCANO_NAMES)
+
+    my_data_expected = ['West Eifel Volcanic Field', 'Germany', 210010,
+                        0.5, np.array([8, 8, 8, 8, 8, 8, 8, 8, 8, 8]),
+                        9, np.array([10, 10, 10, 10, 10, 10, 10]),
+                        np.array([11, 11, 11, 11, 11, 11, 11, 11])]
+    my_id_profile_expected = \
+        pd.DataFrame(my_data_expected,
+                     index = ['name', 'country', 'smithsonian_id',
+                              'tectonic_setting', 'geochemistry',
+                              'morphology', 'eruption_size', 'eruption_style'])
+
+    # Assert
+    assert_frame_equal(my_id_profile, my_id_profile_expected)
 
 
 def test_plot_bar_apriori_analogues(mock_weights, mock_analogies):
