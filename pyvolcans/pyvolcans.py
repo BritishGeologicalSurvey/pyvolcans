@@ -15,6 +15,7 @@ import logging
 import sys, io
 from pathlib import Path
 import matplotlib.pyplot as plt
+import json
 
 # our packages
 from pyvolcans.pyvolcans_func import (
@@ -148,7 +149,7 @@ def cli():
             print(f'\nID profile for {volcano_name}, {my_volcano_country} '
                   f'({my_volcano_vnum}):')
             id_profile = get_volcano_source_data(volcano_name)
-            print(id_profile)
+            print(json.dumps(id_profile, indent=2, sort_keys=False))
             if args.output_volcano_data:
                 volcano_name_joined = format_volcano_name(volcano_name)
                 output_filename = Path.cwd() / \

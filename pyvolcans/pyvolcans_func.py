@@ -498,7 +498,7 @@ def get_volcano_source_data(my_volcano, data = VOLCANO_DATA,
                              1.000: 'Subduction Zone Continental Crust'}
     all_tectonic_setting_values = data['tectonic_setting']
     my_tectonic_setting_value = all_tectonic_setting_values[volcano_idx]
-    tectonic_setting_data = {my_tectonic_setting_value:
+    tectonic_setting_data = {float(my_tectonic_setting_value):
                              tectonic_setting_dict[my_tectonic_setting_value]}
 
     # Create geochemistry data dictionary
@@ -511,11 +511,11 @@ def get_volcano_source_data(my_volcano, data = VOLCANO_DATA,
                          'Basalt', 'Andesite', 'Dacite', 'Rhyolite']
     geochemistry_data = {}
     for key, value in zip(geochemistry_keys, my_geochemistry_values):
-        geochemistry_data[key] = value
+        geochemistry_data[key] = float(value)
 
     # Obtain morphology data
     all_morphology_values = data['morphology']
-    morphology_data = all_morphology_values[volcano_idx]
+    morphology_data = float(all_morphology_values[volcano_idx])
 
     # Create eruption size data dictionary
     all_eruption_size_values = data['eruption_size']
@@ -524,7 +524,7 @@ def get_volcano_source_data(my_volcano, data = VOLCANO_DATA,
                           'VEI 7', 'VEI 8']
     eruption_size_data = {}
     for key, value in zip(eruption_size_keys, my_eruption_size_values):
-        eruption_size_data[key] = value
+        eruption_size_data[key] = float(value)
 
     # Create eruption style data dictionary
     all_eruption_style_values = data['eruption_style']
@@ -539,12 +539,12 @@ def get_volcano_source_data(my_volcano, data = VOLCANO_DATA,
                            'Caldera formation']
     eruption_style_data = {}
     for key, value in zip(eruption_style_keys, my_eruption_style_values):
-        eruption_style_data[key] = value
+        eruption_style_data[key] = float(value)
 
     result = {
         'name': volcano_info['name'],
         'country': volcano_info['country'],
-        'smithsonian_id': volcano_info['smithsonian_id'],
+        'smithsonian_id': int(volcano_info['smithsonian_id']),
         'tectonic_setting': tectonic_setting_data,
         'geochemistry': geochemistry_data,
         'morphology': morphology_data,
