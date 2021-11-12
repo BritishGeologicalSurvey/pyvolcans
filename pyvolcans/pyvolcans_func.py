@@ -476,6 +476,49 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     return volcans_result
 
 
+def get_volcano_source_data(my_volcano: str):
+    # Create geochem data dictionary
+    geochem_data_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    geochem_keys = ['Foidite', 'Phonolite', 'Trachyte',
+                    'Trachyandesite/Basaltic trachyandesite',
+                    'Phono-tephrite/Tephri-phonolite',
+                    'Tephrite/Basanite/Trachybasalt',
+                    'Basalt', 'Andesite', 'Dacite',
+                    'Rhyolite']
+    geochem_data = {}
+    for key, value in zip(geochem_keys, geochem_data_array):
+        geochem_data[key] = value
+
+    result = {
+        'name': my_volcano,
+        'country': 'Iceland',
+        'smithsonian_id': 372070,
+        'tectonic_setting': 0.0,
+        'geochemistry': geochem_data,
+        'morphology': 0.39474,
+        'eruption_size': {
+            'VEI ≤2': 0.26667,
+            'VEI 3': 0.35,
+            'VEI 4': 0.28333,
+            'VEI 5': 0.1,
+            'VEI 6': 0.,
+            'VEI 7': 0.,
+            'VEI 8': 0.,
+        },
+        'eruption_style': {
+            'Lava flow and/or fountaining': 0.87692,
+            'Ballistics and tephra': 0.69231,
+            'Phreatic and phreatomagmatic activity': 0.,
+            'Water-sediment flows': 0.15385,
+            'Tsunamis': 0.01538,
+            'Pyroclastic density currents': 0.09231,
+            'Edifice collapse/destruction': 0.,
+            'Caldera formation': 0.,
+        }
+    }
+    return result
+
+
 def output_volcano_data(my_volcano, data=VOLCANO_DATA, names=VOLCANO_NAMES,
                         to_file=None, filename=None):
     """
