@@ -153,7 +153,7 @@ def cli():
             if args.output_volcano_data:
                 volcano_name_joined = format_volcano_name(volcano_name)
                 output_filename = Path.cwd() / \
-                    f'{volcano_name_joined}_IDprofile.csv'
+                    f'{volcano_name_joined}_IDprofile.json'
                 with open(output_filename, "w") as outfile:
                     json.dump(id_profile, outfile, indent=2, sort_keys=False)
 
@@ -165,14 +165,9 @@ def cli():
                 output_filename_analogues = Path.cwd() / \
                     f'{volcano_name_joined}_top{count}analogues_' \
                     f'{new_weights_text}_IDprofiles.json'
-                # deactivating printing momentarily
-                stdouttext_trap = io.StringIO()
-                sys.stdout = stdouttext_trap
-                # print analogue-volcanoes ID profiles to csv
+                # print analogue-volcanoes ID profiles to json-format file
                 output_many_volcanoes_data(top_analogues_list,
                                            output_filename_analogues)
-                # reactivating printing
-                sys.stdout = sys.__stdout__
 
         # print main PyVOLCANS result to stdout
         print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
@@ -274,13 +269,13 @@ def parse_args():
                         help="Write list of top analogue volcanoes as .csv file")
     parser.add_argument("-ovd", "--output_volcano_data", action="store_true",
                         help=("Output volcano data (ID profile) for the "
-                              "selected target volcano in a .csv file")
+                              "selected target volcano in a json-format file")
                         )
     parser.add_argument("-oad", "--output_analogues_data", action="store_true",
                         help=("Output volcano data (ID profile) for all the "
                               "top analogue volcanoes, for the selected "
                               "target volcano and weighting scheme, in a "
-                              ".csv file")
+                              "json-format file")
                         )
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
