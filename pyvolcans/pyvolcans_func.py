@@ -476,46 +476,82 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     return volcans_result
 
 
-def get_volcano_source_data(my_volcano: str):
-    # Create geochem data dictionary
-    geochem_data_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    geochem_keys = ['Foidite', 'Phonolite', 'Trachyte',
-                    'Trachyandesite/Basaltic trachyandesite',
-                    'Phono-tephrite/Tephri-phonolite',
-                    'Tephrite/Basanite/Trachybasalt',
-                    'Basalt', 'Andesite', 'Dacite',
-                    'Rhyolite']
-    geochem_data = {}
-    for key, value in zip(geochem_keys, geochem_data_array):
-        geochem_data[key] = value
+def get_volcano_source_data(my_volcano, data = VOLCANO_DATA,
+                            names = VOLCANO_NAMES):
+
+    # get the index for my_volcano
+    volcano_idx = convert_to_idx(my_volcano)
+
+    # create a Pandas df with the basic volcano info
+    volcano_info=names.iloc[volcano_idx]
+    volcano_info.index = ['name', 'country', 'smithsonian_id']
+
+    # Create tectonic-setting data dictionary
+    tectonic_setting_dict = {0: 'Rift Oceanic Crust',
+                             0.125: 'Intraplate Oceanic Crust',
+                             0.250: 'Rift Intermediate Crust',
+                             0.375: 'Intraplate Intermediate Crust',
+                             0.500: 'Rift Continental Crust',
+                             0.625: 'Intraplate Continental Crust',
+                             0.750: 'Subduction Zone Oceanic Crust',
+                             0.875: 'Subduction Zone Intermediate Crust',
+                             1.000: 'Subduction Zone Continental Crust'}
+    all_tectonic_setting_values = data['tectonic_setting']
+    my_tectonic_setting_value = all_tectonic_setting_values[volcano_idx]
+    tectonic_setting_data = {my_tectonic_setting_value:
+                             tectonic_setting_dict[my_tectonic_setting_value]}
+
+    # Create geochemistry data dictionary
+    all_geochemistry_values = data['geochemistry']
+    my_geochemistry_values = all_geochemistry_values[volcano_idx]
+    geochemistry_keys = ['Foidite', 'Phonolite', 'Trachyte',
+                         'Trachyandesite/Basaltic trachyandesite',
+                         'Phono-tephrite/Tephri-phonolite',
+                         'Tephrite/Basanite/Trachybasalt',
+                         'Basalt', 'Andesite', 'Dacite', 'Rhyolite']
+    geochemistry_data = {}
+    for key, value in zip(geochemistry_keys, my_geochemistry_values):
+        geochemistry_data[key] = value
+
+    # Obtain morphology data
+    all_morphology_values = data['morphology']
+    morphology_data = all_morphology_values[volcano_idx]
+
+    # Create eruption size data dictionary
+    all_eruption_size_values = data['eruption_size']
+    my_eruption_size_values = all_eruption_size_values[volcano_idx]
+    eruption_size_keys = ['VEI ≤ 2', 'VEI 3', 'VEI 4', 'VEI 5', 'VEI 6',
+                          'VEI 7', 'VEI 8']
+    eruption_size_data = {}
+    for key, value in zip(eruption_size_keys, my_eruption_size_values):
+        eruption_size_data[key] = value
+
+    # Create eruption style data dictionary
+    all_eruption_style_values = data['eruption_style']
+    my_eruption_style_values = all_eruption_style_values[volcano_idx]
+    eruption_style_keys = ['Lava flow and/or fountaining',
+                           'Ballistics and tephra',
+                           'Phreatic and phreatomagmatic activity',
+                           'Water-sediment flows',
+                           'Tsunamis',
+                           'Pyroclastic density currents',
+                           'Edifice collapse/destruction',
+                           'Caldera formation']
+    eruption_style_data = {}
+    for key, value in zip(eruption_style_keys, my_eruption_style_values):
+        eruption_style_data[key] = value
 
     result = {
-        'name': my_volcano,
-        'country': 'Iceland',
-        'smithsonian_id': 372070,
-        'tectonic_setting': 0.0,
-        'geochemistry': geochem_data,
-        'morphology': 0.39474,
-        'eruption_size': {
-            'VEI ≤2': 0.26667,
-            'VEI 3': 0.35,
-            'VEI 4': 0.28333,
-            'VEI 5': 0.1,
-            'VEI 6': 0.,
-            'VEI 7': 0.,
-            'VEI 8': 0.,
-        },
-        'eruption_style': {
-            'Lava flow and/or fountaining': 0.87692,
-            'Ballistics and tephra': 0.69231,
-            'Phreatic and phreatomagmatic activity': 0.,
-            'Water-sediment flows': 0.15385,
-            'Tsunamis': 0.01538,
-            'Pyroclastic density currents': 0.09231,
-            'Edifice collapse/destruction': 0.,
-            'Caldera formation': 0.,
-        }
+        'name': volcano_info['name'],
+        'country': volcano_info['country'],
+        'smithsonian_id': volcano_info['smithsonian_id'],
+        'tectonic_setting': tectonic_setting_data,
+        'geochemistry': geochemistry_data,
+        'morphology': morphology_data,
+        'eruption_size': eruption_size_data,
+        'eruption_style': eruption_style_data
     }
+
     return result
 
 
