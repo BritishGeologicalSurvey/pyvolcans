@@ -477,14 +477,33 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     return volcans_result
 
 
-def get_volcano_source_data(my_volcano, data = VOLCANO_DATA,
-                            names = VOLCANO_NAMES):
+def get_volcano_source_data(my_volcano, data = VOLCANO_DATA):
+    """
+    Extracts the 'ID profile' (i.e. available data for each volcanological
+    criteria) for a given volcano (my_volcano) and formats it as a dictionary
+    that can be used to print this ID profile into either the standard output
+    or to an output file.
+
+    Parameters
+    ----------
+    my_volcano : str or int
+        Volcano identifier, as volcano name or volcano number, for the volcanic
+        system from which the ID profile (volcano data) will be output
+    data : dict (fixed keyword argument)
+        Dictionary containing the volcanological data available in GVP v4.6.7
+        for all Holocene volcanoes listed in that version of the database.
+    Returns
+    -------
+    result : dict
+        Dictionary containing the formatted data for all the volcanological
+        criteria available for my_volcano (i.e. its ID profile)
+    """
 
     # get the index for my_volcano
     volcano_idx = convert_to_idx(my_volcano)
 
     # create a Pandas df with the basic volcano info
-    volcano_info=names.iloc[volcano_idx]
+    volcano_info=VOLCANO_NAMES.iloc[volcano_idx]
     volcano_info.index = ['name', 'country', 'smithsonian_id']
 
     # Create tectonic-setting data dictionary
