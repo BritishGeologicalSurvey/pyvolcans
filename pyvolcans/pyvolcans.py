@@ -269,13 +269,17 @@ def parse_args():
                         help="Write list of top analogue volcanoes as .csv file")
     parser.add_argument("-ovd", "--output_volcano_data", action="store_true",
                         help=("Output volcano data (ID profile) for the "
-                              "selected target volcano in a json-format file")
+                              "selected target volcano in a json-format file. "
+                              "NB. Verbose mode needs to be activated to be "
+                              "able to use this feature.")
                         )
     parser.add_argument("-oad", "--output_analogues_data", action="store_true",
                         help=("Output volcano data (ID profile) for all the "
                               "top analogue volcanoes, for the selected "
                               "target volcano and weighting scheme, in a "
-                              "json-format file")
+                              "json-format file. "
+                              "NB. Verbose mode needs to be activated to be "
+                              "able to use this feature.")
                         )
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
