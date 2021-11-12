@@ -26,7 +26,7 @@ def test_get_volcano_source_data():
         },
         'morphology': 0.39473684210526316,
         'eruption_size': {
-            'VEI ≤ 2': 0.26666666666666666,
+            'VEI leq 2': 0.26666666666666666,
             'VEI 3': 0.35,
             'VEI 4': 0.2833333333333333,
             'VEI 5': 0.1,

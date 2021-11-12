@@ -521,7 +521,7 @@ def get_volcano_source_data(my_volcano, data = VOLCANO_DATA,
     # Create eruption size data dictionary
     all_eruption_size_values = data['eruption_size']
     my_eruption_size_values = all_eruption_size_values[volcano_idx]
-    eruption_size_keys = ['VEI ≤ 2', 'VEI 3', 'VEI 4', 'VEI 5', 'VEI 6',
+    eruption_size_keys = ['VEI leq 2', 'VEI 3', 'VEI 4', 'VEI 5', 'VEI 6',
                           'VEI 7', 'VEI 8']
     eruption_size_data = {}
     for key, value in zip(eruption_size_keys, my_eruption_size_values):
