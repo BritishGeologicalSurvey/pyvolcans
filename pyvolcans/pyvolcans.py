@@ -143,6 +143,11 @@ def cli():
         my_volcano_vnum = \
             volcans_result['smithsonian_id'].iloc[convert_to_idx(volcano_input)]
 
+        # print main PyVOLCANS result to stdout
+        print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
+              f"{my_volcano_country} ({my_volcano_vnum}):")
+        print(result)
+
         # print volcano data (ID profile) for target volcano if verbose=true
         if args.verbose:
             print(f'\nID profile for {volcano_name}, {my_volcano_country} '
@@ -159,7 +164,7 @@ def cli():
 
             if args.output_analogues_data:
                 # call `output_many_volcanoes_data()`
-                top_analogues_list = top_analogues['name'].to_list()
+                top_analogues_list = top_analogues['smithsonian_id'].to_list()
                 # generating filename
                 volcano_name_joined = format_volcano_name(volcano_name)
                 output_filename_analogues = Path.cwd() / \
@@ -168,11 +173,6 @@ def cli():
                 # print analogue-volcanoes ID profiles to json-format file
                 output_many_volcanoes_data(top_analogues_list,
                                            output_filename_analogues)
-
-        # print main PyVOLCANS result to stdout
-        print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
-              f"{my_volcano_country} ({my_volcano_vnum}):")
-        print(result)
 
         # call the function to open the GVP website for top analogue
         if args.website:
