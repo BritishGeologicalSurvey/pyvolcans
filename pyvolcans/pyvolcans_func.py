@@ -11,6 +11,7 @@ Created on Tue Mar  3 09:49:16 2020
 import warnings
 import webbrowser
 from fractions import Fraction
+import json
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -648,9 +649,9 @@ def output_volcano_data(my_volcano, data=VOLCANO_DATA, names=VOLCANO_NAMES,
 
 def output_many_volcanoes_data(top_analogues_list, filename):
     """
-    Iteratively calls `output_volcano_data()` to print the ID profiles for the
-    top analogue volcanoes (specified by `--count`) into a single comma-
-    separated-value (csv) file.
+    Iteratively calls `get_volcano_source_data()` to print the ID profiles for
+    the top analogue volcanoes (specified by `--count`) into a single file,
+    which uses a JSON format.
 
     Parameters
     ----------
@@ -662,17 +663,10 @@ def output_many_volcanoes_data(top_analogues_list, filename):
         the ID profiles (volcano data) for all the top analogue volcanoes.
     """
 
-    my_temp_df = []
-
-    for volcano in top_analogues_list:
-        my_temp_df.append(output_volcano_data(volcano))
-
-    all_analogues_data = pd.concat(my_temp_df)
-
-    np.set_printoptions(formatter = {'float': '{: 0.5f}'.format},
-                        linewidth = 200)
-    all_analogues_data.to_csv(filename, header=False)
-    np.set_printoptions() # reset print options
+    with open(filename, "w") as outfile:
+        for volcano in top_analogues_list:
+            result_dict = get_volcano_source_data(volcano)
+            json.dump(result_dict, outfile, indent=2, sort_keys=False)
 
 
 def get_analogies(my_volcano, volcans_result, count=10):

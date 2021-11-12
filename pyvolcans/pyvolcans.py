@@ -167,7 +167,7 @@ def cli():
                 volcano_name_joined = format_volcano_name(volcano_name)
                 output_filename_analogues = Path.cwd() / \
                     f'{volcano_name_joined}_top{count}analogues_' \
-                    f'{new_weights_text}_IDprofiles.csv'
+                    f'{new_weights_text}_IDprofiles.json'
                 # deactivating printing momentarily
                 stdouttext_trap = io.StringIO()
                 sys.stdout = stdouttext_trap
