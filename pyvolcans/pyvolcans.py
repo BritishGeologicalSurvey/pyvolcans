@@ -32,7 +32,6 @@ from pyvolcans.pyvolcans_func import (
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     get_volcano_source_data,
-    output_volcano_data,
     output_many_volcanoes_data,
     format_volcano_name,
 )
@@ -148,17 +147,15 @@ def cli():
         if args.verbose:
             print(f'\nID profile for {volcano_name}, {my_volcano_country} '
                   f'({my_volcano_vnum}):')
-            id_profile = get_volcano_source_data(volcano_name)
+            id_profile = get_volcano_source_data(volcano_input)
             print(json.dumps(id_profile, indent=2, sort_keys=False))
+
             if args.output_volcano_data:
                 volcano_name_joined = format_volcano_name(volcano_name)
                 output_filename = Path.cwd() / \
                     f'{volcano_name_joined}_IDprofile.csv'
-                output_volcano_data(volcano_input,
-                                    to_file='csv',
-                                    filename=output_filename)
-            else:
-                output_volcano_data(volcano_input)
+                with open(output_filename, "w") as outfile:
+                    json.dump(id_profile, outfile, indent=2, sort_keys=False)
 
             if args.output_analogues_data:
                 # call `output_many_volcanoes_data()`
