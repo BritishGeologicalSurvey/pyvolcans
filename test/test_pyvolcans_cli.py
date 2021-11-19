@@ -21,7 +21,7 @@ def test_pyvolcans_output(input_args, expected, capfd):
 
 @pytest.mark.parametrize("input_args,expected",
                          [("-ovd", "Hekla"),
-                           ("-oad", "Toasdrfajokull")])
+                           ("-oad", "Torfajokull")])
 def test_write_files(input_args, expected, tmp_path):
     subprocess.run(['pyvolcans', 'Hekla', '--verbose', input_args], cwd=tmp_path)
     fname = list(Path(tmp_path).glob("*.json"))[0]
