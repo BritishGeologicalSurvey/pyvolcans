@@ -591,10 +591,13 @@ def output_many_volcanoes_data(top_analogues_list, filename):
         the ID profiles (volcano data) for all the top analogue volcanoes.
     """
 
+    tmp_result_list = []
+
     with open(filename, "w") as outfile:
         for volcano in top_analogues_list:
             result_dict = get_volcano_source_data(volcano)
-            json.dump(result_dict, outfile, indent=2, sort_keys=False)
+            tmp_result_list.append(result_dict)
+        json.dump(tmp_result_list, outfile, indent=2, sort_keys=False)
 
 
 def get_analogies(my_volcano, volcans_result, count=10):
