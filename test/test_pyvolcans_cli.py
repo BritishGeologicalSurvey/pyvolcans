@@ -2,6 +2,7 @@ import subprocess
 import pytest
 import tempfile
 import json
+import pandas as pd
 from pathlib import Path
 
 @pytest.mark.parametrize("input_args,expected",
@@ -24,6 +25,7 @@ def test_pyvolcans_output(input_args, expected, capfd):
     out, err = capfd.readouterr()
     assert (expected in out or expected in err)
 
+
 @pytest.mark.parametrize("input_args,expected",
                          [("Hekla -ovd", "Hekla"),
                           ("Hekla -oad", "Torfajokull"),
@@ -42,3 +44,17 @@ def test_write_json_files(input_args, expected, tmp_path):
     elif type(data) == list:
         top1_analogue = data[0]
         assert top1_analogue['name'] == expected
+
+
+@pytest.mark.parametrize("input_args,expected",
+                         [("Alutu -w", "222040"),
+                          ("Vulcano -w", "263310")])
+def test_write_csv_files(input_args, expected, tmp_path):
+    # Arrange / Action
+    subprocess.run(['pyvolcans', '--verbose', *input_args.split()],
+                    cwd=tmp_path)
+    fname = list(Path(tmp_path).glob("*.csv"))[0]
+    data = pd.read_csv(fname)
+    top1_analogue = data.iloc[0, ]
+    # Assert
+    assert top1_analogue['smithsonian_id'] == int(expected)
