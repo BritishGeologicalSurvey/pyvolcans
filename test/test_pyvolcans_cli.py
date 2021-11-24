@@ -26,11 +26,16 @@ def test_pyvolcans_output(input_args, expected, capfd):
 
 @pytest.mark.parametrize("input_args,expected",
                          [("-ovd", "Hekla"),
-                           ("-oad", "Torfajokull")])
+                          ("-oad", "Torfajokull")])
 def test_write_json_files(input_args, expected, tmp_path):
-    subprocess.run(['pyvolcans', 'Hekla', '--verbose', input_args], cwd=tmp_path)
+    subprocess.run(['pyvolcans', 'Hekla', '--verbose', input_args],
+                    cwd=tmp_path)
     fname = list(Path(tmp_path).glob("*.json"))[0]
     with open(fname) as f:
-        # TODO: Test fails because JSON file created by -oad throws a JSONDecodeError
         data = json.load(f)
-    assert data[next(iter(data))] == expected
+    #`-ovd` returns a dict, `-oad` returns a list of dict
+    if type(data) == dict:
+        assert data['name'] == expected
+    elif type(data) == list:
+        top1_analogue = data[0]
+        assert top1_analogue['name'] == expected
