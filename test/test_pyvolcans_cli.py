@@ -12,12 +12,17 @@ from pathlib import Path
          # Odd behaviour with --verbose, half of the output is written to stderr and half to stdout
          ("Hekla --verbose", "ID profile for Hekla, Iceland (372070):"),
          ("Hekla -v", "ID profile for Hekla, Iceland (372070):"),
-         ("Hekla --apriori Santorini", "According to PyVOLCANS")])
+         ("Hekla --apriori Santorini", "According to PyVOLCANS"),
+         ("\"La Palma\" -Ts 1 -v", "'tectonic_setting': 1.0"),
+         ("\"La Palma\" -G 1 -v", "'geochemistry': 1.0"),
+         ("\"La Palma\" -M 1 -v", "'morphology': 1.0"),
+         ("\"La Palma\" -Sz 1 -v", "'eruption_size': 1.0"),
+         ("\"La Palma\" -St 1 -v", "'eruption_style': 1.0")])
 
 def test_pyvolcans_output(input_args, expected, capfd):
     subprocess.run(['pyvolcans', *input_args.split()])
     out, err = capfd.readouterr()
-    assert expected in out
+    assert expected in out or err
 
 @pytest.mark.parametrize("input_args,expected",
                          [("-ovd", "Hekla"),
