@@ -58,3 +58,12 @@ def test_write_csv_files(input_args, expected, tmp_path):
     top1_analogue = data.iloc[0, ]
     # Assert
     assert top1_analogue['smithsonian_id'] == int(expected)
+
+@pytest.mark.parametrize("input_args,expected",
+                         [("Fuego -G 99", "PyVOLCANS: Sum of weights"),
+                          ("Fuego -Sz -1", "PyVOLCANS: Some criterion weights")])
+def test_pyvolcans_weight_errors(input_args, expected, capfd):
+    subprocess.run(['pyvolcans', *input_args.split()])
+    _, err = capfd.readouterr()
+
+    assert expected in err
