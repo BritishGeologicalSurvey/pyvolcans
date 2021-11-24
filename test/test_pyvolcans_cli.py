@@ -25,10 +25,13 @@ def test_pyvolcans_output(input_args, expected, capfd):
     assert (expected in out or expected in err)
 
 @pytest.mark.parametrize("input_args,expected",
-                         [("-ovd", "Hekla"),
-                          ("-oad", "Torfajokull")])
+                         [("Hekla -ovd", "Hekla"),
+                          ("Hekla -oad", "Torfajokull"),
+                          ("Fuego -ovd", "Fuego"),
+                          ("Fuego -oad", "Klyuchevskoy"),
+                          ("Sabancaya -oad", "Peuet Sague")])
 def test_write_json_files(input_args, expected, tmp_path):
-    subprocess.run(['pyvolcans', 'Hekla', '--verbose', input_args],
+    subprocess.run(['pyvolcans', '--verbose', *input_args.split()],
                     cwd=tmp_path)
     fname = list(Path(tmp_path).glob("*.json"))[0]
     with open(fname) as f:
