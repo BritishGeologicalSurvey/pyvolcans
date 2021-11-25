@@ -61,8 +61,15 @@ def test_write_csv_files(input_args, expected, tmp_path):
 
 @pytest.mark.parametrize("input_args,expected",
                          [("Fuego -G 99", "PyVOLCANS: Sum of weights"),
-                          ("Fuego -Sz -1", "PyVOLCANS: Some criterion weights")])
-def test_pyvolcans_weight_errors(input_args, expected, capfd):
+                          ("Fuego -Sz -1", "PyVOLCANS: Some criterion weights"),
+                          ("Fuigu", "Fuigu not found!"),
+                          ("342090111", "Volcano number does not exist"),
+                          ("-iurwhfgl", "arguments are required: volcano"),
+                          ("Fuego --apriori Tungurahua Villarrico",
+                           "Villarrico not found!"),
+                          ("Fuego --apriori 352010 -897",
+                           "Volcano number does not exist")])
+def test_pyvolcans_errors(input_args, expected, capfd):
     subprocess.run(['pyvolcans', *input_args.split()])
     _, err = capfd.readouterr()
 
