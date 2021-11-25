@@ -143,15 +143,22 @@ def mock_weights():
                     'eruption_style': 0.2}
     return mock_weights
 
+@pytest.fixture
+def mock_result(mock_analogies, mock_weights):
+    """
+    Create mocked PyVOLCANS result using mocked analogies and weights.
+    """
+    mock_result = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
+                                                    mock_weights,
+                                                    mock_analogies)
+    return mock_result
 
-def test_plot_bar_apriori_analogues(mock_weights, mock_analogies):
-    pandas_df = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
-                                                  mock_weights,
-                                                  mock_analogies)
+
+def test_plot_bar_apriori_analogues(mock_result):
     df_bar = plot_bar_apriori_analogues('West Eifel Volcanic Field',
                                         210010,
                                         ['Hekla'],
-                                        pandas_df,
+                                        mock_result,
                                         'Test_string')
     df_expected = pd.DataFrame({'name': ['Hekla'], 'ATs': [8000.0],
                                 'AG': [800.0], 'AM': [80.0], 'ASz':[8.0],
@@ -159,13 +166,10 @@ def test_plot_bar_apriori_analogues(mock_weights, mock_analogies):
     assert_frame_equal(df_bar, df_expected)
 
 
-def test_plot_bar_better_analogues(mock_weights, mock_analogies):
-    pandas_df = calculate_weighted_analogy_matrix('West Eifel Volcanic Field',
-                                                  mock_weights,
-                                                  mock_analogies)
+def test_plot_bar_better_analogues(mock_result):
     _, better_analogues = \
         get_many_analogy_percentiles('West Eifel Volcanic Field', ['Hekla'],
-                                     pandas_df)
+                                     mock_result)
 
     df_bar = plot_bar_better_analogues('West Eifel Volcanic Field',
                                        210010,
