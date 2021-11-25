@@ -21,6 +21,7 @@ from pyvolcans.pyvolcans_func import (
     get_volcano_idx_from_number,
     get_many_analogy_percentiles,
     get_volcano_source_data,
+    get_analogies,
     calculate_weighted_analogy_matrix,
     open_gvp_website,
     plot_bar_apriori_analogues,
@@ -312,3 +313,35 @@ def test_calculate_weighted_analogy_matrix_warnings(volcano, weights, expected):
     based on regular expression match."""
     with pytest.warns(UserWarning, match=expected):
         calculate_weighted_analogy_matrix(volcano, weights)
+
+
+def test_get_analogies(mock_result):
+    # Arrange
+    # Further mock the result by replacing mocked analogies by increasingly
+    # adding values of analogy to generate a mocked top 10 analogues
+    # We start from index 0, 'West Eifel Volcanic Field'
+    mocked_top10_idx = list(range(0,11,1))
+    for x in mocked_top10_idx:
+        mock_result.loc[x,'total_analogy'] = (x+1) * 10000
+
+    mocked_top_names = get_volcano_name_from_idx(mocked_top10_idx)
+
+    # target volcano, West Eifel Volcanic Field, is not expected in the df
+    # NOTE that indices and volcano_names are 'flipped-up' because they are
+    # ordered from highest to lowest analogy
+    mock_top_names_list = list(mocked_top_names[:0:-1])
+    partial_df_expected = pd.DataFrame( \
+                               {'name': mock_top_names_list,
+                                'total_analogy':
+                                    [110000.0, 100000.0,90000.0, 80000.0,
+                                     70000.0, 60000.0, 50000.0, 40000.0,
+                                     30000.0, 20000.0]},
+                                 index = list(range(10,0,-1)))
+
+    # Act
+    mock_top_analogues, _ = get_analogies('West Eifel Volcanic Field',
+                                       mock_result)
+    partial_mock_top_analogues = mock_top_analogues[['name', 'total_analogy']]
+
+    # Assert
+    assert_frame_equal(partial_mock_top_analogues, partial_df_expected)
