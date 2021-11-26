@@ -13,6 +13,9 @@ from pathlib import Path
          ("Hekla --verbose", "ID profile for Hekla, Iceland (372070):"),
          ("Hekla -v", "ID profile for Hekla, Iceland (372070):"),
          ("Hekla --apriori Santorini", "According to PyVOLCANS"),
+         # Confirm warning raised for too many perfect analogues
+         ("Hekla -Ts 1", "UserWarning (PyVOLCANS): All top analogue volcanoes have the same value of total analogy"),
+         # Confirm command line weightings are passed through correctly
          ("Vesuvius -Ts 1 -v", "'tectonic_setting': 1.0"),
          ("Vesuvius -G 1 -v", "'geochemistry': 1.0"),
          ("Vesuvius -M 1 -v", "'morphology': 1.0"),
