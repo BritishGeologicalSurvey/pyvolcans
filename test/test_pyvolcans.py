@@ -1,14 +1,14 @@
+import os
 import subprocess
 import pytest
 import json
 import pandas as pd
 from pathlib import Path
 
+
 @pytest.mark.parametrize("input_args,expected",
         [("--help", "usage: pyvolcans"),
          ("-h", "usage: pyvolcans"),
-         ("--version", "v"),
-         ("-V", "v"),
          # Odd behaviour with --verbose, half of the output is written to stderr and half to stdout
          ("Hekla --verbose", "ID profile for Hekla, Iceland (372070):"),
          ("Hekla -v", "ID profile for Hekla, Iceland (372070):"),
@@ -20,6 +20,18 @@ from pathlib import Path
          ("Vesuvius -St 1 -v", "'eruption_style': 1.0"),
          ("Fuego --count 50", "Top 50")])
 def test_pyvolcans_output(input_args, expected, capfd):
+    subprocess.run(['pyvolcans', *input_args.split()])
+    out, err = capfd.readouterr()
+    assert (expected in out or expected in err)
+
+
+@pytest.mark.skipif(os.getenv('GITHUB_ACTIONS', 'false') == 'true',
+                    reason="Version number calculation doesn't work in GitHub Actions")
+@pytest.mark.parametrize("input_args,expected", [
+    ("--version", "v"),
+    ("-V", "v")
+    ])
+def test_pyvolcans_version_number_reporting(input_args, expected, capfd):
     subprocess.run(['pyvolcans', *input_args.split()])
     out, err = capfd.readouterr()
     assert (expected in out or expected in err)
