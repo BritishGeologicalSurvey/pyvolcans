@@ -83,10 +83,6 @@ def cli():
         volcano_input = int(args.volcano)
     except ValueError:
         volcano_input = args.volcano
-    except PyvolcansError as exc:
-        # print error message and quit program on error
-        logging.error(exc.args[0])
-        sys.exit(1)
 
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
