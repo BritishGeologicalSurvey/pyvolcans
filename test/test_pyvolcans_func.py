@@ -31,8 +31,6 @@ from pyvolcans.pyvolcans_func import (
     PyvolcansError
 )
 
-# pylint: disable=missing-docstring
-
 
 def test_volcano_idx():
     idx = get_volcano_idx_from_name(volcano_name='Fuego')

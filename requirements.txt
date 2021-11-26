@@ -9,6 +9,6 @@ thefuzz
 flake8
 ipdb
 ipython
-pylint
 pytest
+pytest-cov
 versioneer
