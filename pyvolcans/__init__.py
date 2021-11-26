@@ -43,3 +43,8 @@ from pyvolcans.VOLCANS_mat_files.base import load_geochemistry_analogy
 from pyvolcans.VOLCANS_mat_files.base import load_morphology_analogy
 from pyvolcans.VOLCANS_mat_files.base import load_eruption_style_analogy
 from pyvolcans.VOLCANS_mat_files.base import load_eruption_size_analogy
+from pyvolcans.VOLCANS_mat_files.base import load_tectonic_data
+from pyvolcans.VOLCANS_mat_files.base import load_geochemistry_data
+from pyvolcans.VOLCANS_mat_files.base import load_morphology_data
+from pyvolcans.VOLCANS_mat_files.base import load_eruption_size_data
+from pyvolcans.VOLCANS_mat_files.base import load_eruption_style_data

@@ -11,6 +11,7 @@ Created on Tue Mar  3 09:49:16 2020
 import warnings
 import webbrowser
 from fractions import Fraction
+import json
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -21,7 +22,12 @@ from pyvolcans import (load_tectonic_analogy,
                        load_morphology_analogy,
                        load_eruption_size_analogy,
                        load_eruption_style_analogy,
-                       load_volcano_names)
+                       load_volcano_names,
+                       load_tectonic_data,
+                       load_geochemistry_data,
+                       load_morphology_data,
+                       load_eruption_size_data,
+                       load_eruption_style_data)
 
 
 # Define custom message formatter for warnings
@@ -52,7 +58,7 @@ VOLCANO_NAMES = load_volcano_names()
 WEIGHTS = {'tectonic_setting': 0.2, 'geochemistry': 0.2,
            'morphology': 0.2, 'eruption_size': 0.2, 'eruption_style': 0.2}
 
-# load all the data from VOLCANS
+# load all the analogy data from VOLCANS
 ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
                   'geochemistry': load_geochemistry_analogy(),
                   'morphology': load_morphology_analogy(),
@@ -60,6 +66,12 @@ ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
                   'eruption_style': load_eruption_style_analogy()
                   }
 
+# load the underlying volcano data
+VOLCANO_DATA = {'tectonic_setting': load_tectonic_data(),
+                'geochemistry': load_geochemistry_data(),
+                'morphology': load_morphology_data(),
+                'eruption_size': load_eruption_size_data(),
+                'eruption_style': load_eruption_style_data()}
 
 def _frac_to_float(value):
     """
@@ -112,6 +124,30 @@ def _frac_to_float(value):
                 raise PyvolcansError(msg)
 
     return value_as_float
+
+
+def format_volcano_name(volcano_name):
+    """
+    Takes a volcano name and formats it to be used in several output filenames.
+
+    Parameters
+    ----------
+    volcano_name : str
+        Name of volcano introduced by the user (i.e. target volcano)
+
+    Returns
+    -------
+    volcano_name_joined : str
+        Formatted volcano name, without special characters (commas, points,
+        etc.) and joined by underscore signs.
+    """
+
+    volcano_name_clean = \
+        volcano_name.replace('\'', '').replace(',', '').replace('.', '')
+    volcano_name_splitted = volcano_name_clean.split()
+    volcano_name_joined = '_'.join(volcano_name_splitted)
+
+    return volcano_name_joined
 
 
 def fuzzy_matching(volcano_name, limit=10):
@@ -441,6 +477,126 @@ def calculate_weighted_analogy_matrix(my_volcano, weights,
     return volcans_result
 
 
+def get_volcano_source_data(my_volcano, data = VOLCANO_DATA):
+    """
+    Extracts the 'ID profile' (i.e. available data for each volcanological
+    criteria) for a given volcano (my_volcano) and formats it as a dictionary
+    that can be used to print this ID profile into either the standard output
+    or to an output file.
+
+    Parameters
+    ----------
+    my_volcano : str or int
+        Volcano identifier, as volcano name or volcano number, for the volcanic
+        system from which the ID profile (volcano data) will be output
+    data : dict (fixed keyword argument)
+        Dictionary containing the volcanological data available in GVP v4.6.7
+        for all Holocene volcanoes listed in that version of the database.
+    Returns
+    -------
+    result : dict
+        Dictionary containing the formatted data for all the volcanological
+        criteria available for my_volcano (i.e. its ID profile)
+    """
+
+    # get the index for my_volcano
+    volcano_idx = convert_to_idx(my_volcano)
+
+    # create a Pandas df with the basic volcano info
+    volcano_info=VOLCANO_NAMES.iloc[volcano_idx]
+    volcano_info.index = ['name', 'country', 'smithsonian_id']
+
+    # Create tectonic-setting data dictionary
+    tectonic_setting_dict = {0: 'Rift Oceanic Crust',
+                             0.125: 'Intraplate Oceanic Crust',
+                             0.250: 'Rift Intermediate Crust',
+                             0.375: 'Intraplate Intermediate Crust',
+                             0.500: 'Rift Continental Crust',
+                             0.625: 'Intraplate Continental Crust',
+                             0.750: 'Subduction Zone Oceanic Crust',
+                             0.875: 'Subduction Zone Intermediate Crust',
+                             1.000: 'Subduction Zone Continental Crust'}
+    all_tectonic_setting_values = data['tectonic_setting']
+    my_tectonic_setting_value = all_tectonic_setting_values[volcano_idx]
+    tectonic_setting_data = {float(my_tectonic_setting_value):
+                             tectonic_setting_dict[my_tectonic_setting_value]}
+
+    # Create geochemistry data dictionary
+    all_geochemistry_values = data['geochemistry']
+    my_geochemistry_values = all_geochemistry_values[volcano_idx]
+    geochemistry_keys = ['Foidite', 'Phonolite', 'Trachyte',
+                         'Trachyandesite/Basaltic trachyandesite',
+                         'Phono-tephrite/Tephri-phonolite',
+                         'Tephrite/Basanite/Trachybasalt',
+                         'Basalt', 'Andesite', 'Dacite', 'Rhyolite']
+    geochemistry_data = {}
+    for key, value in zip(geochemistry_keys, my_geochemistry_values):
+        geochemistry_data[key] = float(value)
+
+    # Obtain morphology data
+    all_morphology_values = data['morphology']
+    morphology_data = float(all_morphology_values[volcano_idx])
+
+    # Create eruption size data dictionary
+    all_eruption_size_values = data['eruption_size']
+    my_eruption_size_values = all_eruption_size_values[volcano_idx]
+    eruption_size_keys = ['VEI leq 2', 'VEI 3', 'VEI 4', 'VEI 5', 'VEI 6',
+                          'VEI 7', 'VEI 8']
+    eruption_size_data = {}
+    for key, value in zip(eruption_size_keys, my_eruption_size_values):
+        eruption_size_data[key] = float(value)
+
+    # Create eruption style data dictionary
+    all_eruption_style_values = data['eruption_style']
+    my_eruption_style_values = all_eruption_style_values[volcano_idx]
+    eruption_style_keys = ['Lava flow and/or fountaining',
+                           'Ballistics and tephra',
+                           'Phreatic and phreatomagmatic activity',
+                           'Water-sediment flows',
+                           'Tsunamis',
+                           'Pyroclastic density currents',
+                           'Edifice collapse/destruction',
+                           'Caldera formation']
+    eruption_style_data = {}
+    for key, value in zip(eruption_style_keys, my_eruption_style_values):
+        eruption_style_data[key] = float(value)
+
+    result = {
+        'name': volcano_info['name'],
+        'country': volcano_info['country'],
+        'smithsonian_id': int(volcano_info['smithsonian_id']),
+        'tectonic_setting': tectonic_setting_data,
+        'geochemistry': geochemistry_data,
+        'morphology': morphology_data,
+        'eruption_size': eruption_size_data,
+        'eruption_style': eruption_style_data
+    }
+
+    return result
+
+
+def output_many_volcanoes_data(top_analogues_list, filename):
+    """
+    Iteratively calls `get_volcano_source_data()` to print the ID profiles for
+    the top analogue volcanoes (specified by `--count`) into a single file,
+    which uses a JSON format.
+
+    Parameters
+    ----------
+    top_analogues_list : list
+        List of top analogue volcanoes for the specific target volcano, and the
+        weighting scheme selected by the user
+    filename : str
+        Indicates the filename to use in order to write the csv file containing
+        the ID profiles (volcano data) for all the top analogue volcanoes.
+    """
+
+    with open(filename, "w") as outfile:
+        for volcano in top_analogues_list:
+            result_dict = get_volcano_source_data(volcano)
+            json.dump(result_dict, outfile, indent=2, sort_keys=False)
+
+
 def get_analogies(my_volcano, volcans_result, count=10):
     """
     Derives a filtered Pandas dataframe, which contains the total and single-
@@ -742,10 +898,10 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     plt.tight_layout()  # ensuring labels/titles are displayed properly
 
     if save_figure:
-        fig1.savefig(
-                (f"{my_volcano_name}_apriori_analogues_"
-                 f"{criteria_weights_text}.png"),
-                dpi=600)
+        volcano_name_joined = format_volcano_name(my_volcano_name)
+        filename = (f"{volcano_name_joined}_apriori_analogues_"
+                    f"{criteria_weights_text}.png")
+        fig1.savefig(filename, dpi=600)
 
     return all_my_apriori_analogies
 
@@ -804,7 +960,9 @@ def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
     plt.ylabel('Percentage of better analogues')
     plt.tight_layout()
     if save_figure:
-        filename = (f"{my_volcano_name}_better_analogues_{criteria_weights_text}.png")
+        volcano_name_joined = format_volcano_name(my_volcano_name)
+        filename = (f"{volcano_name_joined}_better_analogues_"
+                    f"{criteria_weights_text}.png")
         plt.savefig(filename, dpi=600)
 
     return df_better_analogues

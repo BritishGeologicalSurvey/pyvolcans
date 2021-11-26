@@ -12,9 +12,10 @@ Created on Mon Feb 17 12:13:20 2020
 # standard packages
 import argparse
 import logging
-import sys
+import sys, io
 from pathlib import Path
 import matplotlib.pyplot as plt
+import json
 
 # our packages
 from pyvolcans.pyvolcans_func import (
@@ -30,6 +31,9 @@ from pyvolcans.pyvolcans_func import (
     convert_to_idx,
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
+    get_volcano_source_data,
+    output_many_volcanoes_data,
+    format_volcano_name,
 )
 
 from pyvolcans import __version__
@@ -144,6 +148,32 @@ def cli():
               f"{my_volcano_country} ({my_volcano_vnum}):")
         print(result)
 
+        # print volcano data (ID profile) for target volcano if verbose=true
+        if args.verbose:
+            print(f'\nID profile for {volcano_name}, {my_volcano_country} '
+                  f'({my_volcano_vnum}):')
+            id_profile = get_volcano_source_data(volcano_input)
+            print(json.dumps(id_profile, indent=2, sort_keys=False))
+
+            if args.output_volcano_data:
+                volcano_name_joined = format_volcano_name(volcano_name)
+                output_filename = Path.cwd() / \
+                    f'{volcano_name_joined}_IDprofile.json'
+                with open(output_filename, "w") as outfile:
+                    json.dump(id_profile, outfile, indent=2, sort_keys=False)
+
+            if args.output_analogues_data:
+                # call `output_many_volcanoes_data()`
+                top_analogues_list = top_analogues['smithsonian_id'].to_list()
+                # generating filename
+                volcano_name_joined = format_volcano_name(volcano_name)
+                output_filename_analogues = Path.cwd() / \
+                    f'{volcano_name_joined}_top{count}analogues_' \
+                    f'{new_weights_text}_IDprofiles.json'
+                # print analogue-volcanoes ID profiles to json-format file
+                output_many_volcanoes_data(top_analogues_list,
+                                           output_filename_analogues)
+
         # call the function to open the GVP website for top analogue
         if args.website:
             # obtain top-analogue VNUM (or Smithsonian ID)
@@ -157,10 +187,7 @@ def cli():
 
         # call the function to write the top analogues to a csv file
         if args.write_csv_file:
-            volcano_name_clean = \
-                volcano_name.replace('\'', '').replace(',', '').replace('.', '')
-            volcano_name_splitted = volcano_name_clean.split()
-            volcano_name_joined = '_'.join(volcano_name_splitted)
+            volcano_name_joined = format_volcano_name(volcano_name)
             output_filename = Path.cwd() / \
                 f'{volcano_name_joined}_top{count}analogues_' \
                 f'{new_weights_text}.csv'
@@ -240,10 +267,25 @@ def parse_args():
                         default='10', type=int)
     parser.add_argument("-w", "--write_csv_file", action="store_true",
                         help="Write list of top analogue volcanoes as .csv file")
+    parser.add_argument("-ovd", "--output_volcano_data", action="store_true",
+                        help=("Output volcano data (ID profile) for the "
+                              "selected target volcano in a json-format file. "
+                              "NB. Verbose mode needs to be activated to be "
+                              "able to use this feature.")
+                        )
+    parser.add_argument("-oad", "--output_analogues_data", action="store_true",
+                        help=("Output volcano data (ID profile) for all the "
+                              "top analogue volcanoes, for the selected "
+                              "target volcano and weighting scheme, in a "
+                              "json-format file. "
+                              "NB. Verbose mode needs to be activated to be "
+                              "able to use this feature.")
+                        )
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
     parser.add_argument("-v", "--verbose", action="store_true",
-                        help=("Print debug-level logging output, and include "
+                        help=("Print debug-level logging output, ID profile "
+                              " for the selected target volcano, and include "
                               "single-criterion analogy values, besides the "
                               "total analogy values, in the PyVOLCANS results")
                         )

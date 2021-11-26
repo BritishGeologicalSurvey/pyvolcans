@@ -14,6 +14,7 @@ from pandas.testing import assert_frame_equal
 from pyvolcans.pyvolcans_func import (
     fuzzy_matching,
     match_name,
+    format_volcano_name,
     get_volcano_idx_from_name,
     get_volcano_name_from_idx,
     get_volcano_number_from_name,
@@ -24,6 +25,7 @@ from pyvolcans.pyvolcans_func import (
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     set_weights_from_args,
+    VOLCANO_NAMES,
     PyvolcansError
 )
 
@@ -52,6 +54,11 @@ def test_fuzzy_matching():
 def test_volcano_number():
     number = get_volcano_number_from_name('Santorini')
     assert number == 212040
+
+
+def test_format_volcano_name():
+    name = format_volcano_name('Tolima, Nevado del')
+    assert name == 'Tolima_Nevado_del'
 
 
 def test_set_weights_from_args_error():
