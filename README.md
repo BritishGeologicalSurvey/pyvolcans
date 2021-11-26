@@ -62,10 +62,13 @@ optional arguments:
   -v, --verbose         Print debug-level logging output, ID profile for the
                         selected target volcano, and include single-criterion
                         analogy values, besides the total analogy values, in
-                        the PyVOLCANS results
-  -pa, --plot_apriori   Generate bar plots displaying the values of single-
+                        the PyVOLCANS results.
+  -pa, --plot_apriori   Generate bar plots displaying: (1) values of single-
                         criterion and total analogy between the target volcano
-                        and any 'a priori' analogues chosen by the user.
+                        and any 'a priori' analogues chosen by the user; and
+                        (2) percentages of 'better analogues' (for the target
+                        volcano) than each of the 'a priori' analogues,
+                        considering all volcanoes in the GVP database.
   -S, --save_figures    Save all generated figures
   -V, --version         Print PyVOLCANS package version and exit
 ```
