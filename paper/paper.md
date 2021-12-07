@@ -29,7 +29,7 @@ bibliography: paper.bib
 
 There are over 1,400 volcanoes on Earth that have either erupted or shown signs of volcanic activity (e.g. fumaroles or hot springs) in, approximately, the last 12,000 years.
 Of these, around 40-50 are erupting at any given time [@Siebert:2010; @GVP:2013].
-Volcanoes provide a range of economic benefits, such as fertile soils, geothermal energy or valuable mineralisations, create a strong sense of belonging among local populations, and fascinate visitors. 
+Volcanoes provide a range of economic benefits, such as fertile soils, geothermal energy or valuable mineralisations, create a strong sense of belonging among local populations, and fascinate visitors.
 However, volcanic systems can also generate hazardous phenomena, which may threaten local inhabitants, tourists and infrastructure at distances of up to tens or hundreds of kilometres.
 
 In order to understand and quantify volcanic hazard, volcano scientists are faced with many questions.
@@ -62,12 +62,12 @@ Additionally, users can select a number of _a priori_ analogue volcanoes (i.e. v
 ![Values of single-criterion (colours) and total analogy (bar heights) between an example target volcano, Fuego (Guatemala)\*, and five _a priori_ analogues [please see @Tierz:2019, for more details].
 ATs: Analogy in Tectonic setting; AG: Analogy in rock Geochemistry; AM: Analogy in volcano Morphology; ASz: Analogy in eruption Size; ASt: Analogy in eruption Style.
 \*Number between brackets denotes the unique volcano identifier used by the GVP database.
-\label{fig:figure1}](figure.png) 
+\label{fig:figure1}](figure.png)
 
-The results from the VOLCANS study have already been used in recent research: e.g. exploring the volcanological factors that influence the development of particular volcano morphologies [@White:2020]; constraining potential hazardous phenomena and hazard scenarios at a given target volcano, based on its analogue volcanoes [@Simmons:2021]; quantifying probability distributions of eruption sizes and probabilities of occurrence of diverse hazardous phenomena [@Tierz:2020]; or even [exploring volcano analogies at regional scales](https://youtu.be/iB1uiaxScek), by generating sets of analogue volcanoes for tens of volcanic systems.
-The last two example applications have played a key role in developing quantitative hazard analyses for Ethiopian volcanoes, within the [RiftVolc project](https://www.bgs.ac.uk/geology-projects/volcanoes/riftvolc/).
+The results from the VOLCANS study have already been used in recent research: e.g. exploring the volcanological factors that influence the development of particular volcano morphologies [@White:2020]; constraining potential hazardous phenomena and hazard scenarios at a given target volcano, based on its analogue volcanoes [@Simmons:2021]; quantifying probability distributions of eruption sizes and probabilities of occurrence of diverse hazardous phenomena [@Tierz:2020]; or even [exploring volcano analogies at regional scales](https://youtu.be/iB1uiaxScek), by generating sets of analogue volcanoes for tens of volcanic systems. The last two example applications have played a key role in developing quantitative hazard analyses for Ethiopian volcanoes, within the [RiftVolc project](https://www.bgs.ac.uk/geology-projects/volcanoes/riftvolc/).
+**Moreover, the future potential of VOLCANS/`PyVOLCANS`, particularly in the field of volcanic hazard assessment, has also been recognised in recent relevant publications in the area [@Papale:2021; @Marzocchi:2021]**
 
-We hope that the release of `PyVOLCANS` will encourage studies based on data-driven selection of analogue volcanoes and that such analyses will continue to grow in number and diversity of their scientific purposes.
+We hope that the release of `PyVOLCANS` will encourage **further** studies based on data-driven selection of analogue volcanoes and that such analyses will continue to grow in number and diversity of their scientific purposes.
 
 
 # Acknowledgements
@@ -75,7 +75,7 @@ We hope that the release of `PyVOLCANS` will encourage studies based on data-dri
 The research leading to these results has been mainly supported by the UK National Capability Funding (Innovation Flexible Fund programme).
 We most sincerely thank reviewers Jamie Farquharson and Meghan Jones, and Associate Editor Jay Hariharan, for the invaluable feedback and suggestions that they have provided on `PyVOLCANS`. This has certainly resulted in significant improvements to the code, which we hope future users will benefit from.
 We would like to warmly thank Eliza Calder for all her work during the development of the VOLCANS method, and Sarah Ogburn for being one of the first people who _convinced_ us that we should develop an open-access application of VOLCANS, sooner rather than later.
-Declan Valters is thanked for support with Python programming, and Fabio Dioguardi for his internal review. 
+Declan Valters is thanked for support with Python programming, and Fabio Dioguardi for his internal review.
 Moreover, we would like to sincerely thank a number of colleagues with whom we shared very insightful conversations about analogue volcanoes and/or `PyVOLCANS`: Chris Newhall, Isla Simmons, Adriano Pimentel, Julia Crummy, Gezahegn Yirgu, Charlotte Vye-Brown, Lara Smale, Karen Fontijn, Ben Clarke, Susanna Jenkins, Elly Tennant, Pierre Barbillon, Elaine Spiller, Philippa White, Teresa Ubide, Sebastián García, Victoria Olivera, Jeremy Pesicek, Vanesa Burgos Delgado, **Einat Lev**, Jonty Rougier, Willy Aspinall, Paolo Papale, Monse Cascante and Thomas Giachetti.
 
 # References
