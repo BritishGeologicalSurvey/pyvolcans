@@ -152,7 +152,8 @@ def cli():
             print(json.dumps(id_profile, indent=2, sort_keys=False))
 
             if args.output_volcano_data:
-                volcano_name_joined = format_volcano_name(volcano_name)
+                volcano_name_joined = format_volcano_name(volcano_name,
+                                                          my_volcano_vnum)
                 output_filename = Path.cwd() / \
                     f'{volcano_name_joined}_IDprofile.json'
                 with open(output_filename, "w") as outfile:
@@ -162,7 +163,8 @@ def cli():
                 # call `output_many_volcanoes_data()`
                 top_analogues_list = top_analogues['smithsonian_id'].to_list()
                 # generating filename
-                volcano_name_joined = format_volcano_name(volcano_name)
+                volcano_name_joined = format_volcano_name(volcano_name,
+                                                          my_volcano_vnum)
                 output_filename_analogues = Path.cwd() / \
                     f'{volcano_name_joined}_top{count}analogues_' \
                     f'{new_weights_text}_IDprofiles.json'
@@ -183,7 +185,8 @@ def cli():
 
         # call the function to write the top analogues to a csv file
         if args.write_csv_file:
-            volcano_name_joined = format_volcano_name(volcano_name)
+            volcano_name_joined = format_volcano_name(volcano_name,
+                                                      my_volcano_vnum)
             output_filename = Path.cwd() / \
                 f'{volcano_name_joined}_top{count}analogues_' \
                 f'{new_weights_text}.csv'

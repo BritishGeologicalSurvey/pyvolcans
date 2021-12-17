@@ -126,7 +126,7 @@ def _frac_to_float(value):
     return value_as_float
 
 
-def format_volcano_name(volcano_name):
+def format_volcano_name(volcano_name, volcano_vnum):
     """
     Takes a volcano name and formats it to be used in several output filenames.
 
@@ -145,7 +145,7 @@ def format_volcano_name(volcano_name):
     volcano_name_clean = \
         volcano_name.replace('\'', '').replace(',', '').replace('.', '')
     volcano_name_splitted = volcano_name_clean.split()
-    volcano_name_joined = '_'.join(volcano_name_splitted)
+    volcano_name_joined = '_'.join(volcano_name_splitted + [str(volcano_vnum)])
 
     return volcano_name_joined
 
@@ -901,7 +901,8 @@ def plot_bar_apriori_analogues(my_volcano_name, my_volcano_vnum,
     plt.tight_layout()  # ensuring labels/titles are displayed properly
 
     if save_figure:
-        volcano_name_joined = format_volcano_name(my_volcano_name)
+        volcano_name_joined = format_volcano_name(my_volcano_name,
+                                                  my_volcano_vnum)
         filename = (f"{volcano_name_joined}_apriori_analogues_"
                     f"{criteria_weights_text}.png")
         fig1.savefig(filename, dpi=600)
@@ -963,7 +964,8 @@ def plot_bar_better_analogues(my_volcano_name, my_volcano_vnum,
     plt.ylabel('Percentage of better analogues')
     plt.tight_layout()
     if save_figure:
-        volcano_name_joined = format_volcano_name(my_volcano_name)
+        volcano_name_joined = format_volcano_name(my_volcano_name,
+                                                  my_volcano_vnum)
         filename = (f"{volcano_name_joined}_better_analogues_"
                     f"{criteria_weights_text}.png")
         plt.savefig(filename, dpi=600)
