@@ -57,8 +57,8 @@ def test_volcano_number():
 
 
 def test_format_volcano_name():
-    name = format_volcano_name('Tolima, Nevado del')
-    assert name == 'Tolima_Nevado_del'
+    name = format_volcano_name('Tolima, Nevado del', 351030)
+    assert name == 'Tolima_Nevado_del_351030'
 
 
 def test_set_weights_from_args_error():
