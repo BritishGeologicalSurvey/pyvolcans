@@ -4,7 +4,7 @@
 
 The main goal of PyVOLCANS is to help alleviate data-scarcity issues in volcanology, and contribute to developments in a range of topics, including (but not limited to): quantitative volcanic hazard assessment at local to global scales, investigation of magmatic and volcanic processes, and even teaching and scientific outreach. We hope that future users of PyVOLCANS will include any volcano scientist or enthusiast with an interest in exploring the similarities and differences between volcanic systems worldwide. Please visit our [wiki pages](https://github.com/BritishGeologicalSurvey/pyvolcans/wiki) for more information.
 
-A new article on PyVOLCANS has been published in the Journal of Open Source Software. Please check its content here! [![DOI](https://joss.theoj.org/papers/10.21105/joss.03649/status.svg)](https://doi.org/10.21105/joss.03649)
+A new article on PyVOLCANS has been published in the Journal of Open Source Software. Please check its content here [![DOI](https://joss.theoj.org/papers/10.21105/joss.03649/status.svg)](https://doi.org/10.21105/joss.03649), and refer to it when using PyVOLCANS. Very many thanks!
 
 ## Installation instructions
 
