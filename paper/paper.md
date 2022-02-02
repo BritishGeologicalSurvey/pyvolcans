@@ -71,10 +71,10 @@ We hope that the release of `PyVOLCANS` will encourage further studies based on 
 
 # Acknowledgements
 
-The research leading to these results has been mainly supported by the UK National Capability Funding (Innovation Flexible Fund programme).
+The research leading to these results has been mainly supported by the UK National Capability Funding (Innovation Flexible Fund programme) and by the Global Geological Risk Platform of the British Geological Survey NC-ODA grant NE/R000069/1: Geoscience for Sustainable Futures.
 We most sincerely thank reviewers Jamie Farquharson and Meghan Jones, and Associate Editor Jay Hariharan, for the invaluable feedback and suggestions that they have provided on `PyVOLCANS`. This has certainly resulted in significant improvements to the code, which we hope future users will benefit from.
 We would like to warmly thank Eliza Calder for all her work during the development of the VOLCANS method, and Sarah Ogburn for being one of the first people who _convinced_ us that we should develop an open-access application of VOLCANS, sooner rather than later.
 Declan Valters is thanked for support with Python programming, and Fabio Dioguardi for his internal review.
-Moreover, we would like to sincerely thank a number of colleagues with whom we shared very insightful conversations about analogue volcanoes and/or `PyVOLCANS`: Chris Newhall, Isla Simmons, Adriano Pimentel, Julia Crummy, Gezahegn Yirgu, Charlotte Vye-Brown, Lara Smale, Karen Fontijn, Ben Clarke, Susanna Jenkins, Elly Tennant, Pierre Barbillon, Elaine Spiller, Philippa White, Teresa Ubide, Sebastián García, Victoria Olivera, Jeremy Pesicek, Vanesa Burgos Delgado, Einat Lev, Jonty Rougier, Willy Aspinall, Paolo Papale, Monse Cascante and Thomas Giachetti.
+Moreover, we would like to sincerely thank a number of colleagues with whom we shared very insightful conversations about analogue volcanoes and/or `PyVOLCANS`: Chris Newhall, Isla Simmons, Adriano Pimentel, Julia Crummy, Gezahegn Yirgu, Charlotte Vye-Brown, Lara Smale, Karen Fontijn, Ben Clarke, Susanna Jenkins, Elly Tennant, Pierre Barbillon, Elaine Spiller, Philippa White, Teresa Ubide, Sebastián García, Victoria Olivera, Jeremy Pesicek, Vanesa Burgos Delgado, Einat Lev, Jonty Rougier, Willy Aspinall, Paolo Papale, Monse Cascante and Thomas Giachetti. Published with permission of the Executive Director of British Geological Survey (NERC-UKRI).
 
 # References
