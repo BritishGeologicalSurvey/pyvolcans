@@ -4,3 +4,4 @@ pyvolcans.egg-info
 dist
 *csv
 paper/paper.pdf
+.ipynb_checkpoints
