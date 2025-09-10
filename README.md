@@ -261,8 +261,8 @@ pytest -v test
 
 ### Maintainers
 
-`PyVOLCANS` was created by and is maintained by British Geological Survey
-Volcanology and Digital Capabilities.
+`PyVOLCANS` was created by the British Geological Survey Volcanology and Digital Capabilities (UK),
+and is maintained in liaison with Geociencias Barcelona (GEO3BCN), CSIC (Spain).
 
 + Pablo Tierz ([PTierz](https://github.com/PTierz))
 + Vyron Christodoulou ([mobiuscreek](https://github.com/mobiuscreek))
