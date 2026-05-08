@@ -74,6 +74,7 @@ def cli():
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     logging.basicConfig(handlers=[handler], level=logging.INFO)
+    logging.getLogger('PIL').setLevel(logging.WARNING)
 
     # get the arguments
     args = parse_args()
