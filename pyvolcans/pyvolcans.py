@@ -23,6 +23,7 @@ from pyvolcans.pyvolcans_func import (
     calculate_weighted_analogy_matrix,
     get_analogies,
     get_many_analogy_percentiles,
+    find_optimal_weights,
     PyvolcansError,
     set_weights_from_args,
     open_gvp_website,
@@ -112,6 +113,14 @@ def cli():
         sys.exit(1)
 
     my_apriori_volcanoes = args.apriori
+
+    if args.find_optimal_weights and not bool(my_apriori_volcanoes):
+        logging.error("No 'a priori' analogue volcano has been provided! "
+                      "Please provide one or more 'a priori' analogue "
+                      "volcanoes, using the `--apriori` flag, to find the "
+                      "optimal weighting scheme.")
+        sys.exit(1)
+
     logging.debug("Supplied weights: %s", new_weights)
 
     # call PyVOLCANS
@@ -210,6 +219,39 @@ def cli():
                 get_many_analogy_percentiles(volcano_input,
                                              my_apriori_volcanoes,
                                              volcans_result)
+            # call find_optimal_weights to derive the weighting scheme that
+            # best explains the 'a priori' analogue volcanoes
+            # NB. This code is only run when 1+ 'a priori' analogues are given
+            if args.find_optimal_weights:
+                [optimal_weights,
+                 optimal_mean_rank,
+                 near_optimal_region,
+                 _] = find_optimal_weights(volcano_input,
+                                           my_apriori_volcanoes)
+
+                formatted_weights = ', '.join(
+                    f"{criterion}: {weight:.2f}" for criterion, weight
+                    in optimal_weights.items())
+
+                number_of_schemes = \
+                    near_optimal_region.attrs['number_of_schemes']
+                minimum_mean_rank, maximum_mean_rank = \
+                    near_optimal_region.attrs['mean_rank_range']
+
+                print(f"\nOptimal weighting scheme to explain the 'a priori' "
+                      f"analogue volcanoes for {volcano_name}, "
+                      f"{my_volcano_country} ({my_volcano_vnum}):")
+                print(f"{formatted_weights}")
+                print(f"\nMean rank of the 'a priori' analogue volcanoes: "
+                      f"{optimal_mean_rank:.1f} (out of "
+                      f"{len(volcans_result)} volcanoes in the GVP database)")
+                print(f"\nRange of criterion weights among the "
+                      "near-optimal weighting schemes "
+                      f"(mean rank {minimum_mean_rank:.1f} to "
+                      f"{maximum_mean_rank:.1f}):")
+                print(near_optimal_region.to_string(
+                    float_format='{:.2f}'.format))
+
             # NB. This code is only run when 1+ 'a priori' analogues are given
             if args.plot_apriori:
                 plot_bar_apriori_analogues(volcano_name, my_volcano_vnum,
@@ -297,6 +339,16 @@ def parse_args():
                               "'better analogues' (for the target volcano) "
                               "than each of the 'a priori' analogues, "
                               "considering all volcanoes in the GVP database.")
+                        )
+    parser.add_argument("-fow", "--find_optimal_weights", action="store_true",
+                        help=("Derive the weighting scheme that best explains "
+                              "the 'a priori' analogue volcanoes chosen by "
+                              "the user, by minimising their mean rank across "
+                              "all volcanoes in the GVP database, and report "
+                              "the near-optimal weighting schemes. "
+                              "NB. One or more 'a priori' analogue volcanoes "
+                              "need to be provided, using the `--apriori` "
+                              "flag, to be able to use this feature.")
                         )
     parser.add_argument("-S", "--save_figures", action="store_true",
                         help="Save all generated figures")
