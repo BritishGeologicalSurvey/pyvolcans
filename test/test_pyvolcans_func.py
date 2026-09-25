@@ -27,6 +27,9 @@ from pyvolcans.pyvolcans_func import (
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     set_weights_from_args,
+    find_optimal_weights,
+    _weighting_scheme_space,
+    _mean_rank_of_analogues,
     VOLCANO_NAMES,
     PyvolcansError
 )
@@ -343,3 +346,251 @@ def test_get_analogies(mock_result):
 
     # Assert
     assert_frame_equal(partial_mock_top_analogues, partial_df_expected)
+
+
+# 'a priori' analogue volcanoes to Hekla, Iceland
+HEKLA_APRIORI = ['Katla', 'Torfajokull', 'Askja', 'Eyjafjallajokull',
+                 'Oraefajokull', 'Krafla', 'Alcedo']
+
+CRITERIA = ['tectonic_setting', 'geochemistry', 'morphology',
+            'eruption_size', 'eruption_style']
+
+
+def test_weighting_scheme_space_sums_to_one():
+    schemes = _weighting_scheme_space(grid_step=0.05,
+                                      number_of_criteria=5)
+    assert np.allclose(schemes.sum(axis=1), 1)
+
+
+def test_weighting_scheme_space_is_non_negative():
+    schemes = _weighting_scheme_space(grid_step=0.05,
+                                      number_of_criteria=5)
+    assert (schemes >= 0).all()
+
+
+def test_weighting_scheme_space_size():
+    # number of ways to distribute 20 increments across 5 criteria
+    schemes = _weighting_scheme_space(grid_step=0.05,
+                                      number_of_criteria=5)
+    assert schemes.shape == (10626, 5)
+
+
+def test_weighting_scheme_space_includes_equal_weights():
+    schemes = _weighting_scheme_space(grid_step=0.05,
+                                      number_of_criteria=5)
+    assert np.isclose(schemes, 0.2).all(axis=1).sum() == 1
+
+
+def test_total_analogy_is_linear_in_the_weights():
+    """
+    The derivation of optimal weighting schemes relies on the total analogy
+    being a weighted average of the single-criterion analogies (please see
+    equation 1 in Tierz et al., 2019), and hence a linear function of the
+    criterion weights.
+    """
+    weights = {'tectonic_setting': 0.15, 'geochemistry': 0.40,
+               'morphology': 0.10, 'eruption_size': 0.15,
+               'eruption_style': 0.20}
+    volcans_result = calculate_weighted_analogy_matrix('Hekla', weights)
+
+    single_criterion_analogies = \
+        np.column_stack([volcans_result[column] / weight for column, weight
+                         in zip(['ATs', 'AG', 'AM', 'ASz', 'ASt'],
+                                weights.values())])
+    total_analogies = \
+        single_criterion_analogies @ np.array(list(weights.values()))
+
+    assert np.allclose(total_analogies, volcans_result['total_analogy'])
+
+
+def test_mean_rank_of_analogues():
+    """
+    Two volcanoes, and two weighting schemes that each rank one of them
+    first and the other one second.
+    """
+    single_criterion_analogies = np.array([[1.0, 0.0],
+                                           [0.0, 1.0]])
+    weighting_schemes = np.array([[1.0, 0.0],
+                                  [0.0, 1.0]])
+
+    mean_ranks = _mean_rank_of_analogues(single_criterion_analogies,
+                                         weighting_schemes,
+                                         apriori_idx=[0])
+
+    assert np.allclose(mean_ranks, [1, 2])
+
+
+def test_mean_rank_of_analogues_is_chunk_independent():
+    rng = np.random.default_rng(42)
+    single_criterion_analogies = rng.random((60, 5))
+    weighting_schemes = _weighting_scheme_space(grid_step=0.2,
+                                                number_of_criteria=5)
+
+    mean_ranks_one_chunk = \
+        _mean_rank_of_analogues(single_criterion_analogies,
+                                weighting_schemes, [1, 2, 3],
+                                chunk_size=10000)
+    mean_ranks_many_chunks = \
+        _mean_rank_of_analogues(single_criterion_analogies,
+                                weighting_schemes, [1, 2, 3],
+                                chunk_size=7)
+
+    assert np.allclose(mean_ranks_one_chunk, mean_ranks_many_chunks)
+
+
+def test_find_optimal_weights_returns_a_weighting_scheme():
+    [optimal_weights, _, _, volcano_name] = \
+        find_optimal_weights('Hekla', HEKLA_APRIORI)
+
+    assert volcano_name == 'Hekla'
+    assert list(optimal_weights.keys()) == CRITERIA
+    assert np.isclose(sum(optimal_weights.values()), 1)
+    assert all(weight >= 0 for weight in optimal_weights.values())
+
+
+def test_find_optimal_weights_beats_equal_weights():
+    """
+    The optimal weighting scheme must rank the 'a priori' analogue volcanoes
+    at least as highly as the equal-weight weighting scheme does, because the
+    latter is one of the candidate weighting schemes.
+    """
+    [_, optimal_mean_rank, _, _] = \
+        find_optimal_weights('Hekla', HEKLA_APRIORI)
+
+    equal_weights = dict.fromkeys(CRITERIA, 0.2)
+    volcans_result = calculate_weighted_analogy_matrix('Hekla', equal_weights)
+    ranks = volcans_result['total_analogy'].rank(ascending=False,
+                                                 method='min')
+    apriori_idx = [get_volcano_idx_from_name(volcano) for volcano
+                   in HEKLA_APRIORI]
+    equal_weights_mean_rank = ranks.iloc[apriori_idx].mean()
+
+    assert optimal_mean_rank <= equal_weights_mean_rank
+
+
+def test_find_optimal_weights_recovers_a_known_weighting_scheme():
+    """
+    The top analogue volcanoes for a given weighting scheme should be
+    explained by a weighting scheme that emphasises the same volcanological
+    criterion.
+    """
+    geochemistry_weights = {'tectonic_setting': 0.05, 'geochemistry': 0.80,
+                            'morphology': 0.05, 'eruption_size': 0.05,
+                            'eruption_style': 0.05}
+    volcans_result = calculate_weighted_analogy_matrix('Hekla',
+                                                       geochemistry_weights)
+    top_analogues = \
+        volcans_result.drop(index=get_volcano_idx_from_name('Hekla')) \
+                      .nlargest(8, 'total_analogy')['name'].tolist()
+
+    [optimal_weights, _, _, _] = find_optimal_weights('Hekla', top_analogues)
+
+    assert optimal_weights['geochemistry'] == \
+        max(optimal_weights.values())
+
+
+def test_find_optimal_weights_near_optimal_region():
+    [optimal_weights, _, near_optimal_region, _] = \
+        find_optimal_weights('Hekla', HEKLA_APRIORI)
+
+    assert near_optimal_region.index.name == 'criterion'
+    assert list(near_optimal_region.index) == CRITERIA
+    assert (near_optimal_region['weight_min'] <=
+            near_optimal_region['weight_median']).all()
+    assert (near_optimal_region['weight_median'] <=
+            near_optimal_region['weight_max']).all()
+    # the optimal weighting scheme is itself one of the near-optimal schemes
+    for criterion, weight in optimal_weights.items():
+        assert near_optimal_region.loc[criterion, 'weight_min'] <= weight
+        assert weight <= near_optimal_region.loc[criterion, 'weight_max']
+
+
+def test_find_optimal_weights_near_optimal_proportion():
+    """
+    The number of near-optimal weighting schemes should be close to the
+    requested proportion of the weighting schemes explored. It is not exactly
+    equal to it because many weighting schemes share the same mean rank.
+    """
+    number_of_schemes = len(_weighting_scheme_space(grid_step=0.05,
+                                                    number_of_criteria=5))
+
+    for proportion in [0.05, 0.10, 0.25]:
+        [_, _, near_optimal_region, _] = \
+            find_optimal_weights('Hekla', HEKLA_APRIORI,
+                                 near_optimal_proportion=proportion)
+        actual_proportion = \
+            near_optimal_region.attrs['number_of_schemes'] / number_of_schemes
+
+        assert abs(actual_proportion - proportion) < 0.02
+
+
+def test_find_optimal_weights_near_optimal_region_attributes():
+    [_, optimal_mean_rank, near_optimal_region, _] = \
+        find_optimal_weights('Hekla', HEKLA_APRIORI)
+
+    minimum_mean_rank, maximum_mean_rank = \
+        near_optimal_region.attrs['mean_rank_range']
+
+    assert near_optimal_region.attrs['number_of_schemes'] > 0
+    assert np.isclose(minimum_mean_rank, optimal_mean_rank)
+    assert minimum_mean_rank <= maximum_mean_rank
+
+
+def test_find_optimal_weights_wider_proportion_is_nested():
+    """
+    Widening the proportion of near-optimal weighting schemes cannot narrow
+    the range of weights taken by any volcanological criterion.
+    """
+    [_, _, narrow_region, _] = \
+        find_optimal_weights('Hekla', HEKLA_APRIORI,
+                             near_optimal_proportion=0.05)
+    [_, _, wide_region, _] = \
+        find_optimal_weights('Hekla', HEKLA_APRIORI,
+                             near_optimal_proportion=0.25)
+
+    assert (wide_region['weight_min'] <= narrow_region['weight_min']).all()
+    assert (wide_region['weight_max'] >= narrow_region['weight_max']).all()
+
+
+@pytest.mark.parametrize("near_optimal_proportion", [0, -0.1, 1.5])
+def test_find_optimal_weights_invalid_proportion(near_optimal_proportion):
+    with pytest.raises(PyvolcansError, match="must range between 0 and 1"):
+        find_optimal_weights(
+            'Hekla', HEKLA_APRIORI,
+            near_optimal_proportion=near_optimal_proportion)
+
+
+def test_find_optimal_weights_excludes_target_volcano():
+    """
+    A volcano is a perfect analogue to itself, and must not be ranked among
+    its own analogue volcanoes.
+    """
+    [_, optimal_mean_rank, _, _] = find_optimal_weights('Hekla', ['Katla'])
+
+    assert optimal_mean_rank >= 1
+
+
+def test_find_optimal_weights_warns_on_few_apriori_volcanoes():
+    with pytest.warns(UserWarning, match="unlikely to be well constrained"):
+        find_optimal_weights('Hekla', ['Katla', 'Askja'])
+
+
+def test_find_optimal_weights_no_apriori_volcanoes():
+    with pytest.raises(PyvolcansError, match="No 'a priori' analogue volcano"):
+        find_optimal_weights('Hekla', [])
+
+
+@pytest.mark.parametrize("grid_step", [0, -0.05, 1.5, 0.03])
+def test_find_optimal_weights_invalid_grid_step(grid_step):
+    with pytest.raises(PyvolcansError, match="whole number of intervals"):
+        find_optimal_weights('Hekla', HEKLA_APRIORI, grid_step=grid_step)
+
+
+def test_find_optimal_weights_unknown_volcano():
+    with pytest.raises(PyvolcansError, match="not found!"):
+        find_optimal_weights('Heklaaa', HEKLA_APRIORI)
+
+
+def test_find_optimal_weights_unknown_apriori_volcano():
+    with pytest.raises(PyvolcansError, match="not found!"):
+        find_optimal_weights('Hekla', ['Katla', 'Torfajokulll'])
