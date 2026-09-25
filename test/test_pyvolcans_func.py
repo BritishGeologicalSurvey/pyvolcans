@@ -27,6 +27,7 @@ from pyvolcans.pyvolcans_func import (
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     set_weights_from_args,
+    get_criteria_spread,
     VOLCANO_NAMES,
     PyvolcansError
 )
@@ -343,3 +344,126 @@ def test_get_analogies(mock_result):
 
     # Assert
     assert_frame_equal(partial_mock_top_analogues, partial_df_expected)
+
+
+CRITERIA = ['tectonic_setting', 'geochemistry', 'morphology',
+            'eruption_size', 'eruption_style']
+
+SPREAD_COLUMNS = ['standard_deviation', 'interquartile_range',
+                  'percentile_10', 'median', 'percentile_90',
+                  'proportion_at_maximum']
+
+
+def test_criteria_spread_shape():
+    [criteria_spread, volcano_name] = get_criteria_spread('Hekla')
+
+    assert volcano_name == 'Hekla'
+    assert criteria_spread.index.name == 'criterion'
+    assert sorted(criteria_spread.index) == sorted(CRITERIA)
+    assert list(criteria_spread.columns) == SPREAD_COLUMNS
+
+
+def test_criteria_spread_is_ordered_by_standard_deviation():
+    [criteria_spread, _] = get_criteria_spread('Hekla')
+
+    assert criteria_spread['standard_deviation'].is_monotonic_decreasing
+
+
+def test_criteria_spread_percentiles_are_ordered():
+    [criteria_spread, _] = get_criteria_spread('Hekla')
+
+    assert (criteria_spread['percentile_10'] <=
+            criteria_spread['median']).all()
+    assert (criteria_spread['median'] <=
+            criteria_spread['percentile_90']).all()
+
+
+def test_criteria_spread_values_are_within_range():
+    """
+    Single-criterion analogy values range between 0 and 1, and so do all the
+    measures of their spread that are reported, except the standard deviation
+    and the interquartile range, which cannot exceed 0.5 and 1 respectively.
+    """
+    [criteria_spread, _] = get_criteria_spread('Hekla')
+
+    assert (criteria_spread >= 0).all().all()
+    assert (criteria_spread['standard_deviation'] <= 0.5).all()
+    assert (criteria_spread['percentile_90'] <= 1).all()
+    assert (criteria_spread['proportion_at_maximum'] <= 1).all()
+
+
+def test_criteria_spread_excludes_target_volcano():
+    """
+    A volcano is a perfect analogue to itself, and is excluded from the
+    single-criterion analogy values, in the same way as it is excluded from the
+    PyVOLCANS result. Every criterion would otherwise assign the maximum
+    analogy value to at least one volcano.
+    """
+    [criteria_spread, _] = get_criteria_spread('Hekla')
+    number_of_volcanoes = len(VOLCANO_NAMES)
+
+    # the target volcano would represent this proportion of the database
+    assert (criteria_spread['proportion_at_maximum'] !=
+            1 / number_of_volcanoes).all()
+
+
+def test_criteria_spread_mocked_analogy_matrix():
+    """
+    Two criteria, one assigning an analogy value of 0 to half the volcanoes in
+    the database and 1 to the other half, the other assigning the same analogy
+    value to all of them.
+
+    The analogy matrices are full-sized because the target volcano is located
+    in them by its index in the GVP database.
+    """
+    number_of_volcanoes = len(VOLCANO_NAMES)
+    volcano_idx = get_volcano_idx_from_name('Hekla')
+
+    spread_analogies = np.zeros((number_of_volcanoes, number_of_volcanoes))
+    # excluding the target volcano leaves an even number of volcanoes
+    spread_analogies[volcano_idx, :number_of_volcanoes // 2] = 1.0
+    spread_analogies[volcano_idx, volcano_idx] = 1.0
+
+    flat_analogies = np.full((number_of_volcanoes, number_of_volcanoes), 0.5)
+
+    mock_analogies = {'spread_criterion': spread_analogies,
+                      'flat_criterion': flat_analogies}
+
+    with pytest.warns(UserWarning, match="flat_criterion"):
+        [criteria_spread, _] = \
+            get_criteria_spread('Hekla', analogies=mock_analogies)
+
+    # an even split between 0 and 1 gives a standard deviation of 0.5
+    assert criteria_spread.loc['spread_criterion',
+                               'standard_deviation'] == 0.5
+    assert criteria_spread.loc['spread_criterion',
+                               'interquartile_range'] == 1
+    assert criteria_spread.loc['flat_criterion', 'standard_deviation'] == 0
+    assert criteria_spread.loc['flat_criterion',
+                               'proportion_at_maximum'] == 1
+
+
+def test_criteria_spread_warns_on_criteria_without_spread():
+    """
+    Toba, Indonesia, has no eruption-size or eruption-style data, and hence
+    those criteria take the same single-criterion analogy value for every
+    volcano in the GVP database.
+    """
+    with pytest.warns(UserWarning, match="cannot distinguish between"):
+        [criteria_spread, _] = get_criteria_spread('Toba')
+
+    assert criteria_spread.loc['eruption_size', 'standard_deviation'] == 0
+    assert criteria_spread.loc['eruption_style', 'standard_deviation'] == 0
+
+
+def test_criteria_spread_volcano_number():
+    [criteria_spread_from_name, _] = get_criteria_spread('Hekla')
+    [criteria_spread_from_number, _] = get_criteria_spread(372070)
+
+    assert_frame_equal(criteria_spread_from_name,
+                       criteria_spread_from_number)
+
+
+def test_criteria_spread_unknown_volcano():
+    with pytest.raises(PyvolcansError, match="not found!"):
+        get_criteria_spread('Heklaaa')

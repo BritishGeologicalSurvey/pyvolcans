@@ -1124,5 +1124,106 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
     return percentile_dictionary, better_analogues_dictionary
 
 
+def get_criteria_spread(my_volcano, analogies=ANALOGY_MATRIX):
+    """
+    Derives the spread of the single-criterion analogy values between a given
+    target volcano and all the volcanoes in the GVP database, for each of the
+    volcanological criteria used by VOLCANS.
+
+    The total analogy between two volcanoes is a weighted average of their
+    single-criterion analogies (please see equation 1 in Tierz et al., 2019).
+    The extent to which a given volcanological criterion distinguishes between
+    the volcanoes in the database therefore depends not only on the weight
+    assigned to that criterion, but also on how widely the single-criterion
+    analogy values for that criterion are spread. A criterion whose
+    single-criterion analogy values are narrowly spread assigns similar values
+    to most volcanoes in the database, and hence contributes little to
+    distinguishing between them, however large the weight assigned to it.
+
+    Parameters
+    ----------
+    my_volcano : str or int
+        Target volcano selected by the user, as volcano name or volcano number
+        (VNUM)
+    analogies : dict (fixed keyword argument)
+        Dictionary of Numpy arrays which contain the single-criterion analogy
+        values between any two volcanoes in the GVP database
+
+    Returns
+    -------
+    criteria_spread : Pandas dataframe
+        Standard deviation, interquartile range, 10th and 90th percentile,
+        median, and proportion of volcanoes in the GVP database that take the
+        maximum single-criterion analogy value, for each of the volcanological
+        criteria used by VOLCANS. One row per criterion, ordered by decreasing
+        standard deviation.
+
+        Please note that the proportion of volcanoes taking the maximum
+        single-criterion analogy value is reported because some criteria assign
+        that value to a large number of volcanoes (e.g. any volcano that shares
+        the tectonic setting of the target volcano), and such a criterion
+        cannot distinguish between those volcanoes at all.
+    volcano_name : str
+        Name of the target volcano
+
+    Raises
+    ------
+    PyvolcansError
+        If the value given as target volcano (my_volcano) cannot be interpreted
+        either as a volcano name or volcano number (VNUM), identifiable in the
+        GVP database (www.volcano.si.edu).
+    """
+
+    volcano_idx = convert_to_idx(my_volcano)
+    volcano_name = get_volcano_name_from_idx(volcano_idx)
+
+    spread_rows = []
+    for criterion, analogy_matrix in analogies.items():
+        # the target volcano is a perfect analogue to itself, and is excluded
+        # in the same way as it is excluded from the PyVOLCANS result
+        single_criterion_analogies = \
+            np.delete(analogy_matrix[volcano_idx, ], volcano_idx)
+
+        tenth_percentile, ninetieth_percentile = \
+            np.percentile(single_criterion_analogies, [10, 90])
+        first_quartile, third_quartile = \
+            np.percentile(single_criterion_analogies, [25, 75])
+        maximum_analogy = single_criterion_analogies.max()
+
+        spread_rows.append(
+            {'criterion': criterion,
+             'standard_deviation': float(single_criterion_analogies.std()),
+             'interquartile_range': float(third_quartile - first_quartile),
+             'percentile_10': float(tenth_percentile),
+             'median': float(np.median(single_criterion_analogies)),
+             'percentile_90': float(ninetieth_percentile),
+             'proportion_at_maximum':
+                 float((single_criterion_analogies ==
+                        maximum_analogy).mean())})
+
+    criteria_spread = pd.DataFrame(spread_rows).set_index('criterion')
+    criteria_spread = \
+        criteria_spread.sort_values('standard_deviation', ascending=False)
+
+    # a criterion without data for the target volcano takes the same
+    # single-criterion analogy value for every volcano in the database
+    criteria_without_spread = \
+        criteria_spread.index[criteria_spread['standard_deviation'] ==
+                              0].tolist()
+
+    if criteria_without_spread:
+        nospread_criteria_text = ', '.join(criteria_without_spread)
+        msg = ("The following volcanological criteria take the same "
+               "single-criterion analogy value for every volcano in the GVP "
+               f"database, for the selected target volcano ({volcano_name}) "
+               f"--> {nospread_criteria_text}. These criteria cannot "
+               "distinguish between any two volcanoes in the database, and "
+               "hence do not influence the PyVOLCANS result, whatever the "
+               "weights assigned to them.")
+        warnings.warn(msg)
+
+    return [criteria_spread, volcano_name]
+
+
 class PyvolcansError(Exception):
     """Base class for all PyVOLCANS errors"""

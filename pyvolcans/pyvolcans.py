@@ -32,6 +32,7 @@ from pyvolcans.pyvolcans_func import (
     plot_bar_apriori_analogues,
     plot_bar_better_analogues,
     get_volcano_source_data,
+    get_criteria_spread,
     output_many_volcanoes_data,
     format_volcano_name,
 )
@@ -144,6 +145,16 @@ def cli():
         print(f"\nTop {count} analogue volcanoes for {volcano_name}, "
               f"{my_volcano_country} ({my_volcano_vnum}):")
         print(result)
+
+        # call get_criteria_spread to report how widely the single-criterion
+        # analogy values are spread, for each volcanological criterion
+        if args.criteria_spread:
+            [criteria_spread, _] = get_criteria_spread(volcano_input)
+            print(f"\nSpread of the single-criterion analogy values between "
+                  f"{volcano_name}, {my_volcano_country} "
+                  f"({my_volcano_vnum}) and all the volcanoes in the GVP "
+                  f"database:")
+            print(criteria_spread.to_string(float_format='{:.3f}'.format))
 
         # print volcano data (ID profile) for target volcano if verbose=true
         if args.verbose:
@@ -280,6 +291,17 @@ def parse_args():
                               "json-format file. "
                               "NB. Verbose mode needs to be activated to be "
                               "able to use this feature.")
+                        )
+    parser.add_argument("-cs", "--criteria_spread", action="store_true",
+                        help=("Report the spread of the single-criterion "
+                              "analogy values between the selected target "
+                              "volcano and all the volcanoes in the GVP "
+                              "database, for each of the volcanological "
+                              "criteria used by VOLCANS. A criterion whose "
+                              "single-criterion analogy values are narrowly "
+                              "spread contributes little to distinguishing "
+                              "between volcanoes, however large the weight "
+                              "assigned to it.")
                         )
     parser.add_argument("-W", "--website", action="store_true",
                         help="Open GVP website for top analogue volcano")
