@@ -66,6 +66,11 @@ ANALOGY_MATRIX = {'tectonic_setting': load_tectonic_analogy(),
                   'eruption_style': load_eruption_style_analogy()
                   }
 
+# columns reported by get_criteria_spread(), in order
+SPREAD_COLUMNS = ['criterion', 'standard_deviation', 'interquartile_range',
+                  'percentile_10', 'median', 'percentile_90',
+                  'proportion_equally_analogous']
+
 # load the underlying volcano data
 VOLCANO_DATA = {'tectonic_setting': load_tectonic_data(),
                 'geochemistry': load_geochemistry_data(),
@@ -1153,16 +1158,22 @@ def get_criteria_spread(my_volcano, analogies=ANALOGY_MATRIX):
     -------
     criteria_spread : Pandas dataframe
         Standard deviation, interquartile range, 10th and 90th percentile,
-        median, and proportion of volcanoes in the GVP database that take the
-        maximum single-criterion analogy value, for each of the volcanological
+        median, and proportion of volcanoes in the GVP database that are
+        equally analogous to the target volcano, for each of the volcanological
         criteria used by VOLCANS. One row per criterion, ordered by decreasing
         standard deviation.
 
-        Please note that the proportion of volcanoes taking the maximum
-        single-criterion analogy value is reported because some criteria assign
-        that value to a large number of volcanoes (e.g. any volcano that shares
-        the tectonic setting of the target volcano), and such a criterion
-        cannot distinguish between those volcanoes at all.
+        The proportion of volcanoes that are equally analogous to the target
+        volcano is the proportion taking a single-criterion analogy value of
+        one, i.e. the proportion that the criterion cannot distinguish from the
+        target volcano at all. Around 50% of the volcanoes in the GVP database
+        are equally analogous to Toba, Indonesia, in terms of tectonic setting,
+        against around 7% for Hekla, Iceland.
+
+        Volcanological criteria without data for the target volcano are
+        reported as 'not a number' (NaN) throughout, because the
+        single-criterion analogy values that VOLCANS assigns to such criteria
+        do not describe any similarity between volcanoes.
     volcano_name : str
         Name of the target volcano
 
@@ -1178,7 +1189,16 @@ def get_criteria_spread(my_volcano, analogies=ANALOGY_MATRIX):
     volcano_name = get_volcano_name_from_idx(volcano_idx)
 
     spread_rows = []
+    criteria_without_data = []
     for criterion, analogy_matrix in analogies.items():
+        # NB. If the single-criterion analogy of the target volcano with itself
+        # is equal to zero, then there is no data available for that particular
+        # volcanological criterion
+        if analogy_matrix[volcano_idx, volcano_idx] == 0:
+            criteria_without_data.append(criterion)
+            spread_rows.append({'criterion': criterion})
+            continue
+
         # the target volcano is a perfect analogue to itself, and is excluded
         # in the same way as it is excluded from the PyVOLCANS result
         single_criterion_analogies = \
@@ -1188,7 +1208,6 @@ def get_criteria_spread(my_volcano, analogies=ANALOGY_MATRIX):
             np.percentile(single_criterion_analogies, [10, 90])
         first_quartile, third_quartile = \
             np.percentile(single_criterion_analogies, [25, 75])
-        maximum_analogy = single_criterion_analogies.max()
 
         spread_rows.append(
             {'criterion': criterion,
@@ -1197,29 +1216,22 @@ def get_criteria_spread(my_volcano, analogies=ANALOGY_MATRIX):
              'percentile_10': float(tenth_percentile),
              'median': float(np.median(single_criterion_analogies)),
              'percentile_90': float(ninetieth_percentile),
-             'proportion_at_maximum':
-                 float((single_criterion_analogies ==
-                        maximum_analogy).mean())})
+             'proportion_equally_analogous':
+                 float((single_criterion_analogies == 1).mean())})
 
-    criteria_spread = pd.DataFrame(spread_rows).set_index('criterion')
+    criteria_spread = pd.DataFrame(spread_rows, columns=SPREAD_COLUMNS)
+    criteria_spread = criteria_spread.set_index('criterion')
     criteria_spread = \
         criteria_spread.sort_values('standard_deviation', ascending=False)
 
-    # a criterion without data for the target volcano takes the same
-    # single-criterion analogy value for every volcano in the database
-    criteria_without_spread = \
-        criteria_spread.index[criteria_spread['standard_deviation'] ==
-                              0].tolist()
-
-    if criteria_without_spread:
-        nospread_criteria_text = ', '.join(criteria_without_spread)
-        msg = ("The following volcanological criteria take the same "
-               "single-criterion analogy value for every volcano in the GVP "
-               f"database, for the selected target volcano ({volcano_name}) "
-               f"--> {nospread_criteria_text}. These criteria cannot "
-               "distinguish between any two volcanoes in the database, and "
-               "hence do not influence the PyVOLCANS result, whatever the "
-               "weights assigned to them.")
+    if criteria_without_data:
+        nodata_criteria_text = ', '.join(criteria_without_data)
+        msg = ("The following volcanological criteria do not have any data "
+               "available for the selected target volcano "
+               f"({volcano_name}) --> {nodata_criteria_text}. The spread of "
+               "their single-criterion analogy values is not computed, "
+               "because those values do not describe any similarity between "
+               "volcanoes.")
         warnings.warn(msg)
 
     return [criteria_spread, volcano_name]

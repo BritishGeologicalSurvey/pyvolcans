@@ -148,7 +148,7 @@ def cli():
 
         # call get_criteria_spread to report how widely the single-criterion
         # analogy values are spread, for each volcanological criterion
-        if args.criteria_spread:
+        if args.criterion_spread:
             [criteria_spread, _] = get_criteria_spread(volcano_input)
             print(f"\nSpread of the single-criterion analogy values between "
                   f"{volcano_name}, {my_volcano_country} "
@@ -292,7 +292,7 @@ def parse_args():
                               "NB. Verbose mode needs to be activated to be "
                               "able to use this feature.")
                         )
-    parser.add_argument("-cs", "--criteria_spread", action="store_true",
+    parser.add_argument("-cs", "--criterion_spread", action="store_true",
                         help=("Report the spread of the single-criterion "
                               "analogy values between the selected target "
                               "volcano and all the volcanoes in the GVP "
