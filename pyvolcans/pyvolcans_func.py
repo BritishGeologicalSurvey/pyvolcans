@@ -11,6 +11,7 @@ Created on Tue Mar  3 09:49:16 2020
 import warnings
 import webbrowser
 from fractions import Fraction
+from itertools import product
 import json
 
 import matplotlib.pyplot as plt
@@ -1122,6 +1123,296 @@ def get_many_analogy_percentiles(my_volcano, apriori_volcanoes_list,
         print(f'{name_to_print} ({vnum_to_print}): {percentage}%\n')
 
     return percentile_dictionary, better_analogues_dictionary
+
+
+def find_optimal_weights(my_volcano, apriori_volcanoes_list, grid_step=0.05,
+                         near_optimal_proportion=0.10,
+                         analogies=ANALOGY_MATRIX):
+    """
+    Derives the weighting scheme that best explains a set of 'a priori'
+    analogue volcanoes for a given target volcano, by searching the space of
+    all possible weighting schemes.
+
+    The total analogy between two volcanoes is a weighted average of their
+    single-criterion analogies (please see equation 1 in Tierz et al., 2019).
+    It is therefore a linear function of the criterion weights, and the
+    single-criterion analogies between the target volcano and any volcano in
+    the GVP database need to be extracted only once. Every candidate weighting
+    scheme is then evaluated as a matrix product, which makes an exhaustive
+    search of the weighting-scheme space computationally inexpensive.
+
+    The quantity minimised is the mean rank of the 'a priori' analogue
+    volcanoes, across all volcanoes in the GVP database. Ranks are used, in
+    preference to total analogy values, because the mean total analogy is a
+    linear function of the weights, and therefore always takes its maximum
+    value at a single-criterion weighting scheme (i.e. a vertex of the
+    weighting-scheme space). Such a scheme is not necessarily informative: in
+    particular, it tends to select the criterion with the narrowest
+    distribution of single-criterion analogy values, because that criterion
+    discriminates least between the volcanoes in the database. Mean rank is
+    insensitive to the scale of the single-criterion analogies, and hence not
+    affected by this issue.
+
+    Parameters
+    ----------
+    my_volcano : str or int
+        Target volcano selected by the user, as volcano name or volcano number
+        (VNUM)
+    apriori_volcanoes_list : list of str or int
+        One or more volcanoes that are considered, a priori (i.e. by means
+        different from running PyVOLCANS), as good analogue volcanoes to the
+        selected target volcano
+    grid_step : float, optional
+        Increment used to discretise the weighting-scheme space. Default =
+        0.05, which corresponds to 10626 candidate weighting schemes. Please
+        note that decreasing this value increases the number of candidate
+        weighting schemes very rapidly, and that a value of 0.025 has been
+        found to identify the same optimal weighting scheme as the default.
+    near_optimal_proportion : float, optional
+        Proportion of the candidate weighting schemes that is considered
+        near-optimal, ranging between 0 and 1. Default = 0.10, which
+        corresponds to 1063 of the 10626 weighting schemes explored at the
+        default increment (grid_step).
+
+        Please note that a fixed proportion of weighting schemes is used, in
+        preference to a fixed increase in mean rank above the minimum mean
+        rank, so that the same extent of the weighting-scheme space is
+        explored for any target volcano and set of 'a priori' analogue
+        volcanoes. The range of mean ranks spanned by the near-optimal
+        weighting schemes varies markedly between target volcanoes, and hence
+        a fixed increase in mean rank does not delimit comparable regions of
+        the weighting-scheme space.
+    analogies : dict (fixed keyword argument)
+        Dictionary of Numpy arrays which contain the single-criterion analogy
+        values between any two volcanoes in the GVP database
+
+    Returns
+    -------
+    optimal_weights : dict
+        Weighting scheme that minimises the mean rank of the 'a priori'
+        analogue volcanoes
+    optimal_mean_rank : float
+        Mean rank of the 'a priori' analogue volcanoes, across all volcanoes
+        in the GVP database, for the optimal weighting scheme
+    near_optimal_region : Pandas dataframe
+        Minimum, maximum and median weight taken by each volcanological
+        criterion, among the near-optimal weighting schemes. The number of
+        near-optimal weighting schemes, and the range of mean ranks that they
+        span, are also reported.
+
+        Please note that this dataframe, and not the optimal weighting scheme
+        alone, constitutes the main result of this analysis. A wide range of
+        weights for a given volcanological criterion indicates that the set of
+        'a priori' analogue volcanoes is explained similarly well by many
+        different weights for that criterion, and hence that the weight taken
+        by that criterion in the optimal weighting scheme is not, by itself,
+        an informative result.
+    volcano_name : str
+        Name of the target volcano
+
+    Raises
+    ------
+    PyvolcansError
+        If the value given as target volcano (my_volcano), or as any of the
+        'a priori' analogue volcanoes (apriori_volcanoes_list), cannot be
+        interpreted either as a volcano name or volcano number (VNUM),
+        identifiable in the GVP database (www.volcano.si.edu).
+
+        If no 'a priori' analogue volcano is provided.
+
+        If the increment used to discretise the weighting-scheme space
+        (grid_step) is not a positive number that divides one into a whole
+        number of intervals.
+
+        If the proportion of weighting schemes considered near-optimal
+        (near_optimal_proportion) does not range between 0 and 1.
+    """
+
+    if not apriori_volcanoes_list:
+        msg = ("No 'a priori' analogue volcano has been provided! Please "
+               "provide one or more 'a priori' analogue volcanoes, using the "
+               "`--apriori` flag, to find the optimal weighting scheme.")
+        raise PyvolcansError(msg)
+
+    if grid_step <= 0 or grid_step > 1 or \
+            abs(round(1 / grid_step) - 1 / grid_step) > 1e-9:
+        msg = ("The increment used to discretise the weighting-scheme space "
+               "must be a positive number that divides one into a whole "
+               "number of intervals (e.g. '0.05' or '0.02'). "
+               "Please revise your choice of increment.")
+        raise PyvolcansError(msg)
+
+    if not 0 < near_optimal_proportion <= 1:
+        msg = ("The proportion of weighting schemes considered near-optimal "
+               "must range between 0 and 1 (e.g. '0.1' for one tenth of the "
+               "weighting schemes explored). "
+               "Please revise your choice of proportion.")
+        raise PyvolcansError(msg)
+
+    volcano_idx = convert_to_idx(my_volcano)
+    volcano_name = get_volcano_name_from_idx(volcano_idx)
+
+    apriori_idx = [convert_to_idx(volcano) for volcano
+                   in apriori_volcanoes_list]
+
+    # single-criterion analogies between the target volcano and all volcanoes
+    # in the GVP database: one column per volcanological criterion
+    criteria = list(analogies.keys())
+    single_criterion_analogies = \
+        np.column_stack([analogies[criterion][volcano_idx, ]
+                         for criterion in criteria])
+
+    # the target volcano is a perfect analogue to itself, and is excluded from
+    # the ranking, in the same way as it is excluded from the PyVOLCANS result
+    single_criterion_analogies[volcano_idx, ] = -np.inf
+
+    weighting_schemes = _weighting_scheme_space(grid_step, len(criteria))
+
+    mean_ranks = _mean_rank_of_analogues(single_criterion_analogies,
+                                         weighting_schemes, apriori_idx)
+
+    optimal_scheme_idx = int(np.argmin(mean_ranks))
+    optimal_mean_rank = float(mean_ranks[optimal_scheme_idx])
+    optimal_weights = dict(zip(criteria,
+                               weighting_schemes[optimal_scheme_idx].tolist()))
+
+    # delimit the set of near-optimal weighting schemes, as a fixed
+    # proportion of the weighting schemes explored
+    number_near_optimal = max(1, round(near_optimal_proportion *
+                                       len(weighting_schemes)))
+    mean_rank_threshold = \
+        np.partition(mean_ranks, number_near_optimal - 1)[
+            number_near_optimal - 1]
+
+    # weighting schemes are selected by mean rank, rather than by position in
+    # the ordering, because many weighting schemes share the same mean rank,
+    # and any of those that equal the threshold is as near-optimal as the rest
+    near_optimal = weighting_schemes[mean_ranks <= mean_rank_threshold]
+    near_optimal_mean_ranks = mean_ranks[mean_ranks <= mean_rank_threshold]
+
+    region_rows = []
+    for criterion_idx, criterion in enumerate(criteria):
+        criterion_weights = near_optimal[:, criterion_idx]
+        region_rows.append({'criterion': criterion,
+                            'weight_min': float(criterion_weights.min()),
+                            'weight_median': float(np.median(
+                                criterion_weights)),
+                            'weight_max': float(criterion_weights.max()),
+                            'optimal_weight': optimal_weights[criterion]})
+
+    near_optimal_region = pd.DataFrame(region_rows).set_index('criterion')
+    near_optimal_region.attrs['number_of_schemes'] = len(near_optimal)
+    near_optimal_region.attrs['proportion_of_schemes'] = \
+        len(near_optimal) / len(weighting_schemes)
+    near_optimal_region.attrs['mean_rank_range'] = \
+        (float(near_optimal_mean_ranks.min()),
+         float(near_optimal_mean_ranks.max()))
+
+    # a weighting scheme that is optimal for a very small number of 'a priori'
+    # analogue volcanoes is unlikely to be well constrained
+    if len(apriori_volcanoes_list) < len(criteria):
+        msg = (f"Only {len(apriori_volcanoes_list)} 'a priori' analogue "
+               f"volcano(es) provided, for {len(criteria)} volcanological "
+               "criteria. The optimal weighting scheme is unlikely to be "
+               "well constrained. Please consider providing more 'a priori' "
+               "analogue volcanoes, and please interpret the near-optimal "
+               "weighting schemes in preference to the optimal weighting "
+               "scheme.")
+        warnings.warn(msg)
+
+    return [optimal_weights, optimal_mean_rank, near_optimal_region,
+            volcano_name]
+
+
+def _weighting_scheme_space(grid_step, number_of_criteria):
+    """
+    Derives all the weighting schemes in which every criterion weight is a
+    whole multiple of a given increment, and the sum of weights is equal to
+    one.
+
+    Parameters
+    ----------
+    grid_step : float
+        Increment used to discretise the weighting-scheme space
+    number_of_criteria : int
+        Number of volcanological criteria used by VOLCANS
+
+    Returns
+    -------
+    weighting_schemes : Numpy array
+        One row per weighting scheme, and one column per volcanological
+        criterion
+    """
+
+    number_of_steps = int(round(1 / grid_step))
+
+    # the weights of all but one criterion are chosen freely, provided that
+    # they sum to no more than one, and the remaining weight is determined by
+    # the requirement that the sum of weights is equal to one
+    partial_schemes = \
+        [scheme for scheme
+         in product(range(number_of_steps + 1), repeat=number_of_criteria - 1)
+         if sum(scheme) <= number_of_steps]
+
+    weighting_schemes = \
+        np.array([scheme + (number_of_steps - sum(scheme),)
+                  for scheme in partial_schemes], dtype=float)
+
+    return weighting_schemes * grid_step
+
+
+def _mean_rank_of_analogues(single_criterion_analogies, weighting_schemes,
+                            apriori_idx, chunk_size=2000):
+    """
+    Calculates the mean rank of a set of 'a priori' analogue volcanoes, across
+    all volcanoes in the GVP database, for every given weighting scheme.
+
+    The weighting schemes are processed in chunks, to limit peak memory use.
+
+    Parameters
+    ----------
+    single_criterion_analogies : Numpy array
+        Single-criterion analogy values between the target volcano and all
+        volcanoes in the GVP database: one row per volcano, and one column per
+        volcanological criterion
+    weighting_schemes : Numpy array
+        One row per weighting scheme, and one column per volcanological
+        criterion
+    apriori_idx : list of int
+        Indices, in the analogy matrices, of the 'a priori' analogue volcanoes
+    chunk_size : int, optional
+        Number of weighting schemes evaluated at a time. Default = 2000.
+
+    Returns
+    -------
+    mean_ranks : Numpy array
+        Mean rank of the 'a priori' analogue volcanoes, for every weighting
+        scheme
+    """
+
+    number_of_volcanoes = single_criterion_analogies.shape[0]
+    ranks_of_volcanoes = np.arange(1, number_of_volcanoes + 1)
+    mean_ranks = np.empty(len(weighting_schemes))
+
+    for chunk_start in range(0, len(weighting_schemes), chunk_size):
+        chunk = weighting_schemes[chunk_start:chunk_start + chunk_size]
+
+        # total analogy is a weighted average of the single-criterion
+        # analogies (see equation 1 in Tierz et al., 2019)
+        total_analogies = single_criterion_analogies @ chunk.T
+
+        # rank 1 is assigned to the volcano with the highest total analogy
+        descending_order = np.argsort(-total_analogies, axis=0)
+        ranks = np.empty_like(descending_order)
+        np.put_along_axis(ranks, descending_order,
+                          np.repeat(ranks_of_volcanoes[:, np.newaxis],
+                                    chunk.shape[0], axis=1),
+                          axis=0)
+
+        mean_ranks[chunk_start:chunk_start + chunk.shape[0]] = \
+            ranks[apriori_idx, ].mean(axis=0)
+
+    return mean_ranks
 
 
 class PyvolcansError(Exception):
