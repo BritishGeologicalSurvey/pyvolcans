@@ -646,6 +646,8 @@ def get_analogies(my_volcano, volcans_result, count=10):
     # 'filter out' the target volcano from the final result
     my_volcano_boolean_indexes = result.index.isin([volcano_idx])
     filtered_result = result[~my_volcano_boolean_indexes]
+    if count > 0:
+        filtered_result = filtered_result.head(count)
     # obtain volcano name from volcano_idx as my_volcano could be an int
     volcano_name = get_volcano_name_from_idx(volcano_idx)
 
